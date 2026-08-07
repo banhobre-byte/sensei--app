@@ -87,6 +87,36 @@
     font-size:13px; transform:translateY(20px); opacity:0; pointer-events:none; transition:all .25s ease; z-index:20;}
   .toast.show{transform:translateY(0); opacity:1;}
   .loading{padding:40px 0; text-align:center; color:var(--text-dim); font-size:13px;}
+
+  .rest-bar{position:fixed; left:14px; right:14px; bottom:104px; z-index:25;
+    background:#1c1a17; border:1px solid var(--gold); border-radius:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,.5);
+    transform:translateY(140%); transition:transform .25s ease; padding:12px 14px;}
+  .rest-bar.show{transform:translateY(0);}
+  .rest-bar-inner{display:flex; align-items:center; gap:12px;}
+  .rest-info{flex:1; min-width:0;}
+  .rest-ex-name{font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .rest-sub{font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; margin-top:1px;}
+  .rest-time{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:24px;
+    font-weight:800; color:var(--gold); flex-shrink:0; min-width:58px; text-align:center;}
+  .rest-cancel{width:30px; height:30px; border-radius:8px; border:1px solid var(--line);
+    background:var(--bg-card-2); color:var(--text-dim); font-size:14px; flex-shrink:0;}
+
+  .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:30;
+    display:none; align-items:flex-end; justify-content:center;}
+  .modal-overlay.show{display:flex;}
+  .modal-card{background:var(--bg-card); border:1px solid var(--line); border-radius:16px 16px 0 0;
+    width:100%; max-width:520px; padding:18px 16px 24px; max-height:80vh; display:flex; flex-direction:column;}
+  .modal-title{font-size:16px; font-weight:800; color:var(--gold); margin-bottom:10px;
+    text-transform:uppercase; letter-spacing:1px;}
+  .modal-textarea{background:var(--bg-card-2); border:1px solid var(--line); border-radius:10px;
+    color:var(--text); font-size:12.5px; font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+    padding:12px; width:100%; flex:1; min-height:220px; resize:none; line-height:1.6;}
+  .modal-actions{display:flex; gap:10px; margin-top:14px;}
+  .modal-btn{flex:1; padding:13px; border-radius:10px; border:none; font-size:13.5px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.5px;}
+  .modal-btn.copy{background:var(--gold); color:#0d0d0d;}
+  .modal-btn.close{background:var(--bg-card-2); color:var(--text-dim); border:1px solid var(--line);}
 </style>
 </head>
 <body>
@@ -106,10 +136,32 @@
 
 <footer id="footer" style="display:none">
   <button class="save-btn" onclick="saveSession()">Guardar sesión</button>
-  <div class="mock-note">Maqueta sin persistencia — al recargar se pierde. Fase 2: NAS.</div>
+  <div class="mock-note">Genera un resumen para copiar y pegar en Sensei. Sin guardado permanente aún — fase 2: NAS.</div>
 </footer>
 
 <div class="toast" id="toast"></div>
+
+<div class="rest-bar" id="restBar">
+  <div class="rest-bar-inner">
+    <div class="rest-info">
+      <div class="rest-ex-name" id="restLabel"></div>
+      <div class="rest-sub">Descanso</div>
+    </div>
+    <div class="rest-time" id="restTime">0:00</div>
+    <button class="rest-cancel" onclick="cancelRestTimer()">✕</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="summaryModal">
+  <div class="modal-card">
+    <div class="modal-title">Resumen de la sesión</div>
+    <textarea class="modal-textarea" id="summaryText" readonly></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn close" onclick="closeSummary()">Cerrar</button>
+      <button class="modal-btn copy" onclick="copySummary()">Copiar</button>
+    </div>
+  </div>
+</div>
 
 <script>
   const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
@@ -125,7 +177,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v2');
+        const cache = await caches.open('sensei-v3');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -179,7 +231,8 @@
 
     day.exercises.forEach((ex, i) => {
       const openClass = i === 0 ? ' open' : '';
-      html += `<div class="exercise${openClass}" data-ex="${i}">
+      const restSeconds = parseRestSeconds(ex.rest);
+      html += `<div class="exercise${openClass}" data-ex="${i}" data-rest="${restSeconds}">
         <div class="ex-head" onclick="toggleEx(this)">
           <div class="ex-title">
             <span class="ex-index">${i+1}</span>
@@ -221,12 +274,138 @@
   }
 
   function toggleEx(headEl){ headEl.parentElement.classList.toggle('open'); }
-  function toggleDone(btn){ btn.classList.toggle('done'); }
+
+  // ---- Crono de descanso ----
+  // Reglas Sensei: aislamiento 60s, resto general 90s, multiarticulares pesados 120s
+  function parseRestSeconds(restText){
+    if(!restText) return 90;
+    if(restText.includes('2-3')) return 120;      // multiarticulares pesados
+    if(restText.includes('90-120')) return 90;     // resto general
+    if(restText.includes('60-90')) return 60;      // aislamiento
+    return 90;
+  }
+
+  let restInterval = null;
+  let restRemaining = 0;
+
+  function toggleDone(btn){
+    const willBeDone = !btn.classList.contains('done');
+    btn.classList.toggle('done');
+    if(willBeDone){
+      const exDiv = btn.closest('.exercise');
+      const restSec = parseInt(exDiv.dataset.rest || '90', 10);
+      const name = exDiv.querySelector('.ex-name').textContent;
+      startRestTimer(restSec, name);
+    }
+  }
+
+  function startRestTimer(seconds, label){
+    clearInterval(restInterval);
+    restRemaining = seconds;
+    document.getElementById('restLabel').textContent = label;
+    document.getElementById('restBar').classList.add('show');
+    updateRestDisplay();
+    restInterval = setInterval(() => {
+      restRemaining--;
+      updateRestDisplay();
+      if(restRemaining <= 0){
+        clearInterval(restInterval);
+        beep();
+        if(navigator.vibrate) navigator.vibrate([300,150,300,150,300]);
+        setTimeout(() => document.getElementById('restBar').classList.remove('show'), 1500);
+      }
+    }, 1000);
+  }
+
+  function updateRestDisplay(){
+    const r = Math.max(restRemaining, 0);
+    const m = Math.floor(r/60);
+    const s = r % 60;
+    document.getElementById('restTime').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  }
+
+  function cancelRestTimer(){
+    clearInterval(restInterval);
+    document.getElementById('restBar').classList.remove('show');
+  }
+
+  function beep(){
+    try{
+      const playTone = (delay) => setTimeout(() => {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        osc.connect(gain); gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      }, delay);
+      playTone(0);
+      playTone(550);
+      playTone(1100);
+    }catch(e){ /* audio no disponible */ }
+  }
+
+  // ---- Resumen de sesión ----
+  function buildSummary(){
+    const titleEl = document.querySelector('.subline b');
+    const dayTitle = titleEl ? titleEl.textContent : 'Sesión';
+    const fecha = new Date().toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'});
+    let lines = [`${dayTitle} — ${fecha}`, ''];
+
+    document.querySelectorAll('.exercise').forEach(exDiv => {
+      const name = exDiv.querySelector('.ex-name').textContent;
+      const rows = exDiv.querySelectorAll('.set-row');
+      const setLines = [];
+      rows.forEach((row, idx) => {
+        const inputs = row.querySelectorAll('input');
+        const kg = inputs[0].value.trim();
+        const reps = inputs[1].value.trim();
+        const rir = row.querySelector('select').value.replace('RIR ', 'rir');
+        if(reps !== ''){
+          setLines.push(`${idx+1}a ${kg || '-'}x${reps} ${rir}`);
+        }
+      });
+      if(setLines.length){
+        lines.push(`${name}: ${setLines.join(', ')}`);
+      }
+    });
+
+    if(lines.length === 2){
+      lines.push('(sin series registradas todavía)');
+    }
+    return lines.join('\n');
+  }
+
   function saveSession(){
+    const summary = buildSummary();
+    document.getElementById('summaryText').value = summary;
+    document.getElementById('summaryModal').classList.add('show');
+  }
+
+  function closeSummary(){
+    document.getElementById('summaryModal').classList.remove('show');
+  }
+
+  async function copySummary(){
+    const text = document.getElementById('summaryText').value;
     const t = document.getElementById('toast');
-    t.textContent = 'Sesión registrada en memoria del navegador (temporal). Sin backend todavía — fase 2 con el NAS lo hará permanente.';
+    try{
+      await navigator.clipboard.writeText(text);
+      t.textContent = 'Copiado — pégalo en la conversación de Sensei.';
+    }catch(e){
+      // Fallback para navegadores sin permiso de portapapeles
+      const ta = document.getElementById('summaryText');
+      ta.select();
+      document.execCommand('copy');
+      t.textContent = 'Copiado — pégalo en la conversación de Sensei.';
+    }
     t.classList.add('show');
-    setTimeout(()=> t.classList.remove('show'), 3800);
+    setTimeout(() => t.classList.remove('show'), 2800);
   }
 
   if ('serviceWorker' in navigator) {
