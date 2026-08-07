@@ -1,5 +1,57 @@
 {
   "updated": "2026-08-07",
+  "overrides": {
+    "2026-08-07": {
+      "title": "Empuje",
+      "subtitle": "Viernes 7 ago · semana especial (cierre temporada, gym distinto)",
+      "type": "fuerza",
+      "warn": "Sesión completada — se muestra el registro real de hoy. Máquinas distintas a las habituales, cargas no comparables 1:1.",
+      "exercises": [
+        {"name": "Fondos paralelas (lastre)", "meta": "⚠️ Última serie al fallo — recordatorio: compuesto tren superior, RIR 1-2, no rutina", "rest": "2-3 min", "sets": [
+          {"kg": 12.5, "reps": "12", "rir": "1"},
+          {"kg": 12.5, "reps": "12", "rir": "1"},
+          {"kg": 12.5, "reps": "12", "rir": "1"},
+          {"kg": 12.5, "reps": "12", "rir": "0"}
+        ]},
+        {"name": "Press pecho máquina", "meta": "Máquina distinta a la habitual — no comparable en kg", "rest": "2-3 min", "sets": [
+          {"kg": 70, "reps": "12", "rir": "3"},
+          {"kg": 70, "reps": "12", "rir": "1"},
+          {"kg": 70, "reps": "11", "rir": "1"},
+          {"kg": 70, "reps": "10", "rir": "1"}
+        ]},
+        {"name": "Press hombro máquina", "meta": "Máquina agarre neutro, recorrido corto — no comparable en kg. Cómodo", "rest": "90-120s", "sets": [
+          {"kg": 43, "reps": "12", "rir": "1"},
+          {"kg": 43, "reps": "10", "rir": "1"},
+          {"kg": 43, "reps": "8", "rir": "1"}
+        ]},
+        {"name": "Laterales (mancuerna)", "meta": "Sustitución de máquina — cuidando técnica", "rest": "60-90s", "sets": [
+          {"kg": 5, "reps": "15", "rir": "1"},
+          {"kg": 7.5, "reps": "12", "rir": "1"},
+          {"kg": 7.5, "reps": "12", "rir": "1"}
+        ]},
+        {"name": "Cruces (aperturas polea alta)", "meta": "", "rest": "60-90s", "sets": [
+          {"kg": 63, "reps": "12", "rir": "2"},
+          {"kg": 63, "reps": "12", "rir": "1"},
+          {"kg": 63, "reps": "12", "rir": "1"}
+        ]},
+        {"name": "Aperturas posteriores", "meta": "Ligera molestia antebrazo derecho 1ª serie, desapareció después", "rest": "60-90s", "sets": [
+          {"kg": 63, "reps": "12", "rir": "1"},
+          {"kg": 63, "reps": "12", "rir": "1"},
+          {"kg": 63, "reps": "12", "rir": "1"}
+        ]},
+        {"name": "Tríceps polea", "meta": "Agarre variable según disponibilidad, RIR 1-2 — sin cargas exactas registradas", "rest": "60-90s", "sets": [
+          {"kg": "", "reps": "", "rir": "1"},
+          {"kg": "", "reps": "", "rir": "1"}
+        ]}
+      ]
+    },
+    "2026-08-09": {
+      "title": "Descanso + hipopresivos",
+      "subtitle": "Domingo 9 ago · día de descompresión movido esta semana",
+      "type": "descanso",
+      "note": "Colgado pasivo en barra 3x20-30s (con straps). Hipopresivos 10-15 min. Esta semana el día de descompresión se movió del miércoles al domingo por el cierre de temporada antes de vacaciones."
+    }
+  },
   "days": {
     "1": {
       "title": "Pierna",

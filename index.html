@@ -138,9 +138,18 @@
     renderDay(data);
   }
 
+  function todayISO(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+
   function renderDay(data){
+    const iso = todayISO();
     const jsDay = new Date().getDay(); // 0=domingo..6=sábado
-    const day = data.days[String(jsDay)];
+    const day = (data.overrides && data.overrides[iso]) ? data.overrides[iso] : data.days[String(jsDay)];
     const main = document.getElementById('main');
     const footer = document.getElementById('footer');
     const subline = document.getElementById('daySubline');
@@ -189,10 +198,11 @@
         <div style="height:8px"></div>`;
       ex.sets.forEach((s, si) => {
         const kgVal = s.kg !== undefined && s.kg !== '' ? `value="${s.kg}"` : `placeholder="${s.label || 'kg'}"`;
+        const repsVal = s.reps !== undefined && s.reps !== '' ? `value="${s.reps}"` : `placeholder="reps"`;
         html += `<div class="set-row">
           <span class="set-label">${si+1}</span>
           <input type="number" ${kgVal}>
-          <input type="number" placeholder="reps">
+          <input type="number" ${repsVal}>
           <select>
             <option${s.rir==='0'?' selected':''}>RIR 0</option>
             <option${s.rir==='1'?' selected':''}>RIR 1</option>
@@ -200,7 +210,7 @@
             <option${s.rir==='3'?' selected':''}>RIR 3</option>
             <option${s.rir==='4'?' selected':''}>RIR 4</option>
           </select>
-          <button class="check-btn" onclick="toggleDone(this)">✓</button>
+          <button class="check-btn${(s.reps !== undefined && s.reps !== '') ? ' done' : ''}" onclick="toggleDone(this)">✓</button>
         </div>`;
       });
       html += `</div></div>`;
