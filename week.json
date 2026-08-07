@@ -1,0 +1,137 @@
+{
+  "updated": "2026-08-07",
+  "days": {
+    "1": {
+      "title": "Pierna",
+      "subtitle": "Lunes · bloque volumen 25/26",
+      "type": "fuerza",
+      "warn": "RIR 3-4 en búlgaras y ejercicios con carga axial. Sissy squat y sentadilla libre controladas, sin barra.",
+      "exercises": [
+        {"name": "Gemelo", "meta": "Baseline actual 40kg", "rest": "60-90s", "sets": [
+          {"kg": 40, "reps": "", "rir": "0"},
+          {"kg": 40, "reps": "", "rir": "0"},
+          {"kg": 40, "reps": "", "rir": "1"},
+          {"kg": 40, "reps": "", "rir": "1"}
+        ]},
+        {"name": "Cuádriceps", "meta": "Mantener 50kg una semana más", "rest": "60-90s", "sets": [
+          {"kg": 50, "reps": "", "rir": "0"},
+          {"kg": 50, "reps": "", "rir": "0"},
+          {"kg": 50, "reps": "", "rir": "1"},
+          {"kg": 50, "reps": "", "rir": "1"}
+        ]},
+        {"name": "Hip thrust", "meta": "90-120s por carga articular", "rest": "90-120s", "sets": [
+          {"kg": 50, "reps": "", "rir": "1"},
+          {"kg": 50, "reps": "", "rir": "1"},
+          {"kg": 50, "reps": "", "rir": "1"}
+        ]},
+        {"name": "Curl femoral", "meta": "🎯 Probar 40kg — la semana pasada 36kg 4x12 limpio", "rest": "60-90s", "sets": [
+          {"kg": 40, "reps": "", "rir": "1"},
+          {"kg": 40, "reps": "", "rir": "1"},
+          {"kg": 40, "reps": "", "rir": "2"},
+          {"kg": 40, "reps": "", "rir": "2"}
+        ]},
+        {"name": "Búlgaras", "meta": "RIR 3-4 obligatorio — carga axial", "rest": "90-120s", "warnEx": "⚠️ RIR 3-4 siempre, nunca al fallo", "sets": [
+          {"kg": 0, "reps": "", "rir": "3", "label": "peso corp."},
+          {"kg": 0, "reps": "", "rir": "3", "label": "peso corp."},
+          {"kg": 0, "reps": "", "rir": "3", "label": "peso corp."}
+        ]},
+        {"name": "Sissy squat", "meta": "20kg/lado", "rest": "90-120s", "sets": [
+          {"kg": 20, "reps": "", "rir": "1"},
+          {"kg": 20, "reps": "", "rir": "1"},
+          {"kg": 20, "reps": "", "rir": "1"}
+        ]},
+        {"name": "Abducción", "meta": "50-57kg", "rest": "60-90s", "sets": [
+          {"kg": 50, "reps": "", "rir": "1"},
+          {"kg": 57, "reps": "", "rir": "1"},
+          {"kg": 57, "reps": "", "rir": "1"}
+        ]},
+        {"name": "Adducción", "meta": "🎯 Añadir hoy — la semana pasada se saltó. Superset con abducción si falta tiempo", "rest": "60-90s", "sets": [
+          {"kg": "", "reps": "", "rir": "1"},
+          {"kg": "", "reps": "", "rir": "1"},
+          {"kg": "", "reps": "", "rir": "1"}
+        ]}
+      ]
+    },
+    "2": {
+      "title": "Running",
+      "subtitle": "Martes · con entrenador externo",
+      "type": "cardio",
+      "note": "Sesión con coach — sigue su protocolo del día. Si es Z2 propio: 5.2 km/h + 6% pendiente, sensación conversacional. Recuerda: gym 28-31°C infla FC 10-20 lpm."
+    },
+    "3": {
+      "title": "Descanso + accesorio",
+      "subtitle": "Miércoles",
+      "type": "descanso",
+      "note": "Colgado pasivo en barra 3x20-30s. Hipopresivos 10-15 min: exhala todo el aire, abre costillas en vacío 8-10s, 8-10 repeticiones."
+    },
+    "4": {
+      "title": "Running",
+      "subtitle": "Jueves · con entrenador externo",
+      "type": "cardio",
+      "note": "Sesión con coach — sigue su protocolo del día."
+    },
+    "5": {
+      "title": "Tracción",
+      "subtitle": "Viernes · en ayunas",
+      "type": "fuerza",
+      "warn": "RIR 3-4 en ejercicios con carga axial. Nunca al fallo en remos. Colgado pasivo 3x20-30s también hoy.",
+      "exercises": [
+        {"name": "Dominadas", "meta": "Máximas reps · récord 37 · objetivo >38", "rest": "2-3 min", "sets": [
+          {"kg": "", "reps": "", "rir": "0", "label": "peso corp."},
+          {"kg": "", "reps": "", "rir": "0", "label": "peso corp."},
+          {"kg": "", "reps": "", "rir": "0", "label": "peso corp."},
+          {"kg": "", "reps": "", "rir": "0", "label": "peso corp."}
+        ]},
+        {"name": "Jalón al pecho", "meta": "Máquina 55kg/lado", "rest": "90-120s", "sets": [
+          {"kg": 55, "reps": "", "rir": "2"},
+          {"kg": 55, "reps": "", "rir": "2"},
+          {"kg": 55, "reps": "", "rir": "2"}
+        ]},
+        {"name": "Remo", "meta": "Compuesto tren superior", "rest": "2-3 min", "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar", "sets": [
+          {"kg": "", "reps": "", "rir": "1"},
+          {"kg": "", "reps": "", "rir": "1"},
+          {"kg": "", "reps": "", "rir": "1"}
+        ]},
+        {"name": "Press hombro máquina", "meta": "Tracción = fresco → 43kg consolidado", "rest": "90-120s", "sets": [
+          {"kg": 43, "reps": "", "rir": "0"},
+          {"kg": 43, "reps": "", "rir": "0"},
+          {"kg": 43, "reps": "", "rir": "1"}
+        ]},
+        {"name": "Posteriores / aperturas", "meta": "43kg conservador", "rest": "60-90s", "warnEx": "⚠️ Antebrazo derecho: primer pinchazo → parar", "sets": [
+          {"kg": 43, "reps": "", "rir": "0"},
+          {"kg": 43, "reps": "", "rir": "0"},
+          {"kg": 43, "reps": "", "rir": "1"}
+        ]}
+      ]
+    },
+    "6": {
+      "title": "Running",
+      "subtitle": "Sábado",
+      "type": "cardio",
+      "note": "Z2: 5.2 km/h + 6% pendiente o sensación conversacional. 30-60 min."
+    },
+    "0": {
+      "title": "Empuje",
+      "subtitle": "Domingo",
+      "type": "fuerza",
+      "warn": "Pendiente de confirmar cargas actuales contigo — rellena la primera vez y las guardamos.",
+      "exercises": [
+        {"name": "Press banca / máquina pecho", "meta": "Pendiente confirmar carga", "rest": "2-3 min", "sets": [
+          {"kg": "", "reps": "", "rir": "1"},
+          {"kg": "", "reps": "", "rir": "1"},
+          {"kg": "", "reps": "", "rir": "1"}
+        ]},
+        {"name": "Press hombro máquina", "meta": "Empuje = pecho fatigado → 29kg, explorar siguiente posición", "rest": "90-120s", "sets": [
+          {"kg": 29, "reps": "", "rir": "1"},
+          {"kg": 29, "reps": "", "rir": "1"},
+          {"kg": 29, "reps": "", "rir": "1"}
+        ]},
+        {"name": "Tríceps / fondos", "meta": "Pendiente confirmar carga", "rest": "60-90s", "sets": [
+          {"kg": "", "reps": "", "rir": "0"},
+          {"kg": "", "reps": "", "rir": "0"},
+          {"kg": "", "reps": "", "rir": "1"}
+        ]}
+      ]
+    }
+  }
+}
