@@ -91,7 +91,7 @@
   .rest-bar{position:fixed; left:14px; right:14px; bottom:104px; z-index:25;
     background:#1c1a17; border:1px solid var(--gold); border-radius:14px;
     box-shadow:0 8px 24px rgba(0,0,0,.5);
-    transform:translateY(140%); transition:transform .25s ease; padding:12px 14px;}
+    transform:translateY(140%); transition:transform .25s ease, bottom .15s ease; padding:12px 14px;}
   .rest-bar.show{transform:translateY(0);}
   .rest-bar-inner{display:flex; align-items:center; gap:12px;}
   .rest-info{flex:1; min-width:0;}
@@ -177,7 +177,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v4');
+        const cache = await caches.open('sensei-v5');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -311,7 +311,11 @@
     clearInterval(restInterval);
     restRemaining = seconds;
     document.getElementById('restLabel').textContent = label;
-    document.getElementById('restBar').classList.add('show');
+    const bar = document.getElementById('restBar');
+    const footer = document.getElementById('footer');
+    const footerH = (footer && footer.style.display !== 'none') ? footer.offsetHeight : 0;
+    bar.style.bottom = (footerH + 10) + 'px';
+    bar.classList.add('show');
     updateRestDisplay();
     restInterval = setInterval(() => {
       restRemaining--;
