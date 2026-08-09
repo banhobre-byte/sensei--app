@@ -58,7 +58,17 @@
       "title": "Descanso + hipopresivos",
       "subtitle": "Domingo 9 ago · día de descompresión movido esta semana",
       "type": "descanso",
-      "note": "Colgado pasivo en barra 3x20-30s (con straps). Hipopresivos 10-15 min. Esta semana el día de descompresión se movió del miércoles al domingo por el cierre de temporada antes de vacaciones."
+      "note": "Esta semana el día de descompresión se movió del miércoles al domingo por el cierre de temporada antes de vacaciones.",
+      "exercises": [
+        {"name": "Colgado pasivo en barra", "meta": "Descompresión L4-L5, hombros activos, con straps", "rest": "60-90s", "sets": [
+          {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"},
+          {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"},
+          {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"}
+        ]},
+        {"name": "Hipopresivos", "meta": "Exhala todo el aire, vacío abdominal 8-10s por repetición", "rest": "30-45s", "sets": [
+          {"kg": "", "reps": "", "rir": "-", "label": "—", "repsLabel": "reps (8-10)"}
+        ]}
+      ]
     }
   },
   "days": {
@@ -123,7 +133,16 @@
       "title": "Descanso + accesorio",
       "subtitle": "Miércoles",
       "type": "descanso",
-      "note": "Colgado pasivo en barra 3x20-30s. Hipopresivos 10-15 min: exhala todo el aire, abre costillas en vacío 8-10s, 8-10 repeticiones."
+      "exercises": [
+        {"name": "Colgado pasivo en barra", "meta": "Descompresión L4-L5, hombros activos, con straps", "rest": "60-90s", "sets": [
+          {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"},
+          {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"},
+          {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"}
+        ]},
+        {"name": "Hipopresivos", "meta": "Exhala todo el aire, vacío abdominal 8-10s por repetición", "rest": "30-45s", "sets": [
+          {"kg": "", "reps": "", "rir": "-", "label": "—", "repsLabel": "reps (8-10)"}
+        ]}
+      ]
     },
     "4": {
       "title": "Running",

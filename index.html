@@ -177,7 +177,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v3');
+        const cache = await caches.open('sensei-v4');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -219,14 +219,20 @@
       html += `<div class="warn-box"><b>⚠️</b> ${day.warn}</div>`;
     }
 
-    if(day.type === 'cardio' || day.type === 'descanso'){
+    const hasExercises = Array.isArray(day.exercises) && day.exercises.length > 0;
+
+    if(!hasExercises){
       html += `<div class="rest-day"><div class="rd-title">${day.title}</div>${day.note || ''}</div>`;
       main.innerHTML = html;
       footer.style.display = 'none';
       return;
     }
 
-    // fuerza: render exercises
+    if(day.note){
+      html += `<div class="rest-day" style="margin-bottom:14px; padding:14px 16px;">${day.note}</div>`;
+    }
+
+    // render exercises (fuerza, o descanso con protocolo cronometrado)
     html += `<div class="col-labels"><span>#</span><span>kg</span><span>reps</span><span>RIR</span><span></span></div>`;
 
     day.exercises.forEach((ex, i) => {
@@ -251,12 +257,14 @@
         <div style="height:8px"></div>`;
       ex.sets.forEach((s, si) => {
         const kgVal = s.kg !== undefined && s.kg !== '' ? `value="${s.kg}"` : `placeholder="${s.label || 'kg'}"`;
-        const repsVal = s.reps !== undefined && s.reps !== '' ? `value="${s.reps}"` : `placeholder="reps"`;
+        const repsPlaceholder = s.repsLabel || 'reps';
+        const repsVal = s.reps !== undefined && s.reps !== '' ? `value="${s.reps}"` : `placeholder="${repsPlaceholder}"`;
         html += `<div class="set-row">
           <span class="set-label">${si+1}</span>
           <input type="number" ${kgVal}>
           <input type="number" ${repsVal}>
           <select>
+            <option${s.rir==='-'?' selected':''}>—</option>
             <option${s.rir==='0'?' selected':''}>RIR 0</option>
             <option${s.rir==='1'?' selected':''}>RIR 1</option>
             <option${s.rir==='2'?' selected':''}>RIR 2</option>
