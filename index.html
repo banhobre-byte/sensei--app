@@ -88,19 +88,24 @@
   .toast.show{transform:translateY(0); opacity:1;}
   .loading{padding:40px 0; text-align:center; color:var(--text-dim); font-size:13px;}
 
-  .rest-bar{position:fixed; left:14px; right:14px; bottom:104px; z-index:25;
-    background:#1c1a17; border:1px solid var(--gold); border-radius:14px;
-    box-shadow:0 8px 24px rgba(0,0,0,.5);
-    transform:translateY(140%); transition:transform .25s ease, bottom .15s ease; padding:12px 14px;}
-  .rest-bar.show{transform:translateY(0);}
-  .rest-bar-inner{display:flex; align-items:center; gap:12px;}
-  .rest-info{flex:1; min-width:0;}
-  .rest-ex-name{font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .rest-sub{font-size:10.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.5px; margin-top:1px;}
-  .rest-time{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:24px;
-    font-weight:800; color:var(--gold); flex-shrink:0; min-width:58px; text-align:center;}
-  .rest-cancel{width:30px; height:30px; border-radius:8px; border:1px solid var(--line);
-    background:var(--bg-card-2); color:var(--text-dim); font-size:14px; flex-shrink:0;}
+  .rest-overlay{position:fixed; inset:0; z-index:40; background:radial-gradient(circle at 50% 40%, #1c1810, #0d0d0d 70%);
+    display:none; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; text-align:center;}
+  .rest-overlay.show{display:flex;}
+  .rest-close-btn{position:absolute; top:22px; right:22px; width:38px; height:38px; border-radius:10px;
+    border:1px solid var(--line); background:var(--bg-card); color:var(--text-dim); font-size:16px;}
+  .rest-sub2{font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--text-dim);}
+  .rest-ex-name2{font-size:24px; font-weight:800; color:var(--gold); margin-top:8px; max-width:90%; line-height:1.3;}
+  .rest-next2{font-size:13px; color:var(--text-dim); margin-top:18px; max-width:85%;}
+  .rest-time2{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:104px; font-weight:800;
+    color:var(--text); margin:26px 0; letter-spacing:-2px;}
+  .rest-time2.low{color:var(--red);}
+  .rest-controls{display:flex; gap:16px; align-items:center; margin-bottom:18px;}
+  .rest-adj-btn{width:58px; height:58px; border-radius:50%; border:1px solid var(--line);
+    background:var(--bg-card); color:var(--gold); font-size:14px; font-weight:800;}
+  .rest-adj-btn:active{background:var(--bg-card-2);}
+  .rest-reset-btn{padding:12px 22px; border-radius:10px; border:1px solid var(--line);
+    background:var(--bg-card-2); color:var(--text-dim); font-size:13px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.5px;}
 
   .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.65); z-index:30;
     display:none; align-items:flex-end; justify-content:center;}
@@ -141,15 +146,17 @@
 
 <div class="toast" id="toast"></div>
 
-<div class="rest-bar" id="restBar">
-  <div class="rest-bar-inner">
-    <div class="rest-info">
-      <div class="rest-ex-name" id="restLabel"></div>
-      <div class="rest-sub">Descanso</div>
-    </div>
-    <div class="rest-time" id="restTime">0:00</div>
-    <button class="rest-cancel" onclick="cancelRestTimer()">✕</button>
+<div class="rest-overlay" id="restBar">
+  <button class="rest-close-btn" onclick="cancelRestTimer()">✕</button>
+  <div class="rest-sub2">Descanso</div>
+  <div class="rest-ex-name2" id="restLabel"></div>
+  <div class="rest-time2" id="restTime">0:00</div>
+  <div class="rest-controls">
+    <button class="rest-adj-btn" onclick="adjustRest(-15)">−15</button>
+    <button class="rest-adj-btn" onclick="adjustRest(15)">+15</button>
   </div>
+  <button class="rest-reset-btn" onclick="resetRest()">↺ Reiniciar</button>
+  <div class="rest-next2" id="restNext"></div>
 </div>
 
 <div class="modal-overlay" id="summaryModal">
@@ -177,7 +184,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v5');
+        const cache = await caches.open('sensei-v6');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -295,6 +302,9 @@
 
   let restInterval = null;
   let restRemaining = 0;
+  let restOriginalSeconds = 90;
+  let restNextInfo = null;
+  let restSpoken = new Set();
 
   function toggleDone(btn){
     const willBeDone = !btn.classList.contains('done');
@@ -303,41 +313,101 @@
       const exDiv = btn.closest('.exercise');
       const restSec = parseInt(exDiv.dataset.rest || '90', 10);
       const name = exDiv.querySelector('.ex-name').textContent;
-      startRestTimer(restSec, name);
+      const nextInfo = computeNextSetLabel(btn);
+      startRestTimer(restSec, name, nextInfo);
     }
   }
 
-  function startRestTimer(seconds, label){
+  // Averigua qué serie/ejercicio toca justo después de la que se acaba de marcar
+  function computeNextSetLabel(btn){
+    const exDiv = btn.closest('.exercise');
+    const row = btn.closest('.set-row');
+    const rows = Array.from(exDiv.querySelectorAll('.set-row'));
+    const rowIdx = rows.indexOf(row);
+
+    if(rowIdx < rows.length - 1){
+      return { name: exDiv.querySelector('.ex-name').textContent, setNum: rowIdx + 2 };
+    }
+    const allExercises = Array.from(document.querySelectorAll('.exercise'));
+    const exIdx = allExercises.indexOf(exDiv);
+    if(exIdx < allExercises.length - 1){
+      const nextEx = allExercises[exIdx + 1];
+      return { name: nextEx.querySelector('.ex-name').textContent, setNum: 1 };
+    }
+    return null; // era la última serie de la sesión
+  }
+
+  function startRestTimer(seconds, label, nextInfo){
     clearInterval(restInterval);
     restRemaining = seconds;
+    restOriginalSeconds = seconds;
+    restNextInfo = nextInfo;
+    restSpoken = new Set();
     document.getElementById('restLabel').textContent = label;
-    const bar = document.getElementById('restBar');
-    const footer = document.getElementById('footer');
-    const footerH = (footer && footer.style.display !== 'none') ? footer.offsetHeight : 0;
-    bar.style.bottom = (footerH + 10) + 'px';
-    bar.classList.add('show');
+    document.getElementById('restNext').textContent = nextInfo
+      ? `Siguiente: ${nextInfo.name} — serie ${nextInfo.setNum}`
+      : 'Última serie de la sesión';
+    document.getElementById('restBar').classList.add('show');
     updateRestDisplay();
     restInterval = setInterval(() => {
       restRemaining--;
       updateRestDisplay();
+      if(restRemaining > 0 && restRemaining <= 5 && !restSpoken.has(restRemaining)){
+        restSpoken.add(restRemaining);
+        speak(String(restRemaining));
+      }
       if(restRemaining <= 0){
         clearInterval(restInterval);
-        beep();
-        if(navigator.vibrate) navigator.vibrate([300,150,300,150,300]);
-        setTimeout(() => document.getElementById('restBar').classList.remove('show'), 1500);
+        finishRest();
       }
     }, 1000);
+  }
+
+  function finishRest(){
+    beep();
+    if(navigator.vibrate) navigator.vibrate([300,150,300,150,300]);
+    const msg = restNextInfo
+      ? `${restNextInfo.name}, serie ${restNextInfo.setNum}`
+      : 'Descanso terminado.';
+    setTimeout(() => speak(msg), 500);
+    setTimeout(() => document.getElementById('restBar').classList.remove('show'), 2200);
+  }
+
+  function adjustRest(delta){
+    restRemaining = Math.max(0, restRemaining + delta);
+    restSpoken.forEach(n => { if(n > restRemaining) restSpoken.delete(n); });
+    updateRestDisplay();
+  }
+
+  function resetRest(){
+    restRemaining = restOriginalSeconds;
+    restSpoken = new Set();
+    updateRestDisplay();
   }
 
   function updateRestDisplay(){
     const r = Math.max(restRemaining, 0);
     const m = Math.floor(r/60);
     const s = r % 60;
-    document.getElementById('restTime').textContent = `${m}:${String(s).padStart(2,'0')}`;
+    const timeEl = document.getElementById('restTime');
+    timeEl.textContent = `${m}:${String(s).padStart(2,'0')}`;
+    timeEl.classList.toggle('low', r <= 5 && r > 0);
+  }
+
+  function speak(text){
+    try{
+      if(!('speechSynthesis' in window)) return;
+      speechSynthesis.cancel(); // evita que se amontonen frases
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'es-ES';
+      utter.rate = 1;
+      speechSynthesis.speak(utter);
+    }catch(e){ /* voz no disponible */ }
   }
 
   function cancelRestTimer(){
     clearInterval(restInterval);
+    if('speechSynthesis' in window) speechSynthesis.cancel();
     document.getElementById('restBar').classList.remove('show');
   }
 
