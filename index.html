@@ -184,7 +184,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v6');
+        const cache = await caches.open('sensei-v7');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -205,10 +205,60 @@
     return `${y}-${m}-${day}`;
   }
 
+  // ---- Guardado local (protege la sesión si Android mata la pestaña en 2º plano) ----
+  function progressKey(iso){ return `sensei_progress_${iso}`; }
+
+  function applySavedProgress(day, iso){
+    if(!day.exercises) return day;
+    let saved;
+    try{
+      const raw = localStorage.getItem(progressKey(iso));
+      if(!raw) return day;
+      saved = JSON.parse(raw);
+    }catch(e){ return day; }
+
+    day.exercises.forEach((ex, ei) => {
+      const savedEx = saved[ei];
+      if(!savedEx) return;
+      ex.sets.forEach((s, si) => {
+        const savedSet = savedEx[si];
+        if(!savedSet) return;
+        if(savedSet.kg !== undefined && savedSet.kg !== '') s.kg = savedSet.kg;
+        if(savedSet.reps !== undefined && savedSet.reps !== '') s.reps = savedSet.reps;
+        if(savedSet.rir !== undefined) s.rir = savedSet.rir;
+        if(savedSet.done) s.done = true;
+      });
+    });
+    return day;
+  }
+
+  function saveProgress(){
+    try{
+      const iso = todayISO();
+      const data = {};
+      document.querySelectorAll('.exercise').forEach((exDiv, ei) => {
+        const rows = exDiv.querySelectorAll('.set-row');
+        const exData = {};
+        rows.forEach((row, si) => {
+          const inputs = row.querySelectorAll('input');
+          const kg = inputs[0].value;
+          const reps = inputs[1].value;
+          const rir = row.querySelector('select').value;
+          const done = row.querySelector('.check-btn').classList.contains('done');
+          if(kg !== '' || reps !== '' || done){
+            exData[si] = { kg, reps, rir, done };
+          }
+        });
+        if(Object.keys(exData).length) data[ei] = exData;
+      });
+      localStorage.setItem(progressKey(iso), JSON.stringify(data));
+    }catch(e){ /* almacenamiento no disponible, se sigue sin guardado local */ }
+  }
+
   function renderDay(data){
     const iso = todayISO();
     const jsDay = new Date().getDay(); // 0=domingo..6=sábado
-    const day = (data.overrides && data.overrides[iso]) ? data.overrides[iso] : data.days[String(jsDay)];
+    let day = (data.overrides && data.overrides[iso]) ? data.overrides[iso] : data.days[String(jsDay)];
     const main = document.getElementById('main');
     const footer = document.getElementById('footer');
     const subline = document.getElementById('daySubline');
@@ -218,6 +268,8 @@
       main.innerHTML = '<div class="rest-day"><div class="rd-title">Sin sesión definida</div>Hoy no hay datos cargados para este día.</div>';
       return;
     }
+
+    day = applySavedProgress(day, iso);
 
     subline.innerHTML = `<b>${day.title}</b> · ${day.subtitle}`;
 
@@ -266,11 +318,12 @@
         const kgVal = s.kg !== undefined && s.kg !== '' ? `value="${s.kg}"` : `placeholder="${s.label || 'kg'}"`;
         const repsPlaceholder = s.repsLabel || 'reps';
         const repsVal = s.reps !== undefined && s.reps !== '' ? `value="${s.reps}"` : `placeholder="${repsPlaceholder}"`;
+        const isDone = (s.reps !== undefined && s.reps !== '') || s.done;
         html += `<div class="set-row">
           <span class="set-label">${si+1}</span>
-          <input type="number" ${kgVal}>
-          <input type="number" ${repsVal}>
-          <select>
+          <input type="number" ${kgVal} oninput="saveProgress()">
+          <input type="number" ${repsVal} oninput="saveProgress()">
+          <select onchange="saveProgress()">
             <option${s.rir==='-'?' selected':''}>—</option>
             <option${s.rir==='0'?' selected':''}>RIR 0</option>
             <option${s.rir==='1'?' selected':''}>RIR 1</option>
@@ -278,7 +331,7 @@
             <option${s.rir==='3'?' selected':''}>RIR 3</option>
             <option${s.rir==='4'?' selected':''}>RIR 4</option>
           </select>
-          <button class="check-btn${(s.reps !== undefined && s.reps !== '') ? ' done' : ''}" onclick="toggleDone(this)">✓</button>
+          <button class="check-btn${isDone ? ' done' : ''}" onclick="toggleDone(this)">✓</button>
         </div>`;
       });
       html += `</div></div>`;
@@ -309,6 +362,7 @@
   function toggleDone(btn){
     const willBeDone = !btn.classList.contains('done');
     btn.classList.toggle('done');
+    saveProgress();
     if(willBeDone){
       const exDiv = btn.closest('.exercise');
       const restSec = parseInt(exDiv.dataset.rest || '90', 10);
