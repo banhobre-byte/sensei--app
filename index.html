@@ -357,7 +357,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v14');
+        const cache = await caches.open('sensei-v15');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -461,12 +461,13 @@
   }
 
   function pickTopSet(sets){
-    let top = null, topVol = -1;
+    let top = null, topVal = -1;
     sets.forEach(s => {
-      const kg = parseFloat(s.kg), reps = parseFloat(s.reps);
-      if(isNaN(kg) || isNaN(reps)) return;
-      const vol = kg * reps;
-      if(vol > topVol){ topVol = vol; top = s; }
+      const reps = parseFloat(s.reps);
+      if(isNaN(reps)) return;
+      const kg = parseFloat(s.kg);
+      const val = isNaN(kg) ? reps : kg * reps; // peso corporal (sin kg) → se ordena solo por reps
+      if(val > topVal){ topVal = val; top = s; }
     });
     return top;
   }
