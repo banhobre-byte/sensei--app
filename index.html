@@ -357,7 +357,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v17');
+        const cache = await caches.open('sensei-v18');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -508,6 +508,11 @@
     const inputs = row.querySelectorAll('input');
     const kg = inputs[0].value.trim();
     const reps = inputs[1].value.trim();
+    if(reps === ''){
+      compareDiv.textContent = '';
+      compareDiv.className = 'set-compare';
+      return;
+    }
     const r = computeSetCompareText(prevReps === '' ? null : { kg: prevKg, reps: prevReps }, kg, reps);
     compareDiv.textContent = r.text;
     compareDiv.className = r.cls;
@@ -694,11 +699,12 @@
         <div style="height:8px"></div>`;
       ex.sets.forEach((s, si) => {
         const kgVal = s.kg !== undefined && s.kg !== '' ? `value="${s.kg}"` : `placeholder="${s.label || 'kg'}"`;
-        const repsPlaceholder = s.repsLabel || 'reps';
+        const prevSet = prevSets[si];
+        const repsPlaceholder = (prevSet && prevSet.reps) ? `ant. ${prevSet.reps}` : (s.repsLabel || 'reps');
         const repsVal = s.reps !== undefined && s.reps !== '' ? `value="${s.reps}"` : `placeholder="${repsPlaceholder}"`;
         const isDone = (s.reps !== undefined && s.reps !== '') || s.done;
-        const prevSet = prevSets[si];
-        const cmp = computeSetCompareText(prevSet, s.kg, s.reps);
+        // línea de comparación viva: solo aparece una vez Fernando escribe su dato de hoy (evita repetir "anterior: X" 4 veces sin aportar nada nuevo)
+        const cmp = (s.reps !== undefined && s.reps !== '') ? computeSetCompareText(prevSet, s.kg, s.reps) : { text: '', cls: 'set-compare' };
         html += `<div class="set-row" data-prev-kg="${prevSet ? (prevSet.kg||'') : ''}" data-prev-reps="${prevSet ? (prevSet.reps||'') : ''}">
           <span class="set-label">${si+1}</span>
           <input type="number" ${kgVal} oninput="saveProgress(); updateSetCompare(this)">
@@ -1372,7 +1378,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v17';
+  const APP_VERSION = 'sensei-v18';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
