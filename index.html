@@ -193,7 +193,7 @@
 <header>
   <div class="brand">
     <h1>Sensei</h1>
-    <span class="badge">v2 · semanal</span>
+    <span class="badge" id="appVersionBadge">cargando…</span>
   </div>
   <div class="subline" id="daySubline">Cargando sesión de hoy…</div>
   <div class="staleflag" id="staleFlag">⚠️ Sin conexión — mostrando la última sesión guardada, puede no ser la más reciente.</div>
@@ -357,7 +357,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v16');
+        const cache = await caches.open('sensei-v17');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -1371,6 +1371,9 @@
       navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error', err));
     });
   }
+
+  const APP_VERSION = 'sensei-v17';
+  document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
   updateCheckinHeader();
