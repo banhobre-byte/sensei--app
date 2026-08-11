@@ -17,6 +17,202 @@
         "comentarios": "⏳ Rondas condicionadas al martes 11/8: si fue bien (sin dolor, RPE≤3) → sube a 6 rondas; si costó o hubo molestia → repite 5, no subas. Confirma con Sensei cómo fue el martes antes de esta sesión para ajustar. Día después de Tracción (bloque volumen), sesión Z2 suave. ⚠️ Si dolor lumbar irradiado a pierna, parar inmediatamente."
       }
     },
+    "2026-08-12": {
+      "title": "Tracción",
+      "subtitle": "Miércoles 12 ago · semana de vacaciones — gym distinto",
+      "type": "fuerza",
+      "warn": "Mismo gym de vacaciones — cargas provisionales de esta máquina. RIR 3-4 en axial. Nunca al fallo en remos (hernias). Antebrazos: usar agarres en remo/jalón, parar al primer pinchazo.",
+      "exercises": [
+        {
+          "name": "Dominadas neutras",
+          "meta": "Máximas reps x4 series · ref. 31 reps @ ~85kg PC la semana pasada",
+          "rest": "2-3 min",
+          "sets": [
+            {"kg": "", "reps": "", "rir": "1", "label": "peso corp."},
+            {"kg": "", "reps": "", "rir": "1", "label": "peso corp."},
+            {"kg": "", "reps": "", "rir": "1", "label": "peso corp."},
+            {"kg": "", "reps": "", "rir": "1", "label": "peso corp."}
+          ]
+        },
+        {
+          "name": "Remo unilateral apoyo",
+          "meta": "Sugerido 95kg · 4x12",
+          "rest": "2-3 min",
+          "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar (hernias)",
+          "sets": [
+            {"kg": 95, "reps": "", "rir": "1"},
+            {"kg": 95, "reps": "", "rir": "1"},
+            {"kg": 95, "reps": "", "rir": "1"},
+            {"kg": 95, "reps": "", "rir": "1"}
+          ]
+        },
+        {
+          "name": "Jalón agarre ancho",
+          "meta": "Sugerido 64kg · 4x12",
+          "rest": "90-120s",
+          "sets": [
+            {"kg": 64, "reps": "", "rir": "1"},
+            {"kg": 64, "reps": "", "rir": "1"},
+            {"kg": 64, "reps": "", "rir": "1"},
+            {"kg": 64, "reps": "", "rir": "1"}
+          ]
+        },
+        {
+          "name": "Remo convergente unilateral",
+          "meta": "Sugerido 70kg · 3x12",
+          "rest": "2-3 min",
+          "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar (hernias)",
+          "sets": [
+            {"kg": 70, "reps": "", "rir": "1"},
+            {"kg": 70, "reps": "", "rir": "1"},
+            {"kg": 70, "reps": "", "rir": "1"}
+          ]
+        },
+        {
+          "name": "Pullover polea",
+          "meta": "Sugerido 32kg (progresión desde 29kg) · 3-4x12-15",
+          "rest": "60-90s",
+          "sets": [
+            {"kg": 32, "reps": "", "rir": "0"},
+            {"kg": 32, "reps": "", "rir": "0"},
+            {"kg": 32, "reps": "", "rir": "0"},
+            {"kg": 32, "reps": "", "rir": "0"}
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "Sugerido 36kg · 3x12-15",
+          "rest": "90-120s",
+          "sets": [
+            {"kg": 36, "reps": "", "rir": "1"},
+            {"kg": 36, "reps": "", "rir": "1"},
+            {"kg": 36, "reps": "", "rir": "1"}
+          ]
+        },
+        {
+          "name": "Curl martillo",
+          "meta": "Sugerido 12.5kg · 3-4x12",
+          "rest": "60-90s",
+          "sets": [
+            {"kg": 12.5, "reps": "", "rir": "0"},
+            {"kg": 12.5, "reps": "", "rir": "0"},
+            {"kg": 12.5, "reps": "", "rir": "0"},
+            {"kg": 12.5, "reps": "", "rir": "0"}
+          ]
+        },
+        {
+          "name": "Curl bíceps aislamiento",
+          "meta": "Sugerido 10kg · 3x12-15",
+          "rest": "60-90s",
+          "sets": [
+            {"kg": 10, "reps": "", "rir": "0"},
+            {"kg": 10, "reps": "", "rir": "0"},
+            {"kg": 10, "reps": "", "rir": "0"}
+          ]
+        }
+      ]
+    },
+    "2026-08-14": {
+      "title": "Empuje",
+      "subtitle": "Viernes 14 ago · semana de vacaciones — gym distinto",
+      "type": "fuerza",
+      "warn": "Mismo gym de vacaciones — cargas provisionales de esta máquina. RIR 3-4 en axial. Antebrazo: parar al primer pinchazo en aperturas/posteriores.",
+      "exercises": [
+        {
+          "name": "Fondos lastre",
+          "meta": "Sugerido 12.5-13kg (bajar de 15kg, 3er fallo repetido) · 4x10-12",
+          "rest": "2-3 min",
+          "warnEx": "⚠️ Evitar fallo",
+          "sets": [
+            {"kg": 12.5, "reps": "", "rir": "1"},
+            {"kg": 12.5, "reps": "", "rir": "1"},
+            {"kg": 12.5, "reps": "", "rir": "1"},
+            {"kg": 12.5, "reps": "", "rir": "1"}
+          ]
+        },
+        {
+          "name": "Press pecho máquina",
+          "meta": "Sugerido 50kg (baseline esta máquina) · 4x10-12",
+          "rest": "90-120s",
+          "sets": [
+            {"kg": 50, "reps": "", "rir": "1"},
+            {"kg": 50, "reps": "", "rir": "1"},
+            {"kg": 50, "reps": "", "rir": "1"},
+            {"kg": 50, "reps": "", "rir": "1"}
+          ]
+        },
+        {
+          "name": "Aperturas polea alta",
+          "meta": "Sugerido 50-57kg · 3x12-15",
+          "rest": "60-90s",
+          "warnEx": "⚠️ Antebrazo derecho: primer pinchazo → parar",
+          "sets": [
+            {"kg": 50, "reps": "", "rir": "0"},
+            {"kg": 50, "reps": "", "rir": "0"},
+            {"kg": 50, "reps": "", "rir": "0"}
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "Sugerido 23-29kg (pecho fatigado) · 3x10-12",
+          "rest": "90-120s",
+          "sets": [
+            {"kg": 23, "reps": "", "rir": "1"},
+            {"kg": 23, "reps": "", "rir": "1"},
+            {"kg": 23, "reps": "", "rir": "1"}
+          ]
+        },
+        {
+          "name": "Laterales",
+          "meta": "Sugerido 6-7.5kg · 4x12-15",
+          "rest": "45-60s",
+          "warnEx": "⚠️ No subir carga — riesgo compensación hombro",
+          "sets": [
+            {"kg": 6, "reps": "", "rir": "0"},
+            {"kg": 6, "reps": "", "rir": "0"},
+            {"kg": 6, "reps": "", "rir": "0"},
+            {"kg": 6, "reps": "", "rir": "0"}
+          ]
+        },
+        {
+          "name": "Posteriores",
+          "meta": "Sugerido 43kg · 3x12-15",
+          "rest": "60-90s",
+          "warnEx": "⚠️ Antebrazo derecho: primer pinchazo → parar",
+          "sets": [
+            {"kg": 43, "reps": "", "rir": "0"},
+            {"kg": 43, "reps": "", "rir": "0"},
+            {"kg": 43, "reps": "", "rir": "0"}
+          ]
+        },
+        {
+          "name": "Press francés",
+          "meta": "Sugerido 30kg · 3x12-15 (dropset final)",
+          "rest": "60-90s",
+          "sets": [
+            {"kg": 30, "reps": "", "rir": "0"},
+            {"kg": 30, "reps": "", "rir": "0"},
+            {"kg": 30, "reps": "", "rir": "0"}
+          ]
+        },
+        {
+          "name": "Overhead polea",
+          "meta": "Sugerido 30kg · 2-3x12-15",
+          "rest": "60-90s",
+          "sets": [
+            {"kg": 30, "reps": "", "rir": "0"},
+            {"kg": 30, "reps": "", "rir": "0"},
+            {"kg": 30, "reps": "", "rir": "0"}
+          ]
+        }
+      ]
+    },
+    "2026-08-15": {
+      "title": "Descanso — Día de viaje",
+      "subtitle": "Sábado 15 ago",
+      "type": "descanso",
+      "note": "Vuelta a Madrid. Sin entrenamiento."
+    },
     "2026-08-16": {
       "title": "Running + Hipopresivos + Colgado",
       "subtitle": "Domingo 16 ago · vuelta de vacaciones",
