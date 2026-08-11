@@ -131,6 +131,40 @@
   .day-btn .day-dot{position:absolute; top:3px; right:3px; width:5px; height:5px;
     border-radius:50%; background:var(--gold);}
   .day-btn.active .day-dot{background:#0d0d0d;}
+
+  /* ---- Check-in matutino ---- */
+  .checkin-btn{display:flex; align-items:center; gap:7px; margin-top:12px; width:100%;
+    background:var(--bg-card); border:1px solid var(--line); border-radius:10px;
+    padding:10px 12px; color:var(--text-dim); font-size:12.5px; font-weight:600; text-align:left;}
+  .checkin-btn .ci-dot{width:10px; height:10px; border-radius:50%; background:var(--text-dim); flex-shrink:0;}
+  .checkin-btn .ci-dot.verde{background:var(--green);}
+  .checkin-btn .ci-dot.amarillo{background:var(--gold);}
+  .checkin-btn .ci-dot.rojo{background:var(--red);}
+  .checkin-btn .ci-txt{color:var(--text); font-weight:700; flex:1;}
+  .checkin-btn .ci-chev{color:var(--text-dim); font-size:11px;}
+
+  .ci-field{margin-bottom:12px;}
+  .ci-field label{display:block; font-size:11.5px; color:var(--text-dim); margin-bottom:5px;
+    text-transform:uppercase; letter-spacing:.5px;}
+  .ci-field input, .ci-field select{width:100%; background:var(--bg-card-2); border:1px solid var(--line);
+    border-radius:9px; color:var(--text); padding:11px 12px; font-size:15px;}
+  .ci-field input:focus, .ci-field select:focus{outline:none; border-color:var(--gold-dim);}
+  .ci-field .ci-hint{font-size:10.5px; color:var(--text-dim); margin-top:4px;}
+  .ci-result{border-radius:10px; padding:14px; margin:14px 0; display:none;}
+  .ci-result.show{display:block;}
+  .ci-result.verde{background:#16221a; border:1px solid #345c39;}
+  .ci-result.amarillo{background:#241d10; border:1px solid #6b5320;}
+  .ci-result.rojo{background:#261512; border:1px solid #6b332a;}
+  .ci-result-title{font-size:14px; font-weight:800; margin-bottom:5px;}
+  .ci-result.verde .ci-result-title{color:#8fc98f;}
+  .ci-result.amarillo .ci-result-title{color:var(--gold);}
+  .ci-result.rojo .ci-result-title{color:#e08a78;}
+  .ci-result-just{font-size:12px; color:var(--text-dim); line-height:1.5;}
+  .ci-history{margin-top:16px; border-top:1px solid var(--line); padding-top:14px;}
+  .ci-history-title{font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); margin-bottom:8px;}
+  .ci-hrow{display:flex; align-items:center; gap:8px; padding:6px 0; font-size:12px; color:var(--text-dim);}
+  .ci-hrow .ci-dot{width:8px; height:8px; border-radius:50%;}
+  .ci-hrow b{color:var(--text); font-weight:600;}
 </style>
 </head>
 <body>
@@ -142,6 +176,11 @@
   </div>
   <div class="subline" id="daySubline">Cargando sesión de hoy…</div>
   <div class="staleflag" id="staleFlag">⚠️ Sin conexión — mostrando la última sesión guardada, puede no ser la más reciente.</div>
+  <button class="checkin-btn" id="checkinBtn" onclick="openCheckin()">
+    <span class="ci-dot" id="ciDot"></span>
+    <span class="ci-txt" id="ciTxt">Check-in matutino</span>
+    <span class="ci-chev">▸</span>
+  </button>
   <div class="day-selector" id="daySelector"></div>
 </header>
 
@@ -180,6 +219,53 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="checkinModal">
+  <div class="modal-card">
+    <div class="modal-title">Check-in matutino</div>
+
+    <div class="ci-field">
+      <label>VFC promedio diario (ms)</label>
+      <input type="number" id="ciVfc" inputmode="decimal" placeholder="ej. 108">
+      <div class="ci-hint">Objetivo &gt;68ms · media habitual 95-110ms</div>
+    </div>
+    <div class="ci-field">
+      <label>FC reposo (lpm)</label>
+      <input type="number" id="ciFc" inputmode="decimal" placeholder="ej. 47">
+      <div class="ci-hint">Base 44-47 lpm · objetivo &lt;54</div>
+    </div>
+    <div class="ci-field">
+      <label>Temperatura piel (°C)</label>
+      <input type="number" id="ciTemp" inputmode="decimal" step="0.1" placeholder="ej. 35.4">
+      <div class="ci-hint">Base ~35.4°C · alerta si compensa &gt;±0.3°C</div>
+    </div>
+    <div class="ci-field">
+      <label>TSB (Suunto) — opcional</label>
+      <input type="number" id="ciTsb" inputmode="decimal" placeholder="ej. -6">
+      <div class="ci-hint">Zona óptima -10 a +5 · déjalo vacío si aún no tienes dato</div>
+    </div>
+    <div class="ci-field">
+      <label>Sensación subjetiva</label>
+      <select id="ciSensacion">
+        <option value="buena">Buena</option>
+        <option value="regular">Regular</option>
+        <option value="mala">Mala</option>
+      </select>
+    </div>
+
+    <div class="ci-result" id="ciResult">
+      <div class="ci-result-title" id="ciResultTitle"></div>
+      <div class="ci-result-just" id="ciResultJust"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn close" onclick="closeCheckin()">Cerrar</button>
+      <button class="modal-btn copy" onclick="calcCheckin()">Calcular</button>
+    </div>
+
+    <div class="ci-history" id="ciHistory"></div>
+  </div>
+</div>
+
 <script>
   const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const DIAS_CORTO = ['D','L','M','X','J','V','S'];
@@ -197,7 +283,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v8');
+        const cache = await caches.open('sensei-v9');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -597,6 +683,157 @@
     setTimeout(() => t.classList.remove('show'), 2800);
   }
 
+  // ---- Check-in matutino (VFC / FC reposo / temp piel / TSB / sensación) ----
+  function checkinKey(iso){ return `sensei_checkin_${iso}`; }
+
+  function loadCheckin(iso){
+    try{
+      const raw = localStorage.getItem(checkinKey(iso));
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+
+  function saveCheckin(iso, obj){
+    try{ localStorage.setItem(checkinKey(iso), JSON.stringify(obj)); }
+    catch(e){ /* almacenamiento no disponible */ }
+  }
+
+  function computeSemaforo({vfc, fc, temp, tsb, sensacion}){
+    let outOfRange = 0;
+    const reasons = [];
+
+    if(vfc !== null){
+      if(vfc <= 68){ outOfRange++; reasons.push(`VFC ${vfc}ms (objetivo >68ms)`); }
+    }
+    if(fc !== null){
+      if(fc >= 54){ outOfRange++; reasons.push(`FC reposo ${fc}lpm (objetivo <54)`); }
+    }
+    if(temp !== null){
+      const diff = Math.abs(temp - 35.4);
+      if(diff > 0.2){ outOfRange++; reasons.push(`Temp piel ${temp}°C (base 35.4°C, Δ${diff.toFixed(1)}°C)`); }
+    }
+
+    let semaforo, titulo;
+    if(outOfRange >= 3 || sensacion === 'mala'){
+      semaforo = 'rojo';
+    } else if(outOfRange >= 1 || sensacion === 'regular'){
+      semaforo = 'amarillo';
+    } else {
+      semaforo = 'verde';
+    }
+
+    // Ajuste por TSB (fatiga acumulada que el check-in matutino no capta)
+    if(tsb !== null){
+      if(tsb < -15 && outOfRange >= 1){
+        semaforo = 'rojo';
+        reasons.push(`TSB ${tsb} muy negativo + fatiga acumulada`);
+      } else if(tsb < -10){
+        if(semaforo === 'verde') semaforo = 'amarillo';
+        reasons.push(`TSB ${tsb} fuera de zona óptima (-10/+5)`);
+      }
+    }
+
+    if(semaforo === 'verde'){ titulo = '🟢 Luz verde — entrena normal'; }
+    else if(semaforo === 'amarillo'){ titulo = '🟡 Luz amarilla — precaución'; }
+    else{ titulo = '🔴 Luz roja — descanso'; }
+
+    const justificacion = reasons.length
+      ? reasons.join(' · ')
+      : (sensacion === 'buena' ? 'Todos los parámetros en rango, sensación buena.' : `Sensación subjetiva: ${sensacion}.`);
+
+    return { semaforo, titulo, justificacion };
+  }
+
+  function calcCheckin(){
+    const vfcRaw = document.getElementById('ciVfc').value.trim();
+    const fcRaw = document.getElementById('ciFc').value.trim();
+    const tempRaw = document.getElementById('ciTemp').value.trim();
+    const tsbRaw = document.getElementById('ciTsb').value.trim();
+    const sensacion = document.getElementById('ciSensacion').value;
+
+    const vfc = vfcRaw === '' ? null : parseFloat(vfcRaw);
+    const fc = fcRaw === '' ? null : parseFloat(fcRaw);
+    const temp = tempRaw === '' ? null : parseFloat(tempRaw);
+    const tsb = tsbRaw === '' ? null : parseFloat(tsbRaw);
+
+    const { semaforo, titulo, justificacion } = computeSemaforo({vfc, fc, temp, tsb, sensacion});
+
+    const resultEl = document.getElementById('ciResult');
+    resultEl.className = `ci-result show ${semaforo}`;
+    document.getElementById('ciResultTitle').textContent = titulo;
+    document.getElementById('ciResultJust').textContent = justificacion;
+
+    const iso = todayISO();
+    saveCheckin(iso, { vfc, fc, temp, tsb, sensacion, semaforo, justificacion, ts: Date.now() });
+
+    updateCheckinHeader();
+    renderCheckinHistory();
+  }
+
+  function openCheckin(){
+    const iso = todayISO();
+    const existing = loadCheckin(iso);
+    if(existing){
+      document.getElementById('ciVfc').value = existing.vfc ?? '';
+      document.getElementById('ciFc').value = existing.fc ?? '';
+      document.getElementById('ciTemp').value = existing.temp ?? '';
+      document.getElementById('ciTsb').value = existing.tsb ?? '';
+      document.getElementById('ciSensacion').value = existing.sensacion || 'buena';
+      const resultEl = document.getElementById('ciResult');
+      resultEl.className = `ci-result show ${existing.semaforo}`;
+      document.getElementById('ciResultTitle').textContent =
+        existing.semaforo === 'verde' ? '🟢 Luz verde — entrena normal' :
+        existing.semaforo === 'amarillo' ? '🟡 Luz amarilla — precaución' : '🔴 Luz roja — descanso';
+      document.getElementById('ciResultJust').textContent = existing.justificacion;
+    } else {
+      ['ciVfc','ciFc','ciTemp','ciTsb'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('ciSensacion').value = 'buena';
+      document.getElementById('ciResult').className = 'ci-result';
+    }
+    renderCheckinHistory();
+    document.getElementById('checkinModal').classList.add('show');
+  }
+
+  function closeCheckin(){
+    document.getElementById('checkinModal').classList.remove('show');
+  }
+
+  function updateCheckinHeader(){
+    const iso = todayISO();
+    const existing = loadCheckin(iso);
+    const dot = document.getElementById('ciDot');
+    const txt = document.getElementById('ciTxt');
+    if(existing){
+      dot.className = `ci-dot ${existing.semaforo}`;
+      const label = existing.semaforo === 'verde' ? 'Verde — entrena normal'
+        : existing.semaforo === 'amarillo' ? 'Amarillo — precaución'
+        : 'Rojo — descanso';
+      txt.textContent = `Check-in de hoy: ${label}`;
+    } else {
+      dot.className = 'ci-dot';
+      txt.textContent = 'Check-in matutino — sin registrar hoy';
+    }
+  }
+
+  function renderCheckinHistory(){
+    const el = document.getElementById('ciHistory');
+    let html = '<div class="ci-history-title">Últimos 7 días</div>';
+    let any = false;
+    for(let i = 0; i < 7; i++){
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const iso = isoFromDate(d);
+      const c = loadCheckin(iso);
+      const label = d.toLocaleDateString('es-ES', {weekday:'short', day:'numeric'});
+      if(c){
+        any = true;
+        html += `<div class="ci-hrow"><span class="ci-dot ${c.semaforo}"></span><b>${label}</b> — VFC ${c.vfc ?? '-'}ms · FC ${c.fc ?? '-'} · TSB ${c.tsb ?? '-'}</div>`;
+      }
+    }
+    if(!any){ html += '<div class="ci-hrow">Todavía no hay check-ins registrados.</div>'; }
+    el.innerHTML = html;
+  }
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error', err));
@@ -604,6 +841,7 @@
   }
 
   loadWeek();
+  updateCheckinHeader();
 </script>
 
 </body>
