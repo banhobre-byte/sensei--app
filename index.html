@@ -227,6 +227,12 @@
   <div class="rest-ex-name2" id="intPhase"></div>
   <div class="rest-time2" id="intTime">0:00</div>
   <div class="rest-next2" id="intSpeed"></div>
+  <div class="rest-controls">
+    <button class="rest-adj-btn" onclick="adjustIntervalTime(-15)">−15</button>
+    <button class="rest-adj-btn" onclick="adjustIntervalTime(15)">+15</button>
+  </div>
+  <button class="rest-reset-btn" id="intPauseBtn" onclick="toggleIntervalPause()">⏸ Pausar</button>
+  <button class="rest-reset-btn" style="margin-top:8px;" onclick="skipInterval()">⏭ Saltar fase</button>
   <div class="rest-next2" id="intNext" style="margin-top:8px;"></div>
 </div>
 
@@ -288,11 +294,32 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="runningEditModal">
+  <div class="modal-card">
+    <div class="modal-title">Editar plan de running</div>
+    <div class="ci-hint" style="margin-bottom:14px;">Ajusta lo que haya cambiado (progresión, molestia, etc.) — solo afecta al día de hoy, no toca la planificación original de Sempai.</div>
+
+    <div id="runningEditFields"></div>
+
+    <div class="ci-field">
+      <label>Repeticiones (rondas)</label>
+      <input type="number" id="reRepeticiones" inputmode="numeric" min="1">
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn close" onclick="closeRunningEdit()">Cancelar</button>
+      <button class="modal-btn copy" onclick="saveRunningEdit()">Guardar</button>
+    </div>
+    <button class="modal-btn close" style="width:100%; margin-top:8px;" onclick="restoreOriginalRunningPlan()">↺ Restaurar plan original de Sempai</button>
+  </div>
+</div>
+
 <script>
   const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const DIAS_CORTO = ['D','L','M','X','J','V','S'];
   let weekDataGlobal = null;
   let currentRunningPlan = null;
+  let currentRunningDateISO = null;
   let selectedWeekday = new Date().getDay(); // 0=domingo..6=sábado, día que se está mostrando ahora
 
   async function loadWeek(){
@@ -306,7 +333,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v10');
+        const cache = await caches.open('sensei-v12');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -439,14 +466,19 @@
       html += `<div class="warn-box"><b>⚠️</b> ${day.warn}</div>`;
     }
 
-    if(day.runningPlan){
-      currentRunningPlan = day.runningPlan;
-      main.innerHTML = buildRunningCardHTML(day.runningPlan);
-      footer.style.display = 'none';
-      return;
-    }
-
     const hasExercises = Array.isArray(day.exercises) && day.exercises.length > 0;
+
+    if(day.runningPlan){
+      currentRunningDateISO = iso;
+      currentRunningPlan = applyRunningEditOverride(day.runningPlan, iso);
+      html += buildRunningCardHTML(currentRunningPlan);
+      if(!hasExercises){
+        main.innerHTML = html;
+        footer.style.display = 'none';
+        return;
+      }
+      html += `<div style="height:18px;"></div>`;
+    }
 
     if(!hasExercises){
       html += `<div class="rest-day"><div class="rd-title">${day.title}</div>${day.note || ''}</div>`;
@@ -872,14 +904,88 @@
     });
     planLines += `Repetir ${plan.repeticiones} veces`;
 
+    const editedBadge = plan._edited ? `<span style="color:var(--gold); font-size:11px; font-weight:700;">· ajustado hoy</span>` : '';
+
     return `<div class="running-card">
-      <div class="rc-title">${plan.titulo}</div>
+      <div class="rc-title">${plan.titulo} ${editedBadge}</div>
       <div class="rc-row"><b>Planificación del día</b><div class="rc-plan">${planLines}</div></div>
       <div class="rc-row"><b>FC objetivo</b>${plan.fcObjetivo || '—'}</div>
       <div class="rc-row"><b>Terreno</b>${plan.terreno || '—'}</div>
       ${plan.comentarios ? `<div class="rc-row"><b>Comentarios entrenador</b>${plan.comentarios}</div>` : ''}
       <button class="rc-start-btn" onclick="startIntervalSession(currentRunningPlan)">▶ Iniciar temporizador de intervalos</button>
+      <button class="rc-start-btn" style="background:transparent; border:1px solid var(--line); color:var(--text); margin-top:8px;" onclick="openRunningEdit()">✏️ Editar plan de hoy</button>
     </div>`;
+  }
+
+  // ---- Edición del plan de running (ajustes puntuales del día, no toca week.json) ----
+  function runningEditKey(iso){
+    return `sensei_runedit_${iso}`;
+  }
+
+  function applyRunningEditOverride(originalPlan, iso){
+    const plan = JSON.parse(JSON.stringify(originalPlan));
+    try {
+      const raw = localStorage.getItem(runningEditKey(iso));
+      if(!raw) return plan;
+      const edit = JSON.parse(raw);
+      if(edit.repeticiones) plan.repeticiones = edit.repeticiones;
+      if(Array.isArray(edit.fases)){
+        edit.fases.forEach((ef, i) => {
+          if(plan.fases[i]){
+            plan.fases[i].tiempoSeg = ef.tiempoSeg;
+            plan.fases[i].tiempoLabel = ef.tiempoLabel;
+            plan.fases[i].velocidad = ef.velocidad;
+          }
+        });
+      }
+      plan._edited = true;
+    } catch(e){ /* si el override guardado está corrupto, se ignora y se usa el plan original */ }
+    return plan;
+  }
+
+  function openRunningEdit(){
+    if(!currentRunningPlan) return;
+    const container = document.getElementById('runningEditFields');
+    container.innerHTML = currentRunningPlan.fases.map((f, i) => {
+      const mins = f.tiempoSeg / 60;
+      return `<div class="ci-field">
+        <label>${f.fase} — minutos</label>
+        <input type="number" id="reFaseMin${i}" inputmode="decimal" step="0.5" value="${mins}">
+      </div>
+      <div class="ci-field">
+        <label>${f.fase} — velocidad</label>
+        <input type="text" id="reFaseVel${i}" value="${f.velocidad}">
+      </div>`;
+    }).join('');
+    document.getElementById('reRepeticiones').value = currentRunningPlan.repeticiones;
+    document.getElementById('runningEditModal').classList.add('show');
+  }
+
+  function closeRunningEdit(){
+    document.getElementById('runningEditModal').classList.remove('show');
+  }
+
+  function saveRunningEdit(){
+    const fases = currentRunningPlan.fases.map((f, i) => {
+      const mins = parseFloat(document.getElementById(`reFaseMin${i}`).value) || (f.tiempoSeg/60);
+      const vel = document.getElementById(`reFaseVel${i}`).value.trim() || f.velocidad;
+      return {
+        tiempoSeg: Math.round(mins * 60),
+        tiempoLabel: (mins % 1 === 0) ? `${mins}'` : `${mins.toFixed(1)}'`,
+        velocidad: vel
+      };
+    });
+    const repeticiones = parseInt(document.getElementById('reRepeticiones').value, 10) || currentRunningPlan.repeticiones;
+
+    localStorage.setItem(runningEditKey(currentRunningDateISO), JSON.stringify({ repeticiones, fases }));
+    closeRunningEdit();
+    renderDay(weekDataGlobal, selectedWeekday);
+  }
+
+  function restoreOriginalRunningPlan(){
+    localStorage.removeItem(runningEditKey(currentRunningDateISO));
+    closeRunningEdit();
+    renderDay(weekDataGlobal, selectedWeekday);
   }
 
   // ---- Temporizador de intervalos para running ----
@@ -888,25 +994,42 @@
   let intervalRemaining = 0;
   let intervalHandle = null;
   let intervalSpoken = new Set();
+  let intervalPaused = false;
 
   function buildIntervals(plan){
-    const list = [{ label: 'Calentamiento', sec: 60, speed: 'Suave, según sensación' }];
+    const list = [{ label: 'Calentamiento', sec: 60, speed: 'Suave, según sensación', fase: 'Calentamiento', ronda: null, totalRondas: null }];
     for(let r = 1; r <= plan.repeticiones; r++){
       plan.fases.forEach(f => {
         list.push({
           label: `${f.fase} — ronda ${r}/${plan.repeticiones}`,
           sec: f.tiempoSeg,
-          speed: f.velocidad
+          speed: f.velocidad,
+          fase: f.fase,
+          tiempoLabel: f.tiempoLabel,
+          ronda: r,
+          totalRondas: plan.repeticiones
         });
       });
     }
     return list;
   }
 
+  function announceInterval(cur){
+    // "Carrera 5 minutos a 7 kilómetros hora, ronda 1 de 5"
+    if(cur.ronda === null){
+      speak(`Calentamiento, 1 minuto`);
+      return;
+    }
+    const velSpeech = (cur.speed || '').replace(/km\/h/gi, 'kilómetros hora').replace(/-/g, ' a ');
+    speak(`${cur.fase} ${cur.tiempoLabel.replace("'", ' minuto')} a ${velSpeech}, ronda ${cur.ronda} de ${cur.totalRondas}`);
+  }
+
   function startIntervalSession(plan){
     if(!plan) return;
     intervalList = buildIntervals(plan);
     intervalIdx = -1;
+    intervalPaused = false;
+    document.getElementById('intPauseBtn').textContent = '⏸ Pausar';
     document.getElementById('intervalOverlay').classList.add('show');
     nextInterval();
   }
@@ -925,10 +1048,14 @@
     const next = intervalList[intervalIdx + 1];
     document.getElementById('intNext').textContent = next ? `Siguiente: ${next.label}` : 'Última fase';
     updateIntervalDisplay();
-    speak(`${cur.label.split(' — ')[0]}${cur.speed ? ', ' + cur.speed : ''}`);
+    announceInterval(cur);
+    runIntervalClock();
+  }
 
+  function runIntervalClock(){
     clearInterval(intervalHandle);
     intervalHandle = setInterval(() => {
+      if(intervalPaused) return;
       intervalRemaining--;
       updateIntervalDisplay();
       if(intervalRemaining > 0 && intervalRemaining <= 5 && !intervalSpoken.has(intervalRemaining)){
@@ -942,6 +1069,23 @@
         setTimeout(() => nextInterval(), 700);
       }
     }, 1000);
+  }
+
+  function toggleIntervalPause(){
+    intervalPaused = !intervalPaused;
+    document.getElementById('intPauseBtn').textContent = intervalPaused ? '▶ Reanudar' : '⏸ Pausar';
+    if(intervalPaused && 'speechSynthesis' in window) speechSynthesis.cancel();
+  }
+
+  function adjustIntervalTime(deltaSec){
+    intervalRemaining = Math.max(1, intervalRemaining + deltaSec);
+    updateIntervalDisplay();
+  }
+
+  function skipInterval(){
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    clearInterval(intervalHandle);
+    nextInterval();
   }
 
   function updateIntervalDisplay(){
@@ -965,6 +1109,7 @@
 
   function cancelIntervalTimer(){
     clearInterval(intervalHandle);
+    intervalPaused = false;
     if('speechSynthesis' in window) speechSynthesis.cancel();
     document.getElementById('intervalOverlay').classList.remove('show');
   }
