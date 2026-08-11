@@ -165,6 +165,19 @@
   .ci-hrow{display:flex; align-items:center; gap:8px; padding:6px 0; font-size:12px; color:var(--text-dim);}
   .ci-hrow .ci-dot{width:8px; height:8px; border-radius:50%;}
   .ci-hrow b{color:var(--text); font-weight:600;}
+
+  /* ---- Tarjeta de running estructurada ---- */
+  .running-card{background:var(--bg-card); border:1px solid var(--line); border-radius:12px; padding:18px 16px;}
+  .rc-title{font-size:19px; font-weight:800; color:var(--gold); margin-bottom:16px;}
+  .rc-row{margin-bottom:14px; font-size:13.5px; line-height:1.6; color:var(--text-dim);}
+  .rc-row b{display:block; color:var(--text-dim); font-size:10.5px; text-transform:uppercase;
+    letter-spacing:.8px; margin-bottom:5px; font-weight:700;}
+  .rc-plan{background:var(--bg-card-2); border-radius:9px; padding:12px 14px; color:var(--text);
+    font-size:14px; line-height:1.9;}
+  .rc-warn{color:#e08a78;}
+  .rc-start-btn{width:100%; background:var(--gold); color:#0d0d0d; border:none; border-radius:12px;
+    padding:15px; font-size:14.5px; font-weight:800; text-transform:uppercase; letter-spacing:.5px;
+    margin-top:6px;}
 </style>
 </head>
 <body>
@@ -206,6 +219,15 @@
   </div>
   <button class="rest-reset-btn" onclick="resetRest()">↺ Reiniciar</button>
   <div class="rest-next2" id="restNext"></div>
+</div>
+
+<div class="rest-overlay" id="intervalOverlay">
+  <button class="rest-close-btn" onclick="cancelIntervalTimer()">✕</button>
+  <div class="rest-sub2">Running</div>
+  <div class="rest-ex-name2" id="intPhase"></div>
+  <div class="rest-time2" id="intTime">0:00</div>
+  <div class="rest-next2" id="intSpeed"></div>
+  <div class="rest-next2" id="intNext" style="margin-top:8px;"></div>
 </div>
 
 <div class="modal-overlay" id="summaryModal">
@@ -270,6 +292,7 @@
   const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const DIAS_CORTO = ['D','L','M','X','J','V','S'];
   let weekDataGlobal = null;
+  let currentRunningPlan = null;
   let selectedWeekday = new Date().getDay(); // 0=domingo..6=sábado, día que se está mostrando ahora
 
   async function loadWeek(){
@@ -283,7 +306,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v9');
+        const cache = await caches.open('sensei-v10');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -414,6 +437,13 @@
     let html = '';
     if(day.warn){
       html += `<div class="warn-box"><b>⚠️</b> ${day.warn}</div>`;
+    }
+
+    if(day.runningPlan){
+      currentRunningPlan = day.runningPlan;
+      main.innerHTML = buildRunningCardHTML(day.runningPlan);
+      footer.style.display = 'none';
+      return;
     }
 
     const hasExercises = Array.isArray(day.exercises) && day.exercises.length > 0;
@@ -832,6 +862,111 @@
     }
     if(!any){ html += '<div class="ci-hrow">Todavía no hay check-ins registrados.</div>'; }
     el.innerHTML = html;
+  }
+
+  // ---- Tarjeta de running estructurada ----
+  function buildRunningCardHTML(plan){
+    let planLines = `1' Calentamiento suave<br>`;
+    plan.fases.forEach(f => {
+      planLines += `${f.tiempoLabel} ${f.fase} @ ${f.velocidad}<br>`;
+    });
+    planLines += `Repetir ${plan.repeticiones} veces`;
+
+    return `<div class="running-card">
+      <div class="rc-title">${plan.titulo}</div>
+      <div class="rc-row"><b>Planificación del día</b><div class="rc-plan">${planLines}</div></div>
+      <div class="rc-row"><b>FC objetivo</b>${plan.fcObjetivo || '—'}</div>
+      <div class="rc-row"><b>Terreno</b>${plan.terreno || '—'}</div>
+      ${plan.comentarios ? `<div class="rc-row"><b>Comentarios entrenador</b>${plan.comentarios}</div>` : ''}
+      <button class="rc-start-btn" onclick="startIntervalSession(currentRunningPlan)">▶ Iniciar temporizador de intervalos</button>
+    </div>`;
+  }
+
+  // ---- Temporizador de intervalos para running ----
+  let intervalList = [];
+  let intervalIdx = -1;
+  let intervalRemaining = 0;
+  let intervalHandle = null;
+  let intervalSpoken = new Set();
+
+  function buildIntervals(plan){
+    const list = [{ label: 'Calentamiento', sec: 60, speed: 'Suave, según sensación' }];
+    for(let r = 1; r <= plan.repeticiones; r++){
+      plan.fases.forEach(f => {
+        list.push({
+          label: `${f.fase} — ronda ${r}/${plan.repeticiones}`,
+          sec: f.tiempoSeg,
+          speed: f.velocidad
+        });
+      });
+    }
+    return list;
+  }
+
+  function startIntervalSession(plan){
+    if(!plan) return;
+    intervalList = buildIntervals(plan);
+    intervalIdx = -1;
+    document.getElementById('intervalOverlay').classList.add('show');
+    nextInterval();
+  }
+
+  function nextInterval(){
+    intervalIdx++;
+    if(intervalIdx >= intervalList.length){
+      finishIntervalSession();
+      return;
+    }
+    const cur = intervalList[intervalIdx];
+    intervalRemaining = cur.sec;
+    intervalSpoken = new Set();
+    document.getElementById('intPhase').textContent = cur.label;
+    document.getElementById('intSpeed').textContent = cur.speed ? `Velocidad: ${cur.speed}` : '';
+    const next = intervalList[intervalIdx + 1];
+    document.getElementById('intNext').textContent = next ? `Siguiente: ${next.label}` : 'Última fase';
+    updateIntervalDisplay();
+    speak(`${cur.label.split(' — ')[0]}${cur.speed ? ', ' + cur.speed : ''}`);
+
+    clearInterval(intervalHandle);
+    intervalHandle = setInterval(() => {
+      intervalRemaining--;
+      updateIntervalDisplay();
+      if(intervalRemaining > 0 && intervalRemaining <= 5 && !intervalSpoken.has(intervalRemaining)){
+        intervalSpoken.add(intervalRemaining);
+        speak(String(intervalRemaining));
+      }
+      if(intervalRemaining <= 0){
+        clearInterval(intervalHandle);
+        beep();
+        if(navigator.vibrate) navigator.vibrate([200,100,200]);
+        setTimeout(() => nextInterval(), 700);
+      }
+    }, 1000);
+  }
+
+  function updateIntervalDisplay(){
+    const r = Math.max(intervalRemaining, 0);
+    const m = Math.floor(r/60);
+    const s = r % 60;
+    const el = document.getElementById('intTime');
+    el.textContent = `${m}:${String(s).padStart(2,'0')}`;
+    el.classList.toggle('low', r <= 5 && r > 0);
+  }
+
+  function finishIntervalSession(){
+    document.getElementById('intPhase').textContent = 'Sesión completada 💪';
+    document.getElementById('intTime').textContent = '';
+    document.getElementById('intSpeed').textContent = '';
+    document.getElementById('intNext').textContent = '';
+    speak('Sesión completada. Buen trabajo.');
+    if(navigator.vibrate) navigator.vibrate([300,150,300,150,300]);
+    setTimeout(() => document.getElementById('intervalOverlay').classList.remove('show'), 3000);
+  }
+
+  function cancelIntervalTimer(){
+    clearInterval(intervalHandle);
+    if('speechSynthesis' in window) speechSynthesis.cancel();
+    document.getElementById('intervalOverlay').classList.remove('show');
   }
 
   if ('serviceWorker' in navigator) {
