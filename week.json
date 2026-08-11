@@ -1,6 +1,58 @@
 {
   "updated": "2026-08-07",
   "overrides": {
+    "2026-08-13": {
+      "title": "Running",
+      "subtitle": "Jueves 13 ago · con entrenador externo",
+      "type": "cardio",
+      "runningPlan": {
+        "titulo": "Consolidación",
+        "fases": [
+          {"fase": "Carrera", "tiempoSeg": 300, "tiempoLabel": "5'", "velocidad": "6.5-7.0 km/h"},
+          {"fase": "Andando", "tiempoSeg": 60, "tiempoLabel": "1'", "velocidad": "5.0-5.5 km/h"}
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "132-135 (sube margen si calor/humedad)",
+        "terreno": "Cinta (mismo gym de vacaciones)",
+        "comentarios": "⏳ Rondas condicionadas al martes 11/8: si fue bien (sin dolor, RPE≤3) → sube a 6 rondas; si costó o hubo molestia → repite 5, no subas. Confirma con Sensei cómo fue el martes antes de esta sesión para ajustar. Día después de Tracción (bloque volumen), sesión Z2 suave. ⚠️ Si dolor lumbar irradiado a pierna, parar inmediatamente."
+      }
+    },
+    "2026-08-16": {
+      "title": "Running + Hipopresivos + Colgado",
+      "subtitle": "Domingo 16 ago · vuelta de vacaciones",
+      "type": "cardio",
+      "runningPlan": {
+        "titulo": "Vuelta a residencia habitual",
+        "fases": [
+          {"fase": "Carrera", "tiempoSeg": 300, "tiempoLabel": "5'", "velocidad": "6.5-7.0 km/h"},
+          {"fase": "Andando", "tiempoSeg": 60, "tiempoLabel": "1'", "velocidad": "5.0-5.5 km/h"}
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "132-135 (sube margen si calor/humedad — manda el Talk Test)",
+        "terreno": "Por confirmar — vuelve el Suunto como dispositivo principal. Avisa si el terreno habitual en Madrid no es cinta, para ajustar por impacto.",
+        "comentarios": "⏳ Rondas condicionadas al jueves 13/8: 5-6 según cómo fuera esa sesión. 🎯 Combinado esta semana por el viaje del sábado — cierre de la semana de progresión 4'→5'. Después del running: hipopresivos y colgado (abajo). ⚠️ Si dolor lumbar irradiado a pierna, parar inmediatamente."
+      },
+      "exercises": [
+        {
+          "name": "Colgado pasivo en barra",
+          "meta": "Descompresión L4-L5, hombros activos, con straps",
+          "rest": "60-90s",
+          "sets": [
+            {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"},
+            {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"},
+            {"kg": "", "reps": "", "rir": "-", "label": "peso corp.", "repsLabel": "seg (20-30)"}
+          ]
+        },
+        {
+          "name": "Hipopresivos",
+          "meta": "Exhala todo el aire, vacío abdominal 8-10s por repetición",
+          "rest": "30-45s",
+          "sets": [
+            {"kg": "", "reps": "", "rir": "-", "label": "—", "repsLabel": "reps (8-10)"}
+          ]
+        }
+      ]
+    },
     "2026-08-11": {
       "title": "Running",
       "subtitle": "Martes 11 ago · con entrenador externo",
