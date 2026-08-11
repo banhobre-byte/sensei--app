@@ -202,6 +202,10 @@
     <span class="ci-txt" id="ciTxt">Check-in matutino</span>
     <span class="ci-chev">▸</span>
   </button>
+  <button class="checkin-btn" style="margin-top:8px;" onclick="openImport()">
+    <span class="ci-txt">📥 Importar historial (sesiones antiguas)</span>
+    <span class="ci-chev">▸</span>
+  </button>
   <div class="day-selector" id="daySelector"></div>
 </header>
 
@@ -322,6 +326,18 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="importModal">
+  <div class="modal-card">
+    <div class="modal-title">Importar historial</div>
+    <div class="ci-hint" style="margin-bottom:10px;">Pega aquí el JSON que te dé Sensei con sesiones antiguas (de otras conversaciones) para activar las comparativas "vs anterior" desde ya.</div>
+    <textarea id="importText" rows="10" style="width:100%; background:var(--bg-card-2); border:1px solid var(--line); border-radius:8px; color:var(--text); padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box;"></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn close" onclick="closeImport()">Cancelar</button>
+      <button class="modal-btn copy" onclick="importHistoryFromText()">Importar</button>
+    </div>
+  </div>
+</div>
+
 <script>
   const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   const DIAS_CORTO = ['D','L','M','X','J','V','S'];
@@ -341,7 +357,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v13');
+        const cache = await caches.open('sensei-v14');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -1016,6 +1032,33 @@
 
     updateCheckinHeader();
     renderCheckinHistory();
+  }
+
+  function openImport(){
+    document.getElementById('importText').value = '';
+    document.getElementById('importModal').classList.add('show');
+  }
+
+  function closeImport(){
+    document.getElementById('importModal').classList.remove('show');
+  }
+
+  function importHistoryFromText(){
+    let arr;
+    try{
+      arr = JSON.parse(document.getElementById('importText').value.trim());
+      if(!Array.isArray(arr)) throw new Error('el JSON debe ser una lista de sesiones');
+    }catch(e){
+      alert('JSON inválido: ' + e.message);
+      return;
+    }
+    arr.forEach(entry => pushHistory(entry));
+    closeImport();
+    const t = document.getElementById('toast');
+    t.textContent = `Importadas ${arr.length} sesiones al historial.`;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+    renderDay(weekDataGlobal, selectedWeekday);
   }
 
   function openCheckin(){
