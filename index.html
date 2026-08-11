@@ -178,6 +178,14 @@
   .rc-start-btn{width:100%; background:var(--gold); color:#0d0d0d; border:none; border-radius:12px;
     padding:15px; font-size:14.5px; font-weight:800; text-transform:uppercase; letter-spacing:.5px;
     margin-top:6px;}
+
+  /* ---- Gamificación: comparativas vs sesión anterior y tendencias ---- */
+  .ex-compare{font-size:12px; color:var(--gold-dim); padding:0 16px 8px; line-height:1.5;}
+  .ex-trend{font-size:11.5px; color:var(--text-dim); padding:0 16px 10px; line-height:1.5;}
+  .set-compare{font-size:11px; color:var(--text-dim); margin:-4px 0 10px 34px; min-height:14px;}
+  .set-compare.up{color:#7fc98f; font-weight:700;}
+  .set-compare.eq{color:var(--gold-dim); font-weight:600;}
+  .set-compare.down{color:var(--text-dim);}
 </style>
 </head>
 <body>
@@ -333,7 +341,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v12');
+        const cache = await caches.open('sensei-v13');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -395,6 +403,157 @@
 
   // ---- Guardado local (protege la sesión si Android mata la pestaña en 2º plano) ----
   function progressKey(iso){ return `sensei_progress_${iso}`; }
+
+  // ============ GAMIFICACIÓN: historial + comparativas ============
+  const HISTORY_KEY = 'sensei_history';
+  const HISTORY_MAX = 600;
+  const MES_CORTO = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+  function loadHistory(){
+    try{ return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; }catch(e){ return []; }
+  }
+
+  function pushHistory(entry){
+    let hist = loadHistory();
+    hist = hist.filter(h => !(h.date === entry.date && h.name === entry.name && h.type === entry.type));
+    hist.push(entry);
+    hist.sort((a,b) => a.date.localeCompare(b.date));
+    if(hist.length > HISTORY_MAX) hist = hist.slice(hist.length - HISTORY_MAX);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+  }
+
+  function getExerciseHistory(name, beforeISO){
+    return loadHistory().filter(h => h.type === 'strength' && h.name === name && (!beforeISO || h.date < beforeISO));
+  }
+
+  function getRunningHistory(beforeISO){
+    return loadHistory().filter(h => h.type === 'running' && (!beforeISO || h.date < beforeISO))
+      .sort((a,b) => a.date.localeCompare(b.date));
+  }
+
+  function formatShortDate(iso){
+    const [y,m,d] = iso.split('-');
+    return `${d}/${m}`;
+  }
+
+  function sumVolume(sets){
+    return sets.reduce((sum, s) => {
+      const kg = parseFloat(s.kg), reps = parseFloat(s.reps);
+      if(isNaN(kg) || isNaN(reps)) return sum;
+      return sum + kg * reps;
+    }, 0);
+  }
+
+  function pickTopSet(sets){
+    let top = null, topVol = -1;
+    sets.forEach(s => {
+      const kg = parseFloat(s.kg), reps = parseFloat(s.reps);
+      if(isNaN(kg) || isNaN(reps)) return;
+      const vol = kg * reps;
+      if(vol > topVol){ topVol = vol; top = s; }
+    });
+    return top;
+  }
+
+  // Texto de comparación de una serie concreta vs la misma serie de la sesión anterior
+  function computeSetCompareText(prevSet, kg, reps){
+    if(!prevSet || prevSet.reps === undefined || prevSet.reps === '' || prevSet.reps === null){
+      return { text: '', cls: 'set-compare' };
+    }
+    const prevKg = prevSet.kg, prevReps = prevSet.reps;
+    if(reps === undefined || reps === '' || reps === null){
+      return { text: `↳ anterior: ${prevKg || '-'}kg × ${prevReps}`, cls: 'set-compare' };
+    }
+    const repsN = parseFloat(reps), prevRepsN = parseFloat(prevReps);
+    const sameKg = kg !== undefined && kg !== '' && prevKg !== undefined && prevKg !== '' &&
+      parseFloat(kg) === parseFloat(prevKg);
+    if(sameKg && !isNaN(repsN) && !isNaN(prevRepsN)){
+      if(repsN > prevRepsN){
+        const dif = repsN - prevRepsN;
+        return { text: `🔥 +${dif} rep${dif > 1 ? 's' : ''} vs anterior — ¡mejora!`, cls: 'set-compare up' };
+      }
+      if(repsN === prevRepsN){
+        return { text: `✅ igualado vs anterior (${prevKg}×${prevReps})`, cls: 'set-compare eq' };
+      }
+      const falta = prevRepsN - repsN;
+      return { text: `Te falta${falta > 1 ? 'n' : ''} ${falta} rep${falta > 1 ? 's' : ''} para igualar anterior (${prevKg}×${prevReps})`, cls: 'set-compare down' };
+    }
+    return { text: `↳ anterior: ${prevKg || '-'}kg × ${prevReps}`, cls: 'set-compare' };
+  }
+
+  function updateSetCompare(inputEl){
+    const row = inputEl.closest('.set-row');
+    if(!row) return;
+    const compareDiv = row.nextElementSibling;
+    if(!compareDiv || !compareDiv.classList.contains('set-compare')) return;
+    const prevKg = row.dataset.prevKg || '';
+    const prevReps = row.dataset.prevReps || '';
+    const inputs = row.querySelectorAll('input');
+    const kg = inputs[0].value.trim();
+    const reps = inputs[1].value.trim();
+    const r = computeSetCompareText(prevReps === '' ? null : { kg: prevKg, reps: prevReps }, kg, reps);
+    compareDiv.textContent = r.text;
+    compareDiv.className = r.cls;
+  }
+
+  // Badge por ejercicio: última sesión + tendencia mensual de volumen
+  function buildExerciseCompareHTML(name, todayISO){
+    const hist = getExerciseHistory(name, todayISO);
+    if(!hist.length) return '';
+    const prev = hist[hist.length - 1];
+    const topSet = pickTopSet(prev.sets);
+    let html = `<div class="ex-compare">📊 Anterior (${formatShortDate(prev.date)}): ${topSet ? `${topSet.kg || '-'}kg × ${topSet.reps} (RIR ${topSet.rir && topSet.rir !== '—' ? topSet.rir : '-'})` : '—'}</div>`;
+
+    const byMonth = {};
+    hist.forEach(h => {
+      const m = h.date.slice(0,7);
+      const vol = sumVolume(h.sets);
+      if(!byMonth[m]) byMonth[m] = { sum: 0, n: 0 };
+      byMonth[m].sum += vol; byMonth[m].n++;
+    });
+    const months = Object.keys(byMonth).sort();
+    if(months.length >= 2){
+      const last2 = months.slice(-2);
+      const avgs = last2.map(m => Math.round(byMonth[m].sum / byMonth[m].n));
+      const pct = avgs[0] > 0 ? Math.round((avgs[1] - avgs[0]) / avgs[0] * 100) : 0;
+      const arrow = pct > 0 ? '📈' : (pct < 0 ? '📉' : '➡️');
+      const labelOf = (m) => MES_CORTO[parseInt(m.slice(5,7),10) - 1];
+      html += `<div class="ex-trend">${arrow} Volumen medio ${labelOf(last2[0])}: ${avgs[0]}kg · ${labelOf(last2[1])}: ${avgs[1]}kg (${pct >= 0 ? '+' : ''}${pct}%)</div>`;
+    }
+    return html;
+  }
+
+  // ---- Running: distancia y comparativa ----
+  function parseAvgSpeedKmh(str){
+    if(!str) return 0;
+    const nums = (str.match(/[\d.]+/g) || []).map(Number);
+    if(!nums.length) return 0;
+    return nums.reduce((a,b) => a+b, 0) / nums.length;
+  }
+
+  function computeSessionDistanceKm(list){
+    return list.reduce((sum, iv) => sum + parseAvgSpeedKmh(iv.speed) * (iv.sec / 3600), 0);
+  }
+
+  function compareRunningPlanned(plannedKm, iso){
+    const hist = getRunningHistory(iso);
+    if(!hist.length) return '';
+    const prev = hist[hist.length - 1];
+    const delta = plannedKm - prev.distanceKm;
+    const pct = prev.distanceKm > 0 ? Math.round(delta / prev.distanceKm * 100) : 0;
+    const arrow = delta > 0 ? '📈' : (delta < 0 ? '📉' : '➡️');
+    return `${arrow} Última sesión registrada (${formatShortDate(prev.date)}): ${prev.distanceKm} km recorridos · Plan de hoy: ≈${plannedKm.toFixed(2)} km (${pct >= 0 ? '+' : ''}${pct}%)`;
+  }
+
+  function compareRunningResult(distanceKm, iso){
+    const hist = getRunningHistory(iso);
+    if(!hist.length) return '';
+    const prev = hist[hist.length - 1];
+    const delta = distanceKm - prev.distanceKm;
+    const pct = prev.distanceKm > 0 ? Math.round(delta / prev.distanceKm * 100) : 0;
+    const arrow = delta > 0 ? '📈' : (delta < 0 ? '📉' : '➡️');
+    return `${arrow} vs ${formatShortDate(prev.date)}: ${prev.distanceKm} km → hoy ${distanceKm.toFixed(2)} km (${pct >= 0 ? '+' : ''}${pct}%)`;
+  }
 
   function applySavedProgress(day, iso){
     if(!day.exercises) return day;
@@ -497,6 +656,7 @@
     day.exercises.forEach((ex, i) => {
       const openClass = i === 0 ? ' open' : '';
       const restSeconds = parseRestSeconds(ex.rest);
+      const prevSets = getExerciseHistory(ex.name, iso).slice(-1)[0]?.sets || [];
       html += `<div class="exercise${openClass}" data-ex="${i}" data-rest="${restSeconds}">
         <div class="ex-head" onclick="toggleEx(this)">
           <div class="ex-title">
@@ -511,6 +671,7 @@
       if(ex.warnEx){
         html += `<div class="ex-note">${ex.warnEx}</div>`;
       }
+      html += buildExerciseCompareHTML(ex.name, iso);
       html += `<div class="ex-body">
         <div class="rest-tag">Descanso ${ex.rest || ''}</div>
         <div style="height:8px"></div>`;
@@ -519,10 +680,12 @@
         const repsPlaceholder = s.repsLabel || 'reps';
         const repsVal = s.reps !== undefined && s.reps !== '' ? `value="${s.reps}"` : `placeholder="${repsPlaceholder}"`;
         const isDone = (s.reps !== undefined && s.reps !== '') || s.done;
-        html += `<div class="set-row">
+        const prevSet = prevSets[si];
+        const cmp = computeSetCompareText(prevSet, s.kg, s.reps);
+        html += `<div class="set-row" data-prev-kg="${prevSet ? (prevSet.kg||'') : ''}" data-prev-reps="${prevSet ? (prevSet.reps||'') : ''}">
           <span class="set-label">${si+1}</span>
-          <input type="number" ${kgVal} oninput="saveProgress()">
-          <input type="number" ${repsVal} oninput="saveProgress()">
+          <input type="number" ${kgVal} oninput="saveProgress(); updateSetCompare(this)">
+          <input type="number" ${repsVal} oninput="saveProgress(); updateSetCompare(this)">
           <select onchange="saveProgress()">
             <option${s.rir==='-'?' selected':''}>—</option>
             <option${s.rir==='0'?' selected':''}>RIR 0</option>
@@ -532,7 +695,8 @@
             <option${s.rir==='4'?' selected':''}>RIR 4</option>
           </select>
           <button class="check-btn${isDone ? ' done' : ''}" onclick="toggleDone(this)">✓</button>
-        </div>`;
+        </div>
+        <div class="${cmp.cls}">${cmp.text}</div>`;
       });
       html += `</div></div>`;
     });
@@ -720,8 +884,30 @@
 
   function saveSession(){
     const summary = buildSummary();
+    logStrengthHistory();
     document.getElementById('summaryText').value = summary;
     document.getElementById('summaryModal').classList.add('show');
+  }
+
+  function logStrengthHistory(){
+    const iso = isoForWeekday(selectedWeekday);
+    document.querySelectorAll('.exercise').forEach(exDiv => {
+      const name = exDiv.querySelector('.ex-name').textContent;
+      const rows = exDiv.querySelectorAll('.set-row');
+      const sets = [];
+      rows.forEach(row => {
+        const inputs = row.querySelectorAll('input');
+        const kg = inputs[0].value.trim();
+        const reps = inputs[1].value.trim();
+        const rir = row.querySelector('select').value;
+        if(reps !== ''){
+          sets.push({ kg, reps, rir });
+        }
+      });
+      if(sets.length){
+        pushHistory({ type: 'strength', date: iso, name, sets });
+      }
+    });
   }
 
   function closeSummary(){
@@ -905,6 +1091,8 @@
     planLines += `Repetir ${plan.repeticiones} veces`;
 
     const editedBadge = plan._edited ? `<span style="color:var(--gold); font-size:11px; font-weight:700;">· ajustado hoy</span>` : '';
+    const plannedKm = computeSessionDistanceKm(buildIntervals(plan));
+    const progressCmp = compareRunningPlanned(plannedKm, currentRunningDateISO);
 
     return `<div class="running-card">
       <div class="rc-title">${plan.titulo} ${editedBadge}</div>
@@ -912,6 +1100,7 @@
       <div class="rc-row"><b>FC objetivo</b>${plan.fcObjetivo || '—'}</div>
       <div class="rc-row"><b>Terreno</b>${plan.terreno || '—'}</div>
       ${plan.comentarios ? `<div class="rc-row"><b>Comentarios entrenador</b>${plan.comentarios}</div>` : ''}
+      ${progressCmp ? `<div class="rc-row"><b>📊 Progreso</b>${progressCmp}</div>` : ''}
       <button class="rc-start-btn" onclick="startIntervalSession(currentRunningPlan)">▶ Iniciar temporizador de intervalos</button>
       <button class="rc-start-btn" style="background:transparent; border:1px solid var(--line); color:var(--text); margin-top:8px;" onclick="openRunningEdit()">✏️ Editar plan de hoy</button>
     </div>`;
@@ -1015,13 +1204,23 @@
   }
 
   function announceInterval(cur){
-    // "Carrera 5 minutos a 7 kilómetros hora, ronda 1 de 5"
+    // "Carrera 5 minutos a 6.5 a 7.0 kilómetros hora, ronda 1 de 5"
     if(cur.ronda === null){
       speak(`Calentamiento, 1 minuto`);
       return;
     }
+    const mins = Math.floor(cur.sec / 60);
+    const secs = cur.sec % 60;
+    let tiempoSpeech;
+    if(secs === 0){
+      tiempoSpeech = `${mins} ${mins === 1 ? 'minuto' : 'minutos'}`;
+    } else if(mins === 0){
+      tiempoSpeech = `${secs} segundos`;
+    } else {
+      tiempoSpeech = `${mins} ${mins === 1 ? 'minuto' : 'minutos'} y ${secs} segundos`;
+    }
     const velSpeech = (cur.speed || '').replace(/km\/h/gi, 'kilómetros hora').replace(/-/g, ' a ');
-    speak(`${cur.fase} ${cur.tiempoLabel.replace("'", ' minuto')} a ${velSpeech}, ronda ${cur.ronda} de ${cur.totalRondas}`);
+    speak(`${cur.fase} ${tiempoSpeech} a ${velSpeech}, ronda ${cur.ronda} de ${cur.totalRondas}`);
   }
 
   function startIntervalSession(plan){
@@ -1098,13 +1297,22 @@
   }
 
   function finishIntervalSession(){
+    const distanceKm = computeSessionDistanceKm(intervalList);
+    const cmp = compareRunningResult(distanceKm, currentRunningDateISO);
+    pushHistory({
+      type: 'running',
+      date: currentRunningDateISO,
+      distanceKm: Math.round(distanceKm * 100) / 100,
+      repeticiones: currentRunningPlan ? currentRunningPlan.repeticiones : null
+    });
+
     document.getElementById('intPhase').textContent = 'Sesión completada 💪';
-    document.getElementById('intTime').textContent = '';
-    document.getElementById('intSpeed').textContent = '';
+    document.getElementById('intTime').textContent = `${distanceKm.toFixed(2)} km`;
+    document.getElementById('intSpeed').textContent = cmp || '';
     document.getElementById('intNext').textContent = '';
-    speak('Sesión completada. Buen trabajo.');
+    speak(`Sesión completada. ${distanceKm.toFixed(1)} kilómetros recorridos. Buen trabajo.`);
     if(navigator.vibrate) navigator.vibrate([300,150,300,150,300]);
-    setTimeout(() => document.getElementById('intervalOverlay').classList.remove('show'), 3000);
+    setTimeout(() => document.getElementById('intervalOverlay').classList.remove('show'), 4000);
   }
 
   function cancelIntervalTimer(){
