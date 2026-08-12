@@ -202,6 +202,11 @@
     <span class="ci-txt" id="ciTxt">Check-in matutino</span>
     <span class="ci-chev">▸</span>
   </button>
+  <button class="checkin-btn" id="nutritionBtn" onclick="openNutrition()">
+    <span class="ci-dot" id="nuDot"></span>
+    <span class="ci-txt" id="nuTxt">🍽️ Nutrición de hoy</span>
+    <span class="ci-chev">▸</span>
+  </button>
   <button class="checkin-btn" style="margin-top:8px;" onclick="openImport()">
     <span class="ci-txt">📥 Importar historial (sesiones antiguas)</span>
     <span class="ci-chev">▸</span>
@@ -255,6 +260,33 @@
     <div class="modal-actions">
       <button class="modal-btn close" onclick="closeSummary()">Cerrar</button>
       <button class="modal-btn copy" onclick="copySummary()">Copiar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="nutritionModal">
+  <div class="modal-card">
+    <div class="modal-title">🍽️ Nutrición de hoy</div>
+
+    <div id="nuComidas"></div>
+
+    <div class="ci-field">
+      <label>¿Proteína post-entreno en menos de 90 min?</label>
+      <select id="nuProteina">
+        <option value="">—</option>
+        <option value="si">Sí</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div class="ci-field">
+      <label>Minutos reales hasta la toma — opcional</label>
+      <input type="number" id="nuVentana" inputmode="numeric" placeholder="ej. 45">
+      <div class="ci-hint">Dato informativo — no afecta al semáforo del check-in matutino</div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn close" onclick="closeNutrition()">Cerrar</button>
+      <button class="modal-btn copy" onclick="saveNutrition()">Guardar</button>
     </div>
   </div>
 </div>
@@ -357,7 +389,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v18');
+        const cache = await caches.open('sensei-v19');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -1068,6 +1100,96 @@
     renderDay(weekDataGlobal, selectedWeekday);
   }
 
+  // ============ MÓDULO NUTRICIÓN (aislado — no toca renderDay ni sensei_history) ============
+  let nutritionDataGlobal = null;
+  const NUTRITION_HISTORY_KEY = 'sensei_nutrition_history';
+
+  async function loadNutrition(){
+    try{
+      const res = await fetch('nutrition.json', { cache: 'no-store' });
+      if(!res.ok) throw new Error('bad response');
+      nutritionDataGlobal = await res.json();
+    }catch(e){
+      try{
+        const cache = await caches.open(APP_VERSION);
+        const cached = await cache.match('nutrition.json');
+        if(cached) nutritionDataGlobal = await cached.json();
+      }catch(e2){ /* sin nutrition.json disponible, el botón simplemente no tendrá datos */ }
+    }
+    updateNutritionDot();
+  }
+
+  function getNutritionForISO(iso, weekday){
+    if(!nutritionDataGlobal) return null;
+    if(nutritionDataGlobal.overrides && nutritionDataGlobal.overrides[iso]) return nutritionDataGlobal.overrides[iso];
+    return (nutritionDataGlobal.days && nutritionDataGlobal.days[String(weekday)]) || null;
+  }
+
+  function loadNutritionHistory(){
+    try{ return JSON.parse(localStorage.getItem(NUTRITION_HISTORY_KEY)) || []; }catch(e){ return []; }
+  }
+
+  function pushNutritionHistory(entry){
+    let hist = loadNutritionHistory();
+    hist = hist.filter(h => h.fecha !== entry.fecha);
+    hist.push(entry);
+    hist.sort((a,b) => a.fecha.localeCompare(b.fecha));
+    localStorage.setItem(NUTRITION_HISTORY_KEY, JSON.stringify(hist));
+  }
+
+  function updateNutritionDot(){
+    const dot = document.getElementById('nuDot');
+    if(!dot) return;
+    const iso = todayISO();
+    const hist = loadNutritionHistory();
+    const today = hist.find(h => h.fecha === iso);
+    dot.className = 'ci-dot' + (today ? ' verde' : '');
+  }
+
+  function openNutrition(){
+    const iso = isoForWeekday(selectedWeekday);
+    const plan = getNutritionForISO(iso, selectedWeekday);
+    const container = document.getElementById('nuComidas');
+
+    if(!plan){
+      container.innerHTML = `<div class="ci-hint" style="margin-bottom:14px;">Sin plan de nutrición cargado todavía para hoy.</div>`;
+    }else{
+      let html = `<div class="ci-hint" style="margin-bottom:10px;">Tipo de día: ${plan.tipo || '—'}</div>`;
+      Object.keys(plan.comidas || {}).forEach(key => {
+        html += `<div class="ci-field"><label>${key}</label><div class="ci-hint" style="font-size:12.5px; color:var(--text);">${(plan.comidas[key] || []).join(' · ')}</div></div>`;
+      });
+      container.innerHTML = html;
+    }
+
+    const hist = loadNutritionHistory();
+    const existing = hist.find(h => h.fecha === iso);
+    document.getElementById('nuProteina').value = existing ? (existing.proteinaPostEntreno ? 'si' : 'no') : '';
+    document.getElementById('nuVentana').value = existing && existing.ventanaMin != null ? existing.ventanaMin : '';
+
+    document.getElementById('nutritionModal').classList.add('show');
+  }
+
+  function closeNutrition(){
+    document.getElementById('nutritionModal').classList.remove('show');
+  }
+
+  function saveNutrition(){
+    const iso = isoForWeekday(selectedWeekday);
+    const proteinaVal = document.getElementById('nuProteina').value;
+    const ventanaVal = document.getElementById('nuVentana').value.trim();
+    pushNutritionHistory({
+      fecha: iso,
+      proteinaPostEntreno: proteinaVal === 'si',
+      ventanaMin: ventanaVal !== '' ? parseInt(ventanaVal, 10) : null
+    });
+    updateNutritionDot();
+    closeNutrition();
+    const t = document.getElementById('toast');
+    t.textContent = 'Nutrición del día guardada.';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
   function openCheckin(){
     const iso = todayISO();
     const existing = loadCheckin(iso);
@@ -1378,10 +1500,11 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v18';
+  const APP_VERSION = 'sensei-v19';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
+  loadNutrition();
   updateCheckinHeader();
 </script>
 

@@ -1,0 +1,55 @@
+{
+  "updated": "2026-08-12",
+  "days": {
+    "0": {
+      "tipo": "fuerza-empuje",
+      "comidas": {
+        "comida1": ["PENDIENTE — Itamae completa"],
+        "comida2": ["PENDIENTE — Itamae completa"]
+      }
+    },
+    "1": {
+      "tipo": "fuerza-pierna",
+      "comidas": {
+        "comida1": ["2 scoop whey", "1 plátano", "40g avena"],
+        "comida2": ["200g pollo (a ojo)", "1 puño arroz", "verdura libre"]
+      }
+    },
+    "2": {
+      "tipo": "cardio-z2",
+      "comidas": {
+        "comida1": ["PENDIENTE — Itamae completa"],
+        "comida2": ["PENDIENTE — Itamae completa"]
+      }
+    },
+    "3": {
+      "tipo": "descanso",
+      "comidas": {
+        "comida1": ["PENDIENTE — Itamae completa"],
+        "comida2": ["PENDIENTE — Itamae completa"]
+      }
+    },
+    "4": {
+      "tipo": "cardio-z2",
+      "comidas": {
+        "comida1": ["PENDIENTE — Itamae completa"],
+        "comida2": ["PENDIENTE — Itamae completa"]
+      }
+    },
+    "5": {
+      "tipo": "fuerza-tracción",
+      "comidas": {
+        "comida1": ["PENDIENTE — Itamae completa"],
+        "comida2": ["PENDIENTE — Itamae completa"]
+      }
+    },
+    "6": {
+      "tipo": "cardio-z2",
+      "comidas": {
+        "comida1": ["PENDIENTE — Itamae completa"],
+        "comida2": ["PENDIENTE — Itamae completa"]
+      }
+    }
+  },
+  "overrides": {}
+}

@@ -1,9 +1,10 @@
-const CACHE_NAME = 'sensei-v18';
+const CACHE_NAME = 'sensei-v19';
 const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './nutrition.json'
 ];
 
 self.addEventListener('install', (event) => {
@@ -25,9 +26,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // week.json: NETWORK FIRST — siempre intenta traer la versión más reciente.
+  // week.json y nutrition.json: NETWORK FIRST — siempre intenta traer la versión más reciente.
   // Si no hay internet, cae a la última copia cacheada.
-  if (url.pathname.endsWith('week.json')) {
+  if (url.pathname.endsWith('week.json') || url.pathname.endsWith('nutrition.json')) {
     event.respondWith(
       fetch(event.request, { cache: 'no-store' })
         .then((response) => {
