@@ -26,6 +26,8 @@
   header{padding:22px 18px 16px; border-bottom:1px solid var(--line);
     background:linear-gradient(180deg,#141210,#0d0d0d); position:sticky; top:0; z-index:10;}
   .brand{display:flex; align-items:baseline; justify-content:space-between;}
+  .settings-icon-btn{background:var(--bg-card); border:1px solid var(--line); border-radius:8px;
+    width:30px; height:30px; font-size:14px; line-height:1; cursor:pointer; padding:0;}
   .brand h1{margin:0; font-size:22px; letter-spacing:3px; font-weight:800;
     text-transform:uppercase; color:var(--gold);}
   .brand .badge{font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
@@ -193,7 +195,10 @@
 <header>
   <div class="brand">
     <h1>Sensei</h1>
-    <span class="badge" id="appVersionBadge">cargando…</span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span class="badge" id="appVersionBadge">cargando…</span>
+      <button class="settings-icon-btn" onclick="openImport()" aria-label="Importar historial" title="Importar historial">⚙️</button>
+    </div>
   </div>
   <div class="subline" id="daySubline">Cargando sesión de hoy…</div>
   <div class="staleflag" id="staleFlag">⚠️ Sin conexión — mostrando la última sesión guardada, puede no ser la más reciente.</div>
@@ -205,10 +210,6 @@
   <button class="checkin-btn" id="nutritionBtn" onclick="openNutrition()">
     <span class="ci-dot" id="nuDot"></span>
     <span class="ci-txt" id="nuTxt">🍽️ Nutrición de hoy</span>
-    <span class="ci-chev">▸</span>
-  </button>
-  <button class="checkin-btn" style="margin-top:8px;" onclick="openImport()">
-    <span class="ci-txt">📥 Importar historial (sesiones antiguas)</span>
     <span class="ci-chev">▸</span>
   </button>
   <div class="day-selector" id="daySelector"></div>
@@ -358,6 +359,73 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="runningLogModal">
+  <div class="modal-card">
+    <div class="modal-title">📝 Datos de la sesión</div>
+    <div class="ci-hint" style="margin-bottom:12px;">Solo lo que sepas — puedes dejar campos vacíos y completarlos luego.</div>
+
+    <div class="ci-field">
+      <label>Tipo de sesión</label>
+      <select id="rlTipo">
+        <option value="">—</option>
+        <option value="reactivación">Reactivación</option>
+        <option value="volumen">Volumen</option>
+        <option value="larga">Larga</option>
+        <option value="recuperación">Recuperación</option>
+      </select>
+    </div>
+    <div class="ci-field">
+      <label>FC media (lpm)</label>
+      <input type="number" id="rlFcMedia" inputmode="numeric" placeholder="ej. 133">
+    </div>
+    <div class="ci-field">
+      <label>FC máxima (lpm)</label>
+      <input type="number" id="rlFcMax" inputmode="numeric" placeholder="ej. 148">
+    </div>
+    <div class="ci-field">
+      <label>Cadencia media (spm)</label>
+      <input type="number" id="rlCadencia" inputmode="numeric" placeholder="ej. 162">
+    </div>
+    <div class="ci-field">
+      <label>RPE (1-5)</label>
+      <select id="rlRpe">
+        <option value="">—</option>
+        <option value="1">1 — muy suave</option>
+        <option value="2">2 — suave</option>
+        <option value="3">3 — moderado</option>
+        <option value="4">4 — duro</option>
+        <option value="5">5 — máximo</option>
+      </select>
+    </div>
+    <div class="ci-field">
+      <label>Molestias durante la sesión</label>
+      <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:4px;">
+        <label style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-dim);"><input type="checkbox" id="rlDolorLumbar"> Lumbar</label>
+        <label style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-dim);"><input type="checkbox" id="rlDolorRodilla"> Rodilla</label>
+        <label style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-dim);"><input type="checkbox" id="rlDolorTobillo"> Tobillo</label>
+        <label style="display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--text-dim);"><input type="checkbox" id="rlDolorFascia"> Fascia plantar</label>
+      </div>
+    </div>
+    <div class="ci-field">
+      <label>Terreno</label>
+      <input type="text" id="rlTerreno" placeholder="ej. Cinta">
+    </div>
+    <div class="ci-field">
+      <label>Calzado</label>
+      <input type="text" id="rlCalzado" placeholder="ej. Nike Pegasus">
+    </div>
+    <div class="ci-field">
+      <label>Notas libres</label>
+      <input type="text" id="rlNotas" placeholder="opcional">
+    </div>
+
+    <div class="modal-actions">
+      <button class="modal-btn close" onclick="closeRunningLogForm()">Ahora no</button>
+      <button class="modal-btn copy" onclick="saveRunningLog()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="importModal">
   <div class="modal-card">
     <div class="modal-title">Importar historial</div>
@@ -389,7 +457,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v19');
+        const cache = await caches.open('sensei-v21');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -773,10 +841,11 @@
   }
 
   let restInterval = null;
-  let restRemaining = 0;
+  let restEndTime = 0;
   let restOriginalSeconds = 90;
   let restNextInfo = null;
   let restSpoken = new Set();
+  let restFinished = false;
 
   function toggleDone(btn){
     const willBeDone = !btn.classList.contains('done');
@@ -812,54 +881,64 @@
 
   function startRestTimer(seconds, label, nextInfo){
     clearInterval(restInterval);
-    restRemaining = seconds;
     restOriginalSeconds = seconds;
+    restEndTime = Date.now() + seconds * 1000;
     restNextInfo = nextInfo;
     restSpoken = new Set();
+    restFinished = false;
     document.getElementById('restLabel').textContent = label;
     document.getElementById('restNext').textContent = nextInfo
       ? `Siguiente: ${nextInfo.name} — serie ${nextInfo.setNum}`
       : 'Última serie de la sesión';
     document.getElementById('restBar').classList.add('show');
-    updateRestDisplay();
-    restInterval = setInterval(() => {
-      restRemaining--;
-      updateRestDisplay();
-      if(restRemaining > 0 && restRemaining <= 5 && !restSpoken.has(restRemaining)){
-        restSpoken.add(restRemaining);
-        speak(String(restRemaining));
-      }
-      if(restRemaining <= 0){
-        clearInterval(restInterval);
-        finishRest();
-      }
-    }, 1000);
+    requestWakeLock();
+    tickRest();
+    restInterval = setInterval(tickRest, 1000);
+  }
+
+  // Recalcula el restante a partir del reloj real (no de un contador que se pueda desincronizar
+  // si el navegador ralentiza la pestaña un momento). Así, aunque el móvil frene el temporizador
+  // unos segundos, al recuperar el ritmo el tiempo mostrado sigue siendo el correcto.
+  function tickRest(){
+    if(restFinished) return;
+    const remaining = Math.ceil((restEndTime - Date.now()) / 1000);
+    updateRestDisplay(remaining);
+    if(remaining > 0 && remaining <= 5 && !restSpoken.has(remaining)){
+      restSpoken.add(remaining);
+      speak(String(remaining));
+    }
+    if(remaining <= 0){
+      clearInterval(restInterval);
+      finishRest();
+    }
   }
 
   function finishRest(){
+    restFinished = true;
     beep();
     if(navigator.vibrate) navigator.vibrate([300,150,300,150,300]);
     const msg = restNextInfo
       ? `${restNextInfo.name}, serie ${restNextInfo.setNum}`
       : 'Descanso terminado.';
     setTimeout(() => speak(msg), 500);
-    setTimeout(() => document.getElementById('restBar').classList.remove('show'), 2200);
+    setTimeout(() => { document.getElementById('restBar').classList.remove('show'); releaseWakeLock(); }, 2200);
   }
 
   function adjustRest(delta){
-    restRemaining = Math.max(0, restRemaining + delta);
-    restSpoken.forEach(n => { if(n > restRemaining) restSpoken.delete(n); });
-    updateRestDisplay();
+    restEndTime += delta * 1000;
+    const remaining = Math.ceil((restEndTime - Date.now()) / 1000);
+    restSpoken.forEach(n => { if(n > remaining) restSpoken.delete(n); });
+    updateRestDisplay(remaining);
   }
 
   function resetRest(){
-    restRemaining = restOriginalSeconds;
+    restEndTime = Date.now() + restOriginalSeconds * 1000;
     restSpoken = new Set();
-    updateRestDisplay();
+    updateRestDisplay(restOriginalSeconds);
   }
 
-  function updateRestDisplay(){
-    const r = Math.max(restRemaining, 0);
+  function updateRestDisplay(remainingArg){
+    const r = Math.max(remainingArg !== undefined ? remainingArg : Math.ceil((restEndTime - Date.now())/1000), 0);
     const m = Math.floor(r/60);
     const s = r % 60;
     const timeEl = document.getElementById('restTime');
@@ -880,9 +959,44 @@
 
   function cancelRestTimer(){
     clearInterval(restInterval);
+    restFinished = true;
     if('speechSynthesis' in window) speechSynthesis.cancel();
     document.getElementById('restBar').classList.remove('show');
+    releaseWakeLock();
   }
+
+  // ---- Wake Lock: evita que la pantalla se apague sola mientras hay un crono activo.
+  // No puede evitar que la app deje de ejecutarse si bloqueas el móvil a mano o cambias de app —
+  // eso ninguna web puede evitarlo, solo una app nativa. Esto cubre el caso real de "se apaga la
+  // pantalla sola y pierdo el crono".
+  let wakeLockSentinel = null;
+
+  async function requestWakeLock(){
+    try{
+      if('wakeLock' in navigator){
+        wakeLockSentinel = await navigator.wakeLock.request('screen');
+      }
+    }catch(e){ /* wake lock no disponible o denegado — el crono sigue funcionando igual */ }
+  }
+
+  function releaseWakeLock(){
+    if(wakeLockSentinel){
+      wakeLockSentinel.release().catch(() => {});
+      wakeLockSentinel = null;
+    }
+  }
+
+  // El Wake Lock se libera solo si la pestaña pierde visibilidad (norma del navegador).
+  // Al volver, si hay un crono activo, lo recuperamos y resincronizamos el tiempo mostrado
+  // con el reloj real por si el navegador ralentizó la pestaña mientras estaba en segundo plano.
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState !== 'visible') return;
+    const restActive = document.getElementById('restBar').classList.contains('show');
+    const intervalActive = document.getElementById('intervalOverlay').classList.contains('show');
+    if(restActive || intervalActive) requestWakeLock();
+    if(restActive) tickRest();
+    if(intervalActive) tickIntervalClock();
+  });
 
   function beep(){
     try{
@@ -1265,6 +1379,7 @@
     const editedBadge = plan._edited ? `<span style="color:var(--gold); font-size:11px; font-weight:700;">· ajustado hoy</span>` : '';
     const plannedKm = computeSessionDistanceKm(buildIntervals(plan));
     const progressCmp = compareRunningPlanned(plannedKm, currentRunningDateISO);
+    const acwrHtml = buildACWRBadge();
 
     return `<div class="running-card">
       <div class="rc-title">${plan.titulo} ${editedBadge}</div>
@@ -1273,6 +1388,25 @@
       <div class="rc-row"><b>Terreno</b>${plan.terreno || '—'}</div>
       ${plan.comentarios ? `<div class="rc-row"><b>Comentarios entrenador</b>${plan.comentarios}</div>` : ''}
       ${progressCmp ? `<div class="rc-row"><b>📊 Progreso</b>${progressCmp}</div>` : ''}
+      ${acwrHtml}
+      <div class="rc-row metronome-box">
+        <b>🎵 Metrónomo</b>
+        <div style="display:flex; align-items:center; gap:10px; margin-top:4px;">
+          <input type="number" id="metroBpm" value="${metronomeBPM}" min="60" max="220" style="width:64px; background:var(--bg-card-2); border:1px solid var(--line); border-radius:7px; color:var(--text); padding:6px; text-align:center;" onchange="updateMetronomeBPM()">
+          <span style="font-size:11.5px; color:var(--text-dim);">BPM (170-180 recomendado)</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; margin-top:10px;">
+          <button class="rc-start-btn" id="metroToggleBtn" style="margin-top:0; padding:10px; font-size:12.5px;" onclick="toggleMetronome()">▶ Metrónomo</button>
+          <label style="display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--text-dim);">
+            <input type="checkbox" id="metroLinked" ${metronomeLinked ? 'checked' : ''} onchange="metronomeLinked = this.checked">
+            Vincular a tramos de trote
+          </label>
+        </div>
+        <label style="display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--text-dim); margin-top:8px;">
+          <input type="checkbox" id="metroVibrate" ${metronomeVibrate ? 'checked' : ''} onchange="metronomeVibrate = this.checked">
+          Vibración en cada golpe (además del sonido)
+        </label>
+      </div>
       <button class="rc-start-btn" onclick="startIntervalSession(currentRunningPlan)">▶ Iniciar temporizador de intervalos</button>
       <button class="rc-start-btn" style="background:transparent; border:1px solid var(--line); color:var(--text); margin-top:8px;" onclick="openRunningEdit()">✏️ Editar plan de hoy</button>
     </div>`;
@@ -1302,6 +1436,60 @@
       plan._edited = true;
     } catch(e){ /* si el override guardado está corrupto, se ignora y se usa el plan original */ }
     return plan;
+  }
+
+  function openRunningLogForm(){
+    document.getElementById('rlTipo').value = '';
+    document.getElementById('rlFcMedia').value = '';
+    document.getElementById('rlFcMax').value = '';
+    document.getElementById('rlCadencia').value = '';
+    document.getElementById('rlRpe').value = '';
+    document.getElementById('rlDolorLumbar').checked = false;
+    document.getElementById('rlDolorRodilla').checked = false;
+    document.getElementById('rlDolorTobillo').checked = false;
+    document.getElementById('rlDolorFascia').checked = false;
+    document.getElementById('rlTerreno').value = (currentRunningPlan && currentRunningPlan.terreno) ? currentRunningPlan.terreno : '';
+    document.getElementById('rlCalzado').value = localStorage.getItem('sensei_last_calzado') || '';
+    document.getElementById('rlNotas').value = '';
+    document.getElementById('runningLogModal').classList.add('show');
+  }
+
+  function closeRunningLogForm(){
+    document.getElementById('runningLogModal').classList.remove('show');
+  }
+
+  function saveRunningLog(){
+    if(!lastRunningEntry) { closeRunningLogForm(); return; }
+    const rpe = document.getElementById('rlRpe').value;
+    const calzado = document.getElementById('rlCalzado').value.trim();
+    if(calzado) localStorage.setItem('sensei_last_calzado', calzado);
+
+    const dolores = [];
+    if(document.getElementById('rlDolorLumbar').checked) dolores.push('lumbar');
+    if(document.getElementById('rlDolorRodilla').checked) dolores.push('rodilla');
+    if(document.getElementById('rlDolorTobillo').checked) dolores.push('tobillo');
+    if(document.getElementById('rlDolorFascia').checked) dolores.push('fascia plantar');
+
+    const entry = Object.assign({}, lastRunningEntry, {
+      tipoSesion: document.getElementById('rlTipo').value || null,
+      fcMedia: document.getElementById('rlFcMedia').value ? parseInt(document.getElementById('rlFcMedia').value, 10) : null,
+      fcMax: document.getElementById('rlFcMax').value ? parseInt(document.getElementById('rlFcMax').value, 10) : null,
+      cadenciaMedia: document.getElementById('rlCadencia').value ? parseInt(document.getElementById('rlCadencia').value, 10) : null,
+      rpe: rpe ? parseInt(rpe, 10) : null,
+      dolores,
+      terreno: document.getElementById('rlTerreno').value.trim() || null,
+      calzado: calzado || null,
+      notas: document.getElementById('rlNotas').value.trim() || null,
+      // Carga de Foster (session-RPE): duración en minutos × RPE — fórmula validada, base del ACWR
+      cargaSesionRPE: rpe ? lastSessionDurationMin * parseInt(rpe, 10) : null
+    });
+    pushHistory(entry);
+    closeRunningLogForm();
+    const t = document.getElementById('toast');
+    t.textContent = 'Sesión de running registrada.';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+    renderDay(weekDataGlobal, selectedWeekday);
   }
 
   function openRunningEdit(){
@@ -1352,10 +1540,11 @@
   // ---- Temporizador de intervalos para running ----
   let intervalList = [];
   let intervalIdx = -1;
-  let intervalRemaining = 0;
+  let intervalEndTime = 0;
   let intervalHandle = null;
   let intervalSpoken = new Set();
   let intervalPaused = false;
+  let intervalPauseStart = 0;
 
   function buildIntervals(plan){
     const list = [{ label: 'Calentamiento', sec: 60, speed: 'Suave, según sensación', fase: 'Calentamiento', ronda: null, totalRondas: null }];
@@ -1402,6 +1591,7 @@
     intervalPaused = false;
     document.getElementById('intPauseBtn').textContent = '⏸ Pausar';
     document.getElementById('intervalOverlay').classList.add('show');
+    requestWakeLock();
     nextInterval();
   }
 
@@ -1412,45 +1602,60 @@
       return;
     }
     const cur = intervalList[intervalIdx];
-    intervalRemaining = cur.sec;
+    intervalEndTime = Date.now() + cur.sec * 1000;
     intervalSpoken = new Set();
     document.getElementById('intPhase').textContent = cur.label;
     document.getElementById('intSpeed').textContent = cur.speed ? `Velocidad: ${cur.speed}` : '';
     const next = intervalList[intervalIdx + 1];
     document.getElementById('intNext').textContent = next ? `Siguiente: ${next.label}` : 'Última fase';
-    updateIntervalDisplay();
+    updateIntervalDisplay(cur.sec);
     announceInterval(cur);
     runIntervalClock();
+    if(metronomeLinked){
+      if(cur.fase === 'Carrera') startMetronome(); else stopMetronome();
+    }
   }
 
   function runIntervalClock(){
     clearInterval(intervalHandle);
-    intervalHandle = setInterval(() => {
-      if(intervalPaused) return;
-      intervalRemaining--;
-      updateIntervalDisplay();
-      if(intervalRemaining > 0 && intervalRemaining <= 5 && !intervalSpoken.has(intervalRemaining)){
-        intervalSpoken.add(intervalRemaining);
-        speak(String(intervalRemaining));
-      }
-      if(intervalRemaining <= 0){
-        clearInterval(intervalHandle);
-        beep();
-        if(navigator.vibrate) navigator.vibrate([200,100,200]);
-        setTimeout(() => nextInterval(), 700);
-      }
-    }, 1000);
+    tickIntervalClock();
+    intervalHandle = setInterval(tickIntervalClock, 1000);
+  }
+
+  // Igual que en el descanso: se recalcula desde el reloj real, no desde un contador que
+  // pueda desincronizarse si el navegador ralentiza la pestaña en segundo plano.
+  function tickIntervalClock(){
+    if(intervalPaused) return;
+    const remaining = Math.ceil((intervalEndTime - Date.now()) / 1000);
+    updateIntervalDisplay(remaining);
+    if(remaining > 0 && remaining <= 5 && !intervalSpoken.has(remaining)){
+      intervalSpoken.add(remaining);
+      speak(String(remaining));
+    }
+    if(remaining <= 0){
+      clearInterval(intervalHandle);
+      beep();
+      if(navigator.vibrate) navigator.vibrate([200,100,200]);
+      setTimeout(() => nextInterval(), 700);
+    }
   }
 
   function toggleIntervalPause(){
     intervalPaused = !intervalPaused;
     document.getElementById('intPauseBtn').textContent = intervalPaused ? '▶ Reanudar' : '⏸ Pausar';
-    if(intervalPaused && 'speechSynthesis' in window) speechSynthesis.cancel();
+    if(intervalPaused){
+      intervalPauseStart = Date.now();
+      if('speechSynthesis' in window) speechSynthesis.cancel();
+    }else{
+      intervalEndTime += (Date.now() - intervalPauseStart);
+      tickIntervalClock();
+    }
   }
 
   function adjustIntervalTime(deltaSec){
-    intervalRemaining = Math.max(1, intervalRemaining + deltaSec);
-    updateIntervalDisplay();
+    intervalEndTime += deltaSec * 1000;
+    const remaining = Math.ceil((intervalEndTime - Date.now()) / 1000);
+    updateIntervalDisplay(remaining);
   }
 
   function skipInterval(){
@@ -1459,8 +1664,8 @@
     nextInterval();
   }
 
-  function updateIntervalDisplay(){
-    const r = Math.max(intervalRemaining, 0);
+  function updateIntervalDisplay(remainingArg){
+    const r = Math.max(remainingArg !== undefined ? remainingArg : Math.ceil((intervalEndTime - Date.now())/1000), 0);
     const m = Math.floor(r/60);
     const s = r % 60;
     const el = document.getElementById('intTime');
@@ -1468,23 +1673,116 @@
     el.classList.toggle('low', r <= 5 && r > 0);
   }
 
+  // ---- Metrónomo (independiente del crono, con opción de vincularlo a los tramos de "Carrera") ----
+  let metronomeHandle = null;
+  let metronomePlaying = false;
+  let metronomeBPM = 175;
+  let metronomeLinked = false;
+  let metronomeVibrate = false;
+
+  function updateMetronomeBPM(){
+    const val = parseInt(document.getElementById('metroBpm').value, 10);
+    if(!isNaN(val) && val >= 60 && val <= 220){
+      metronomeBPM = val;
+      if(metronomePlaying){ stopMetronome(false); startMetronome(); }
+    }
+  }
+
+  function startMetronome(){
+    if(metronomePlaying) return;
+    metronomePlaying = true;
+    const btn = document.getElementById('metroToggleBtn');
+    if(btn) btn.textContent = '⏸ Metrónomo';
+    const intervalMs = 60000 / metronomeBPM;
+    metronomeTick();
+    metronomeHandle = setInterval(metronomeTick, intervalMs);
+  }
+
+  function metronomeTick(){
+    metronomeClick();
+    if(metronomeVibrate && navigator.vibrate) navigator.vibrate(40);
+  }
+
+  // Click corto y seco (distinto del beep de fin de crono) para marcar el compás sin resultar molesto
+  function metronomeClick(){
+    try{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.frequency.value = 1000;
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.05);
+    }catch(e){ /* audio no disponible */ }
+  }
+
+  function stopMetronome(updateBtn){
+    metronomePlaying = false;
+    clearInterval(metronomeHandle);
+    if(updateBtn !== false){
+      const btn = document.getElementById('metroToggleBtn');
+      if(btn) btn.textContent = '▶ Metrónomo';
+    }
+  }
+
+  function toggleMetronome(){
+    if(metronomePlaying) stopMetronome(); else startMetronome();
+  }
+
+  // ---- ACWR (Acute:Chronic Workload Ratio) — fórmula de Foster (carga = duración_min × RPE) ----
+  function buildACWRBadge(){
+    const hist = loadHistory().filter(h => h.type === 'running' && h.cargaSesionRPE != null);
+    if(hist.length < 3) return ''; // con menos de 3 sesiones con RPE registrado, el ratio no es fiable — no se muestra
+    const now = new Date();
+    const acute = sumCargaEnDias(hist, now, 7) / 7;
+    const chronic = sumCargaEnDias(hist, now, 28) / 28;
+    if(chronic === 0) return '';
+    const ratio = acute / chronic;
+    let interpretacion, color;
+    if(ratio < 0.8){ interpretacion = 'carga baja — margen para progresar'; color = '#7fc9d8'; }
+    else if(ratio <= 1.3){ interpretacion = 'zona óptima'; color = '#7fc98f'; }
+    else if(ratio <= 1.5){ interpretacion = 'elevada — vigilar'; color = 'var(--gold)'; }
+    else { interpretacion = 'riesgo de sobrecarga — considera descarga'; color = '#e08a78'; }
+    return `<div class="rc-row"><b>📈 ACWR (carga aguda:crónica)</b><span style="color:${color}; font-weight:700;">${ratio.toFixed(2)}</span> — ${interpretacion}</div>`;
+  }
+
+  function sumCargaEnDias(hist, now, dias){
+    const limite = new Date(now); limite.setDate(limite.getDate() - dias);
+    return hist.reduce((sum, h) => {
+      const d = new Date(h.date);
+      return d >= limite && d <= now ? sum + h.cargaSesionRPE : sum;
+    }, 0);
+  }
+
+  let lastRunningEntry = null;
+  let lastSessionDurationMin = 0;
+
   function finishIntervalSession(){
     const distanceKm = computeSessionDistanceKm(intervalList);
     const cmp = compareRunningResult(distanceKm, currentRunningDateISO);
-    pushHistory({
+    lastSessionDurationMin = Math.round(intervalList.reduce((s,iv) => s + iv.sec, 0) / 60);
+    lastRunningEntry = {
       type: 'running',
       date: currentRunningDateISO,
       distanceKm: Math.round(distanceKm * 100) / 100,
       repeticiones: currentRunningPlan ? currentRunningPlan.repeticiones : null
-    });
+    };
+    pushHistory(lastRunningEntry);
+    stopMetronome();
 
     document.getElementById('intPhase').textContent = 'Sesión completada 💪';
     document.getElementById('intTime').textContent = `${distanceKm.toFixed(2)} km`;
     document.getElementById('intSpeed').textContent = cmp || '';
-    document.getElementById('intNext').textContent = '';
+    document.getElementById('intNext').innerHTML = `<button class="rc-start-btn" style="margin-top:14px;" onclick="closeIntervalAndLog()">📝 Completar datos de la sesión</button>`;
     speak(`Sesión completada. ${distanceKm.toFixed(1)} kilómetros recorridos. Buen trabajo.`);
     if(navigator.vibrate) navigator.vibrate([300,150,300,150,300]);
-    setTimeout(() => document.getElementById('intervalOverlay').classList.remove('show'), 4000);
+    releaseWakeLock();
+  }
+
+  function closeIntervalAndLog(){
+    document.getElementById('intervalOverlay').classList.remove('show');
+    openRunningLogForm();
   }
 
   function cancelIntervalTimer(){
@@ -1492,6 +1790,8 @@
     intervalPaused = false;
     if('speechSynthesis' in window) speechSynthesis.cancel();
     document.getElementById('intervalOverlay').classList.remove('show');
+    stopMetronome();
+    releaseWakeLock();
   }
 
   if ('serviceWorker' in navigator) {
@@ -1500,7 +1800,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v19';
+  const APP_VERSION = 'sensei-v21';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
