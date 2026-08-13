@@ -457,7 +457,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v21');
+        const cache = await caches.open('sensei-v22');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -1679,6 +1679,7 @@
   let metronomeBPM = 175;
   let metronomeLinked = false;
   let metronomeVibrate = false;
+  let metronomeCtx = null; // un único AudioContext reutilizado — crear uno nuevo por golpe agota el límite del navegador en pocos segundos
 
   function updateMetronomeBPM(){
     const val = parseInt(document.getElementById('metroBpm').value, 10);
@@ -1693,6 +1694,10 @@
     metronomePlaying = true;
     const btn = document.getElementById('metroToggleBtn');
     if(btn) btn.textContent = '⏸ Metrónomo';
+    try{
+      metronomeCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if(metronomeCtx.state === 'suspended') metronomeCtx.resume(); // arranca en gesto de usuario (el toque del botón), así se puede reanudar en el momento
+    }catch(e){ metronomeCtx = null; }
     const intervalMs = 60000 / metronomeBPM;
     metronomeTick();
     metronomeHandle = setInterval(metronomeTick, intervalMs);
@@ -1703,23 +1708,29 @@
     if(metronomeVibrate && navigator.vibrate) navigator.vibrate(40);
   }
 
-  // Click corto y seco (distinto del beep de fin de crono) para marcar el compás sin resultar molesto
+  // Click corto y seco (distinto del beep de fin de crono) para marcar el compás sin resultar molesto.
+  // Reutiliza siempre metronomeCtx — solo se crean nodos oscilador/ganancia nuevos por golpe, que sí es barato.
   function metronomeClick(){
+    if(!metronomeCtx) return;
     try{
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.frequency.value = 1000;
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.start(); osc.stop(ctx.currentTime + 0.05);
+      const osc = metronomeCtx.createOscillator();
+      const gain = metronomeCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = 1200;
+      gain.gain.setValueAtTime(0.7, metronomeCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, metronomeCtx.currentTime + 0.08);
+      osc.connect(gain); gain.connect(metronomeCtx.destination);
+      osc.start(); osc.stop(metronomeCtx.currentTime + 0.08);
     }catch(e){ /* audio no disponible */ }
   }
 
   function stopMetronome(updateBtn){
     metronomePlaying = false;
     clearInterval(metronomeHandle);
+    if(metronomeCtx){
+      metronomeCtx.close().catch(() => {});
+      metronomeCtx = null;
+    }
     if(updateBtn !== false){
       const btn = document.getElementById('metroToggleBtn');
       if(btn) btn.textContent = '▶ Metrónomo';
@@ -1800,7 +1811,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v21';
+  const APP_VERSION = 'sensei-v22';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();

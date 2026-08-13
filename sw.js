@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sensei-v21';
+const CACHE_NAME = 'sensei-v22';
 const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
