@@ -57,6 +57,11 @@
   .ex-meta{font-size:11px; color:var(--text-dim); margin-top:2px;}
   .chev{color:var(--text-dim); font-size:12px; transition:transform .2s;}
   .exercise.open .chev{transform:rotate(180deg);}
+  .ex-reorder{display:flex; flex-direction:column; gap:2px; margin-left:6px;}
+  .ex-right{display:flex; align-items:center; gap:8px; flex-shrink:0;}
+  .reorder-btn{background:var(--bg-card-2); border:1px solid var(--line); border-radius:5px; color:var(--text-dim);
+    font-size:9px; line-height:1; padding:3px 6px; width:22px;}
+  .reorder-btn:disabled{opacity:.25;}
   .ex-note{font-size:11.5px; padding:0 14px 10px; color:#c98a7a; line-height:1.4;}
   .ex-body{display:none; padding:0 14px 14px;}
   .exercise.open .ex-body{display:block;}
@@ -457,7 +462,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v22');
+        const cache = await caches.open('sensei-v23');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -677,6 +682,38 @@
     return `${arrow} vs ${formatShortDate(prev.date)}: ${prev.distanceKm} km → hoy ${distanceKm.toFixed(2)} km (${pct >= 0 ? '+' : ''}${pct}%)`;
   }
 
+  // ---- Orden personalizado de ejercicios (por día, no toca week.json ni la plantilla de Sensei) ----
+  function orderKey(iso){ return `sensei_order_${iso}`; }
+
+  function applyExerciseOrder(exercises, iso){
+    let savedOrder;
+    try{ savedOrder = JSON.parse(localStorage.getItem(orderKey(iso))); }catch(e){ savedOrder = null; }
+    if(!Array.isArray(savedOrder) || !savedOrder.length) return exercises;
+
+    const byName = {};
+    exercises.forEach(ex => { byName[ex.name] = ex; });
+    const ordered = [];
+    savedOrder.forEach(name => { if(byName[name]){ ordered.push(byName[name]); delete byName[name]; } });
+    // cualquier ejercicio nuevo que no estuviera en el orden guardado (p.ej. cambió la plantilla) se añade al final
+    Object.values(byName).forEach(ex => ordered.push(ex));
+    return ordered;
+  }
+
+  function moveExercise(idx, direction){
+    const iso = isoForWeekday(selectedWeekday);
+    const jsDay = selectedWeekday;
+    const day = (weekDataGlobal.overrides && weekDataGlobal.overrides[iso]) ? weekDataGlobal.overrides[iso] : weekDataGlobal.days[String(jsDay)];
+    if(!day || !Array.isArray(day.exercises)) return;
+
+    const ordered = applyExerciseOrder(day.exercises, iso);
+    const targetIdx = idx + direction;
+    if(targetIdx < 0 || targetIdx >= ordered.length) return;
+
+    [ordered[idx], ordered[targetIdx]] = [ordered[targetIdx], ordered[idx]];
+    localStorage.setItem(orderKey(iso), JSON.stringify(ordered.map(ex => ex.name)));
+    renderDay(weekDataGlobal, selectedWeekday);
+  }
+
   function applySavedProgress(day, iso){
     if(!day.exercises) return day;
     let saved;
@@ -775,7 +812,9 @@
     // render exercises (fuerza, o descanso con protocolo cronometrado)
     html += `<div class="col-labels"><span>#</span><span>kg</span><span>reps</span><span>RIR</span><span></span></div>`;
 
-    day.exercises.forEach((ex, i) => {
+    const orderedExercises = applyExerciseOrder(day.exercises, iso);
+
+    orderedExercises.forEach((ex, i) => {
       const openClass = i === 0 ? ' open' : '';
       const restSeconds = parseRestSeconds(ex.rest);
       const prevSets = getExerciseHistory(ex.name, iso).slice(-1)[0]?.sets || [];
@@ -788,7 +827,13 @@
               <div class="ex-meta">${ex.meta || ''}</div>
             </div>
           </div>
-          <span class="chev">▾</span>
+          <div class="ex-right">
+            <div class="ex-reorder">
+              <button class="reorder-btn" ${i === 0 ? 'disabled' : ''} onclick="event.stopPropagation(); moveExercise(${i}, -1)">▲</button>
+              <button class="reorder-btn" ${i === orderedExercises.length - 1 ? 'disabled' : ''} onclick="event.stopPropagation(); moveExercise(${i}, 1)">▼</button>
+            </div>
+            <span class="chev">▾</span>
+          </div>
         </div>`;
       if(ex.warnEx){
         html += `<div class="ex-note">${ex.warnEx}</div>`;
@@ -1811,7 +1856,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v22';
+  const APP_VERSION = 'sensei-v23';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
