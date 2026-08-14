@@ -50,6 +50,7 @@
   .avatar-placeholder-sm{font-size:17px;}
   .avatar-edit-badge-sm{width:15px; height:15px; font-size:8px; border-width:1.5px;}
   .coach-badge{display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;}
+  .coach-badge-name-lg{font-size:13px; font-weight:700; color:var(--text);}
   .coach-badge-name{font-size:10.5px; color:var(--text-dim); font-weight:600;}
   .home-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .home-card{position:relative; background:var(--bg-card); border:1px solid var(--line); border-radius:16px;
@@ -299,11 +300,11 @@
       <button class="settings-icon-btn" onclick="openImport()" aria-label="Importar historial" title="Importar historial">⚙️</button>
     </div>
     <div class="coach-badge" onclick="triggerCoachAvatarUpload()" style="margin-left:auto;">
-      <div class="avatar-wrap avatar-wrap-sm">
+      <div class="avatar-wrap">
         <img id="avatarImg_coachBadge" class="avatar-img" style="display:none;">
-        <span id="avatarPlaceholder_coachBadge" class="avatar-placeholder avatar-placeholder-sm"></span>
+        <span id="avatarPlaceholder_coachBadge" class="avatar-placeholder"></span>
       </div>
-      <span id="coachBadgeName" class="coach-badge-name"></span>
+      <span id="coachBadgeName" class="coach-badge-name coach-badge-name-lg"></span>
     </div>
   </div>
   <div class="training-page-title training-only" id="trainingPageTitle"></div>
@@ -561,7 +562,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v30');
+        const cache = await caches.open('sensei-v31');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -2423,7 +2424,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v30';
+  const APP_VERSION = 'sensei-v31';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
