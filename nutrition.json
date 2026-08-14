@@ -11,8 +11,21 @@
     "1": {
       "tipo": "fuerza-pierna",
       "comidas": {
-        "comida1": ["2 scoop whey", "1 plátano", "40g avena"],
-        "comida2": ["200g pollo (a ojo)", "1 puño arroz", "verdura libre"]
+        "comida1": [
+          { "id": "c1-prot", "categoria": "proteina", "texto": "2 scoop whey",
+            "equivalentes": ["3 claras + 1 huevo entero", "200g yogur griego 0%"] },
+          { "id": "c1-carb", "categoria": "carbohidrato", "texto": "40g avena",
+            "equivalentes": ["50g pan integral", "40g arroz inflado"] },
+          { "id": "c1-fruta", "categoria": "fruta", "texto": "1 plátano",
+            "equivalentes": ["1 manzana", "200g fresas"] }
+        ],
+        "comida2": [
+          { "id": "c2-prot", "categoria": "proteina", "texto": "200g pollo (a ojo)",
+            "equivalentes": ["200g pavo", "180g ternera magra", "2 latas atún al natural"] },
+          { "id": "c2-carb", "categoria": "carbohidrato", "texto": "1 puño arroz",
+            "equivalentes": ["1 puño patata cocida", "1 puño pasta integral"] },
+          "verdura libre (sin límite)"
+        ]
       }
     },
     "2": {
