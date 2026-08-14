@@ -49,6 +49,8 @@
   .avatar-wrap-sm{width:36px; height:36px; border-width:1.5px; flex-shrink:0;}
   .avatar-placeholder-sm{font-size:17px;}
   .avatar-edit-badge-sm{width:15px; height:15px; font-size:8px; border-width:1.5px;}
+  .coach-badge{display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;}
+  .coach-badge-name{font-size:10.5px; color:var(--text-dim); font-weight:600;}
   .home-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .home-card{position:relative; background:var(--bg-card); border:1px solid var(--line); border-radius:16px;
     padding:32px 12px; display:flex; flex-direction:column; align-items:center; gap:10px;}
@@ -291,10 +293,17 @@
 </div>
 
 <header>
-  <div class="brand training-only">
+  <div class="brand training-only" style="align-items:flex-start;">
     <button class="back-btn" onclick="showView('home')">← Menú</button>
     <div style="display:flex; align-items:center; gap:8px;">
       <button class="settings-icon-btn" onclick="openImport()" aria-label="Importar historial" title="Importar historial">⚙️</button>
+    </div>
+    <div class="coach-badge" onclick="triggerCoachAvatarUpload()" style="margin-left:auto;">
+      <div class="avatar-wrap avatar-wrap-sm">
+        <img id="avatarImg_coachBadge" class="avatar-img" style="display:none;">
+        <span id="avatarPlaceholder_coachBadge" class="avatar-placeholder avatar-placeholder-sm"></span>
+      </div>
+      <span id="coachBadgeName" class="coach-badge-name"></span>
     </div>
   </div>
   <div class="training-page-title training-only" id="trainingPageTitle"></div>
@@ -552,7 +561,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v29');
+        const cache = await caches.open('sensei-v30');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -886,6 +895,7 @@
       pageTitle.textContent = DIAS[jsDay];
       subline.textContent = 'Sin sesión definida';
       main.innerHTML = '<div class="rest-day"><div class="rd-title">Sin sesión definida</div>No hay datos cargados para este día.</div>';
+      updateCoachBadge('sensei');
       return;
     }
 
@@ -893,6 +903,7 @@
 
     pageTitle.textContent = day.title;
     subline.textContent = day.subtitle;
+    updateCoachBadge(day.type === 'cardio' ? 'sempai' : 'sensei');
 
     let html = '';
     if(day.warn){
@@ -1793,6 +1804,32 @@
     return localStorage.getItem(AVATAR_KEYS[who] || '');
   }
 
+  // ---- Insignia de coach en la cabecera de rutinas: Sensei en días de fuerza, Sempai en cardio ----
+  let currentCoach = 'sensei';
+  const COACH_NAMES = { sensei: 'Sensei', sempai: 'Sempai' };
+
+  function triggerCoachAvatarUpload(){
+    triggerAvatarUpload(currentCoach);
+  }
+
+  function updateCoachBadge(who){
+    currentCoach = who;
+    const img = document.getElementById('avatarImg_coachBadge');
+    const placeholder = document.getElementById('avatarPlaceholder_coachBadge');
+    const nameEl = document.getElementById('coachBadgeName');
+    if(!img) return; // cabecera de rutinas no visible ahora mismo
+    const saved = getAvatarDataUrl(who);
+    if(saved){
+      img.src = saved; img.style.display = 'block';
+      placeholder.style.display = 'none';
+    }else{
+      img.style.display = 'none'; img.src = '';
+      placeholder.style.display = 'block';
+      placeholder.textContent = who === 'sempai' ? '🏃' : '🥋';
+    }
+    nameEl.textContent = COACH_NAMES[who];
+  }
+
   function triggerAvatarUpload(who){
     avatarUploadTarget = who;
     document.getElementById('avatarFileInput').click();
@@ -1842,6 +1879,7 @@
     if(placeholder) placeholder.style.display = 'none';
     if(removeBtn) removeBtn.style.display = 'inline';
     if(who === 'sempai' && currentView === 'training') renderDay(weekDataGlobal, selectedWeekday);
+    else if(who === currentCoach) updateCoachBadge(who);
   }
 
   function removeAvatarImage(who){
@@ -1853,6 +1891,7 @@
     if(placeholder) placeholder.style.display = 'block';
     if(removeBtn) removeBtn.style.display = 'none';
     if(who === 'sempai' && currentView === 'training') renderDay(weekDataGlobal, selectedWeekday);
+    else if(who === currentCoach) updateCoachBadge(who);
   }
 
   function loadAvatarImage(){
@@ -1953,14 +1992,9 @@
     const plannedKm = computeSessionDistanceKm(buildIntervals(plan));
     const progressCmp = compareRunningPlanned(plannedKm, currentRunningDateISO);
     const acwrHtml = buildACWRBadge();
-    const sempaiPhoto = getAvatarDataUrl('sempai');
-    const sempaiAvatarHtml = `<div class="avatar-wrap avatar-wrap-sm" onclick="triggerAvatarUpload('sempai')" style="margin-bottom:10px;">
-      ${sempaiPhoto ? `<img class="avatar-img" src="${sempaiPhoto}" alt="Sempai">` : `<span class="avatar-placeholder avatar-placeholder-sm">🏃</span>`}
-      <span class="avatar-edit-badge avatar-edit-badge-sm">✏️</span>
-    </div>`;
 
     return `<div class="running-card">
-      <div class="rc-title" style="display:flex; align-items:center; gap:10px;">${sempaiAvatarHtml}<span>${plan.titulo} ${editedBadge}</span></div>
+      <div class="rc-title">${plan.titulo} ${editedBadge}</div>
       <div class="rc-row"><b>Planificación del día</b><div class="rc-plan">${planLines}</div></div>
       <div class="rc-row"><b>FC objetivo</b>${plan.fcObjetivo || '—'}</div>
       <div class="rc-row"><b>Terreno</b>${plan.terreno || '—'}</div>
@@ -2389,7 +2423,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v29';
+  const APP_VERSION = 'sensei-v30';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
