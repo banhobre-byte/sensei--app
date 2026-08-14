@@ -36,6 +36,19 @@
   /* ---- Menú de inicio ---- */
   .home-menu{padding:26px 18px; min-height:100vh; box-sizing:border-box; background:var(--bg);}
   .home-brand{margin-bottom:36px;}
+  .avatar-wrap{position:relative; width:92px; height:92px; border-radius:50%; background:var(--bg-card);
+    border:2px solid var(--gold-dim); display:flex; align-items:center; justify-content:center;
+    overflow:hidden; cursor:pointer;}
+  .avatar-img{width:100%; height:100%; object-fit:cover;}
+  .avatar-placeholder{font-size:38px;}
+  .avatar-edit-badge{position:absolute; bottom:-2px; right:-2px; background:var(--gold); color:#0d0d0d;
+    font-size:12px; width:24px; height:24px; border-radius:50%; display:flex; align-items:center;
+    justify-content:center; border:2px solid var(--bg); pointer-events:none;}
+  .avatar-remove-link{background:transparent; border:none; color:var(--text-dim); font-size:11px;
+    text-decoration:underline; padding:0;}
+  .avatar-wrap-sm{width:36px; height:36px; border-width:1.5px; flex-shrink:0;}
+  .avatar-placeholder-sm{font-size:17px;}
+  .avatar-edit-badge-sm{width:15px; height:15px; font-size:8px; border-width:1.5px;}
   .home-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .home-card{position:relative; background:var(--bg-card); border:1px solid var(--line); border-radius:16px;
     padding:32px 12px; display:flex; flex-direction:column; align-items:center; gap:10px;}
@@ -61,6 +74,7 @@
   .nutrition-view .brand{padding:22px 18px 12px; border-bottom:1px solid var(--line);
     background:linear-gradient(180deg,#141210,#0d0d0d); justify-content:flex-start;}
   .nutri-page-title{font-size:19px; font-weight:800; color:var(--gold); padding:18px 18px 4px;}
+  .training-page-title{font-size:19px; font-weight:800; color:var(--gold); margin-top:14px;}
   #nutritionContent{padding:0 18px;}
   .subline{margin-top:6px; font-size:13px; color:var(--text-dim);}
   .subline b{color:var(--text);}
@@ -251,7 +265,14 @@
 <body class="view-home">
 
 <div class="home-menu" id="homeMenu">
-  <div class="home-brand brand">
+  <div class="home-brand brand" style="flex-direction:column; align-items:center; gap:8px;">
+    <div class="avatar-wrap" onclick="triggerAvatarUpload('sensei')">
+      <img id="avatarImg_sensei" class="avatar-img" style="display:none;" alt="Sensei">
+      <span id="avatarPlaceholder_sensei" class="avatar-placeholder">🥋</span>
+      <span class="avatar-edit-badge">✏️</span>
+    </div>
+    <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="handleAvatarFile(event)">
+    <button id="avatarRemove_sensei" class="avatar-remove-link" style="display:none;" onclick="event.stopPropagation(); removeAvatarImage('sensei');">Quitar imagen</button>
     <h1>Sensei</h1>
     <span class="badge" id="appVersionBadge">cargando…</span>
   </div>
@@ -276,6 +297,7 @@
       <button class="settings-icon-btn" onclick="openImport()" aria-label="Importar historial" title="Importar historial">⚙️</button>
     </div>
   </div>
+  <div class="training-page-title training-only" id="trainingPageTitle"></div>
   <div class="subline training-only" id="daySubline">Cargando sesión de hoy…</div>
   <div class="staleflag training-only" id="staleFlag">⚠️ Sin conexión — mostrando la última sesión guardada, puede no ser la más reciente.</div>
   <button class="checkin-btn training-only" id="checkinBtn" onclick="openCheckin()">
@@ -299,7 +321,16 @@
   <div class="brand">
     <button class="back-btn" onclick="showView('home')">← Menú</button>
   </div>
-  <div class="nutri-page-title">🍽️ Nutrición</div>
+  <div class="nutri-page-title" style="display:flex; align-items:center; gap:12px;">
+    <div class="avatar-wrap avatar-wrap-sm" onclick="triggerAvatarUpload('itamae')">
+      <img id="avatarImg_itamae" class="avatar-img" style="display:none;" alt="Itamae">
+      <span id="avatarPlaceholder_itamae" class="avatar-placeholder avatar-placeholder-sm">🧑‍🍳</span>
+      <span class="avatar-edit-badge avatar-edit-badge-sm">✏️</span>
+    </div>
+    <span>🍽️ Nutrición</span>
+    <button id="avatarRemove_itamae" class="avatar-remove-link" style="display:none; margin-left:auto;" onclick="removeAvatarImage('itamae');">Quitar</button>
+  </div>
+  <div class="day-selector" id="nutritionDaySelector" style="padding:0 18px 14px;"></div>
   <div id="nutritionContent"><div class="loading">Cargando…</div></div>
 </div>
 
@@ -507,7 +538,8 @@
   let weekDataGlobal = null;
   let currentRunningPlan = null;
   let currentRunningDateISO = null;
-  let selectedWeekday = new Date().getDay(); // 0=domingo..6=sábado, día que se está mostrando ahora
+  let selectedWeekday = new Date().getDay(); // 0=domingo..6=sábado, día que se está mostrando ahora en RUTINAS
+  let nutritionSelectedWeekday = new Date().getDay(); // día independiente para NUTRICIÓN — no comparte estado con rutinas
 
   async function loadWeek(){
     const main = document.getElementById('main');
@@ -520,7 +552,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v26');
+        const cache = await caches.open('sensei-v29');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -574,6 +606,28 @@
     selectedWeekday = weekday;
     renderDaySelector();
     renderDay(weekDataGlobal, weekday);
+  }
+
+  function renderNutritionDaySelector(){
+    const todayWeekday = new Date().getDay();
+    const sel = document.getElementById('nutritionDaySelector');
+    if(!sel) return;
+    let html = '';
+    for(let w = 1; w <= 7; w++){
+      const weekday = w % 7;
+      const isToday = weekday === todayWeekday;
+      const isActive = weekday === nutritionSelectedWeekday;
+      html += `<button class="day-btn${isActive ? ' active' : ''}" onclick="selectNutritionDay(${weekday})">
+        ${DIAS_CORTO[weekday]}${isToday ? '<span class="day-dot"></span>' : ''}
+      </button>`;
+    }
+    sel.innerHTML = html;
+  }
+
+  function selectNutritionDay(weekday){
+    nutritionSelectedWeekday = weekday;
+    renderNutritionDaySelector();
+    renderNutritionView();
   }
 
   function todayISO(){
@@ -826,16 +880,19 @@
     const main = document.getElementById('main');
     const footer = document.getElementById('footer');
     const subline = document.getElementById('daySubline');
+    const pageTitle = document.getElementById('trainingPageTitle');
 
     if(!day){
-      subline.innerHTML = DIAS[jsDay];
+      pageTitle.textContent = DIAS[jsDay];
+      subline.textContent = 'Sin sesión definida';
       main.innerHTML = '<div class="rest-day"><div class="rd-title">Sin sesión definida</div>No hay datos cargados para este día.</div>';
       return;
     }
 
     day = applySavedProgress(day, iso);
 
-    subline.innerHTML = `<b>${day.title}</b> · ${day.subtitle}`;
+    pageTitle.textContent = day.title;
+    subline.textContent = day.subtitle;
 
     let html = '';
     if(day.warn){
@@ -1478,8 +1535,8 @@
   }
 
   function renderNutritionView(){
-    const iso = isoForWeekday(selectedWeekday);
-    const plan = getNutritionForISO(iso, selectedWeekday);
+    const iso = isoForWeekday(nutritionSelectedWeekday);
+    const plan = getNutritionForISO(iso, nutritionSelectedWeekday);
     const container = document.getElementById('nutritionContent');
     const hist = loadNutritionHistory();
     const existing = hist.find(h => h.fecha === iso);
@@ -1622,7 +1679,7 @@
   }
 
   function saveNutrition(){
-    const iso = isoForWeekday(selectedWeekday);
+    const iso = isoForWeekday(nutritionSelectedWeekday);
     const proteinaVal = document.getElementById('nuProteina').value;
     const ventanaVal = document.getElementById('nuVentana').value.trim();
 
@@ -1663,8 +1720,8 @@
 
   function openNutritionSummary(){
     saveNutrition(); // asegura que el resumen sale de datos ya guardados en el historial, como pide Itamae
-    const iso = isoForWeekday(selectedWeekday);
-    const plan = getNutritionForISO(iso, selectedWeekday);
+    const iso = isoForWeekday(nutritionSelectedWeekday);
+    const plan = getNutritionForISO(iso, nutritionSelectedWeekday);
     const hist = loadNutritionHistory();
     const entry = hist.find(h => h.fecha === iso);
     if(!entry || !plan){
@@ -1726,12 +1783,94 @@
     return out.trim();
   }
 
+  // ---- Fotos personalizables de cada coach — Sensei, Sempai (running) e Itamae (nutrición).
+  // Cada una se guarda por separado en localStorage, redimensionada en el propio móvil antes de
+  // guardar para no agotar el espacio disponible ----
+  const AVATAR_KEYS = { sensei: 'sensei_avatar_img', sempai: 'sempai_avatar_img', itamae: 'itamae_avatar_img' };
+  let avatarUploadTarget = 'sensei';
+
+  function getAvatarDataUrl(who){
+    return localStorage.getItem(AVATAR_KEYS[who] || '');
+  }
+
+  function triggerAvatarUpload(who){
+    avatarUploadTarget = who;
+    document.getElementById('avatarFileInput').click();
+  }
+
+  function handleAvatarFile(evt){
+    const who = avatarUploadTarget;
+    const file = evt.target.files[0];
+    evt.target.value = ''; // permite volver a elegir el mismo archivo más adelante si hace falta
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const img = new Image();
+      img.onload = function(){
+        const maxDim = 320;
+        let w = img.width, h = img.height;
+        if(w > h && w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; }
+        else if(h >= w && h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        try{
+          localStorage.setItem(AVATAR_KEYS[who], dataUrl);
+          applyAvatarImage(who, dataUrl);
+          const t = document.getElementById('toast');
+          t.textContent = 'Imagen actualizada.';
+          t.classList.add('show');
+          setTimeout(() => t.classList.remove('show'), 2000);
+        }catch(err){
+          alert('No se pudo guardar la imagen — prueba con otra foto.');
+        }
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Actualiza el avatar SI está presente en la pantalla actual — Sempai vive dentro de la tarjeta
+  // de running, que se reconstruye entera en cada render, así que ese caso puede no encontrar
+  // el nodo (no pasa nada: la próxima vez que se genere esa tarjeta leerá la foto guardada directamente).
+  function applyAvatarImage(who, dataUrl){
+    const imgEl = document.getElementById('avatarImg_' + who);
+    const placeholder = document.getElementById('avatarPlaceholder_' + who);
+    const removeBtn = document.getElementById('avatarRemove_' + who);
+    if(imgEl){ imgEl.src = dataUrl; imgEl.style.display = 'block'; }
+    if(placeholder) placeholder.style.display = 'none';
+    if(removeBtn) removeBtn.style.display = 'inline';
+    if(who === 'sempai' && currentView === 'training') renderDay(weekDataGlobal, selectedWeekday);
+  }
+
+  function removeAvatarImage(who){
+    localStorage.removeItem(AVATAR_KEYS[who]);
+    const imgEl = document.getElementById('avatarImg_' + who);
+    const placeholder = document.getElementById('avatarPlaceholder_' + who);
+    const removeBtn = document.getElementById('avatarRemove_' + who);
+    if(imgEl){ imgEl.style.display = 'none'; imgEl.src = ''; }
+    if(placeholder) placeholder.style.display = 'block';
+    if(removeBtn) removeBtn.style.display = 'none';
+    if(who === 'sempai' && currentView === 'training') renderDay(weekDataGlobal, selectedWeekday);
+  }
+
+  function loadAvatarImage(){
+    ['sensei', 'itamae'].forEach(who => {
+      const saved = getAvatarDataUrl(who);
+      if(saved) applyAvatarImage(who, saved);
+    });
+  }
+
   let currentView = 'home';
 
   function showView(view){
     currentView = view;
     document.body.className = 'view-' + view;
-    if(view === 'nutrition') renderNutritionView();
+    if(view === 'nutrition'){
+      renderNutritionDaySelector();
+      renderNutritionView();
+    }
     window.scrollTo(0, 0);
   }
 
@@ -1814,9 +1953,14 @@
     const plannedKm = computeSessionDistanceKm(buildIntervals(plan));
     const progressCmp = compareRunningPlanned(plannedKm, currentRunningDateISO);
     const acwrHtml = buildACWRBadge();
+    const sempaiPhoto = getAvatarDataUrl('sempai');
+    const sempaiAvatarHtml = `<div class="avatar-wrap avatar-wrap-sm" onclick="triggerAvatarUpload('sempai')" style="margin-bottom:10px;">
+      ${sempaiPhoto ? `<img class="avatar-img" src="${sempaiPhoto}" alt="Sempai">` : `<span class="avatar-placeholder avatar-placeholder-sm">🏃</span>`}
+      <span class="avatar-edit-badge avatar-edit-badge-sm">✏️</span>
+    </div>`;
 
     return `<div class="running-card">
-      <div class="rc-title">${plan.titulo} ${editedBadge}</div>
+      <div class="rc-title" style="display:flex; align-items:center; gap:10px;">${sempaiAvatarHtml}<span>${plan.titulo} ${editedBadge}</span></div>
       <div class="rc-row"><b>Planificación del día</b><div class="rc-plan">${planLines}</div></div>
       <div class="rc-row"><b>FC objetivo</b>${plan.fcObjetivo || '—'}</div>
       <div class="rc-row"><b>Terreno</b>${plan.terreno || '—'}</div>
@@ -2245,12 +2389,13 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v26';
+  const APP_VERSION = 'sensei-v29';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
   loadNutrition();
   updateCheckinHeader();
+  loadAvatarImage();
 </script>
 
 </body>
