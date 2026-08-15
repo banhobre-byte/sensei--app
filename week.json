@@ -223,10 +223,10 @@
           {"fase": "Carrera", "tiempoSeg": 300, "tiempoLabel": "5'", "velocidad": "6.5-7.0 km/h"},
           {"fase": "Andando", "tiempoSeg": 60, "tiempoLabel": "1'", "velocidad": "5.0-5.5 km/h"}
         ],
-        "repeticiones": 5,
+        "repeticiones": 6,
         "fcObjetivo": "132-135 (sube margen si calor/humedad — manda el Talk Test)",
-        "terreno": "Por confirmar — vuelve el Suunto como dispositivo principal. Avisa si el terreno habitual en Madrid no es cinta, para ajustar por impacto.",
-        "comentarios": "⏳ Rondas condicionadas al jueves 13/8: 5-6 según cómo fuera esa sesión. 🎯 Combinado esta semana por el viaje del sábado — cierre de la semana de progresión 4'→5'. Después del running: hipopresivos y colgado (abajo). ⚠️ Si dolor lumbar irradiado a pierna, parar inmediatamente."
+        "terreno": "Cinta",
+        "comentarios": "🎯 Cierre de semana — repite protocolo, consolidación antes de nueva progresión. Cue técnico: pasos cortos y rápidos en el trote — cadencia marcando 152spm en las 2 últimas sesiones, por debajo del objetivo 170-180spm; no fuerces velocidad, solo acorta zancada. Historial: martes 5'/1'x5 FC121, jueves 5'/1'x6 FC123 — ambas limpias, sin dolor. Con esta sesión se cierra el bloque de 5'; próxima progresión (6' de trote o menos descanso) se define en la próxima planificación semanal. Después del running: hipopresivos y colgado (abajo). ⚠️ Si dolor lumbar irradiado a pierna, parar inmediatamente."
       },
       "exercises": [
         {

@@ -328,19 +328,19 @@
 </footer>
 
 <div id="nutritionArea" class="nutrition-view">
-  <div class="brand">
+  <div class="brand" style="align-items:flex-start;">
     <button class="back-btn" onclick="showView('home')">← Menú</button>
   </div>
-  <div class="nutri-page-title" style="display:flex; align-items:center; gap:12px;">
-    <div class="avatar-wrap avatar-wrap-sm" onclick="triggerAvatarUpload('itamae')">
+  <div style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:6px;">
+    <div class="avatar-wrap" onclick="triggerAvatarUpload('itamae')">
       <img id="avatarImg_itamae" class="avatar-img" style="display:none;" alt="Itamae">
-      <span id="avatarPlaceholder_itamae" class="avatar-placeholder avatar-placeholder-sm">🧑‍🍳</span>
-      <span class="avatar-edit-badge avatar-edit-badge-sm">✏️</span>
+      <span id="avatarPlaceholder_itamae" class="avatar-placeholder">🧑‍🍳</span>
+      <span class="avatar-edit-badge">✏️</span>
     </div>
-    <span>🍽️ Nutrición</span>
-    <button id="avatarRemove_itamae" class="avatar-remove-link" style="display:none; margin-left:auto;" onclick="removeAvatarImage('itamae');">Quitar</button>
+    <button id="avatarRemove_itamae" class="avatar-remove-link" style="display:none;" onclick="removeAvatarImage('itamae');">Quitar imagen</button>
+    <div class="nutri-page-title" style="padding:0;">🍽️ Nutrición</div>
   </div>
-  <div class="day-selector" id="nutritionDaySelector" style="padding:0 18px 14px;"></div>
+  <div class="day-selector" id="nutritionDaySelector" style="padding:14px 18px 14px; justify-content:center;"></div>
   <div id="nutritionContent"><div class="loading">Cargando…</div></div>
 </div>
 
@@ -562,7 +562,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v32');
+        const cache = await caches.open('sensei-v34');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -579,8 +579,11 @@
 
   // Calcula la fecha real (dentro de la semana en curso, domingo-sábado) para un día de la semana dado
   function dateForWeekday(weekday){
+    // Siempre hacia adelante desde hoy (ventana móvil de 7 días), nunca hacia atrás — así "mañana"
+    // es siempre alcanzable sin importar qué día de la semana sea hoy. Antes, con una resta directa,
+    // pedir el domingo un sábado devolvía el domingo que ya había pasado, no el de mañana.
     const today = new Date();
-    const diff = weekday - today.getDay();
+    const diff = (weekday - today.getDay() + 7) % 7;
     const target = new Date(today);
     target.setDate(today.getDate() + diff);
     return target;
@@ -1546,6 +1549,14 @@
     return html;
   }
 
+  // Fuente de verdad del tipo de día: siempre week.json (que viene del calendario Google),
+  // nunca el campo "tipo" propio de nutrition.json — así nutrición no se desincroniza cuando
+  // hay una semana con overrides (vacaciones, cambios de gym, etc.)
+  function getRealTrainingDay(iso, weekday){
+    if(!weekDataGlobal) return null;
+    return (weekDataGlobal.overrides && weekDataGlobal.overrides[iso]) ? weekDataGlobal.overrides[iso] : weekDataGlobal.days[String(weekday)];
+  }
+
   function renderNutritionView(){
     const iso = isoForWeekday(nutritionSelectedWeekday);
     const plan = getNutritionForISO(iso, nutritionSelectedWeekday);
@@ -1561,9 +1572,17 @@
     const prevItems = {};
     (existing && Array.isArray(existing.items) ? existing.items : []).forEach(it => { prevItems[it.id] = it; });
 
+    const realDay = getRealTrainingDay(iso, nutritionSelectedWeekday);
+    const realTitle = realDay ? realDay.title : null;
+
     let html = buildAdherenceBadge();
     html += buildWeeklyMacroChart();
-    html += `<div class="ci-hint" style="margin-bottom:10px;">Tipo de día: ${plan.tipo || '—'}</div>`;
+    html += `<div class="ci-hint" style="margin-bottom:4px;">Tipo de día (según rutinas): <b style="color:var(--text);">${realTitle || '—'}</b></div>`;
+    if(realTitle && plan.tipo && !realTitle.toLowerCase().includes(plan.tipo.split('-').pop())){
+      html += `<div class="ci-hint" style="margin-bottom:10px; color:#e08a78;">⚠️ El plan de comidas de Itamae está pensado para "${plan.tipo}" — puede no encajar del todo con el día real. Pide a Itamae un ajuste para esta fecha si hace falta.</div>`;
+    }else{
+      html += `<div style="margin-bottom:10px;"></div>`;
+    }
 
     Object.keys(plan.comidas || {}).forEach(mealKey => {
       html += `<div class="ci-field nu-meal"><label>${mealKey}</label>`;
@@ -2424,7 +2443,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v32';
+  const APP_VERSION = 'sensei-v34';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
