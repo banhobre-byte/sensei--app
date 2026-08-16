@@ -1,75 +1,79 @@
 {
-  "updated": "2026-08-18",
-  "targetDiario": {
-    "kcal": 2600,
-    "nota": "Estimación provisional de Itamae para mantenimiento/recomposición — ajustar con datos reales de peso de las próximas semanas."
-  },
+  "updated": "2026-08-16",
+  "semana": "17-23 agosto 2026",
+  "notas_generales": "Fase mantenimiento (~2850 kcal, 191g proteína). Comida1 = antes del entreno si es tarde/noche; después si es entreno matutino. Unidades aproximadas, no gramos exactos.",
   "days": {
     "0": {
-      "tipo": "fuerza-empuje",
+      "tipo": "descanso",
+      "hora_sesion": "09:00 (hipopresivos + colgado, ligero)",
+      "hora_comida1": "~12:00",
+      "hora_comida2": "~19:30",
       "comidas": {
-        "comida1": ["PENDIENTE — Itamae completa"],
-        "comida2": ["PENDIENTE — Itamae completa"]
+        "comida1": ["2 huevos + 1 lata atún", "pan integral 2 rebanadas", "aceite oliva 1 cda", "fruta 1 pieza"],
+        "comida2": ["200g pescado blanco o pollo", "1 puño arroz/patata", "verdura libre", "aceite oliva 1 cda"]
       }
     },
     "1": {
       "tipo": "fuerza-pierna",
+      "hora_sesion": "18:30-20:00",
+      "hora_comida1": "~15:30 (pre-entreno)",
+      "hora_comida2": "~20:30 (post-entreno)",
       "comidas": {
-        "comida1": [
-          { "id": "c1-prot", "categoria": "proteina", "texto": "2 scoop whey",
-            "equivalentes": ["3 claras + 1 huevo entero", "200g yogur griego 0%"],
-            "kcal_aprox": 240, "prot_g": 48, "carb_g": 6, "grasa_g": 3 },
-          { "id": "c1-carb", "categoria": "carbohidrato", "texto": "40g avena",
-            "equivalentes": ["50g pan integral", "40g arroz inflado"],
-            "kcal_aprox": 150, "prot_g": 5, "carb_g": 27, "grasa_g": 3 },
-          { "id": "c1-fruta", "categoria": "fruta", "texto": "1 plátano",
-            "equivalentes": ["1 manzana", "200g fresas"],
-            "kcal_aprox": 105, "prot_g": 1, "carb_g": 27, "grasa_g": 0 }
-        ],
-        "comida2": [
-          { "id": "c2-prot", "categoria": "proteina", "texto": "200g pollo (a ojo)",
-            "equivalentes": ["200g pavo", "180g ternera magra", "2 latas atún al natural"],
-            "kcal_aprox": 330, "prot_g": 62, "carb_g": 0, "grasa_g": 7 },
-          { "id": "c2-carb", "categoria": "carbohidrato", "texto": "1 puño arroz",
-            "equivalentes": ["1 puño patata cocida", "1 puño pasta integral"],
-            "kcal_aprox": 200, "prot_g": 4, "carb_g": 44, "grasa_g": 0 },
-          "verdura libre (sin límite)"
-        ]
-      }
+        "comida1": ["2 scoop whey", "1 plátano", "40g avena", "puñado frutos secos"],
+        "comida2": ["200g pollo (a ojo, palma+dedo)", "1 puño y medio arroz", "verdura libre", "aceite oliva 1 cda"]
+      },
+      "notas": "RIR 0-1 en varios ejercicios — no recortar carbohidrato de comida1."
     },
     "2": {
       "tipo": "cardio-z2",
+      "hora_sesion": "15:00-15:45 (día después de Pierna)",
+      "hora_comida1": "~12:00 (pre)",
+      "hora_comida2": "~16:15 (post)",
       "comidas": {
-        "comida1": ["PENDIENTE — Itamae completa"],
-        "comida2": ["PENDIENTE — Itamae completa"]
+        "comida1": ["2 huevos", "pan integral 2 rebanadas", "1 pieza de fruta"],
+        "comida2": ["1 lata atún + 1 scoop whey", "1 puño arroz", "verdura libre"]
       }
     },
     "3": {
-      "tipo": "descanso",
+      "tipo": "fuerza-traccion",
+      "hora_sesion": "18:30-20:00",
+      "hora_comida1": "~15:30 (pre-entreno)",
+      "hora_comida2": "~20:30 (post-entreno)",
       "comidas": {
-        "comida1": ["PENDIENTE — Itamae completa"],
-        "comida2": ["PENDIENTE — Itamae completa"]
-      }
+        "comida1": ["2 scoop whey", "1 plátano", "40g avena", "puñado frutos secos"],
+        "comida2": ["200g pollo o ternera magra", "1 puño y medio arroz", "verdura libre", "aceite oliva 1 cda"]
+      },
+      "notas": "RIR 0-1/1-2 mixto — mantener carga de comida1."
     },
     "4": {
       "tipo": "cardio-z2",
+      "hora_sesion": "15:00-15:45 (día después de Tracción)",
+      "hora_comida1": "~12:00 (pre)",
+      "hora_comida2": "~16:15 (post)",
       "comidas": {
-        "comida1": ["PENDIENTE — Itamae completa"],
-        "comida2": ["PENDIENTE — Itamae completa"]
+        "comida1": ["2 huevos", "pan integral 2 rebanadas", "1 pieza de fruta"],
+        "comida2": ["1 lata atún + 1 scoop whey", "1 puño arroz", "verdura libre"]
       }
     },
     "5": {
-      "tipo": "fuerza-tracción",
+      "tipo": "fuerza-empuje",
+      "hora_sesion": "15:00-16:30",
+      "hora_comida1": "~12:00 (pre-entreno)",
+      "hora_comida2": "~17:00 (post-entreno)",
       "comidas": {
-        "comida1": ["PENDIENTE — Itamae completa"],
-        "comida2": ["PENDIENTE — Itamae completa"]
-      }
+        "comida1": ["2 scoop whey", "1 plátano", "40g avena"],
+        "comida2": ["200g pollo o pescado azul", "1 puño y medio arroz", "verdura libre", "aceite oliva 1 cda"]
+      },
+      "notas": "RIR 0-1 en varios ejercicios — ventana pre-entreno corta (3h), priorizar digestión fácil."
     },
     "6": {
       "tipo": "cardio-z2",
+      "hora_sesion": "09:00-09:45 (cierre semana, ayuno mantenido)",
+      "hora_comida1": "~10:00 (post-entreno)",
+      "hora_comida2": "~19:00",
       "comidas": {
-        "comida1": ["PENDIENTE — Itamae completa"],
-        "comida2": ["PENDIENTE — Itamae completa"]
+        "comida1": ["2 scoop whey", "1 plátano", "40g avena"],
+        "comida2": ["200g pollo o pescado", "1 puño arroz/patata", "verdura libre", "aceite oliva 1 cda"]
       }
     }
   },
