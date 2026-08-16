@@ -59,23 +59,46 @@
   .home-card-label{font-size:14px; font-weight:800; color:var(--text); text-transform:uppercase; letter-spacing:.5px;}
   .home-card-dot{position:absolute; top:14px; right:14px; width:9px; height:9px;}
 
-  /* ---- Control de vista: home / training / nutrition ---- */
+  /* ---- Control de vista: home / training / nutrition / progreso ---- */
   .home-menu{display:flex; flex-direction:column;}
-  body.view-training .home-menu, body.view-nutrition .home-menu{display:none;}
+  body.view-training .home-menu, body.view-nutrition .home-menu, body.view-progreso .home-menu{display:none;}
   .training-only{display:none;}
   body.view-training .training-only{display:block;}
   body.view-training .checkin-btn.training-only{display:flex;}
   body.view-training .day-selector.training-only{display:flex;}
-  body.view-home #main, body.view-nutrition #main{display:none;}
-  body.view-home #footer, body.view-nutrition #footer{display:none;}
+  body.view-home #main, body.view-nutrition #main, body.view-progreso #main{display:none;}
+  body.view-home #footer, body.view-nutrition #footer, body.view-progreso #footer{display:none;}
   header{display:none;}
   body.view-training header{display:block;}
   .back-btn{background:transparent; border:1px solid var(--line); border-radius:8px; color:var(--text-dim);
     font-size:12px; padding:7px 12px;}
   .nutrition-view{display:none; padding:0 0 30px;}
   body.view-nutrition .nutrition-view{display:block;}
+  .progreso-view{display:none; padding:0 0 30px;}
+  body.view-progreso .progreso-view{display:block;}
   .nutrition-view .brand{padding:22px 18px 12px; border-bottom:1px solid var(--line);
     background:linear-gradient(180deg,#141210,#0d0d0d); justify-content:flex-start;}
+  .progreso-view .brand{padding:22px 18px 12px; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#141210,#0d0d0d); justify-content:flex-start;}
+
+  /* ---- Timeline de fases (Progreso) ---- */
+  .phase-card{background:var(--bg-card); border:1px solid var(--line); border-radius:12px;
+    padding:16px; margin:0 18px 14px;}
+  .phase-card.current{border-color:var(--gold-dim); background:linear-gradient(180deg,#1c1710,#151210);}
+  .phase-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;}
+  .phase-name{font-size:15.5px; font-weight:800; color:var(--text);}
+  .phase-card.current .phase-name{color:var(--gold);}
+  .phase-dates{font-size:11px; color:var(--text-dim);}
+  .phase-now-tag{display:inline-block; background:var(--gold); color:#0d0d0d; font-size:10px;
+    font-weight:800; padding:2px 8px; border-radius:5px; margin-left:8px; text-transform:uppercase;}
+  .phase-row{display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-dim);
+    padding:5px 0; border-top:1px solid var(--line);}
+  .phase-row b{color:var(--text); font-weight:600;}
+  .phase-row-label{color:var(--text-dim);}
+  .phase-goal{font-size:12px; color:var(--text-dim); line-height:1.5; margin-top:8px;}
+  .phase-connector{width:2px; height:14px; background:var(--line); margin:0 auto;}
+  .progreso-section-title{font-size:11px; text-transform:uppercase; letter-spacing:.8px;
+    color:var(--text-dim); font-weight:700; padding:0 18px; margin:20px 0 10px;}
   .nutri-page-title{font-size:19px; font-weight:800; color:var(--gold); padding:18px 18px 4px;}
   .training-page-title{font-size:19px; font-weight:800; color:var(--gold); margin-top:14px;}
   #nutritionContent{padding:0 18px;}
@@ -290,6 +313,10 @@
       <span class="home-card-icon">🍽️</span>
       <span class="home-card-label">Nutrición</span>
     </button>
+    <button class="home-card" style="grid-column:1 / -1;" onclick="showView('progreso')">
+      <span class="home-card-icon">📈</span>
+      <span class="home-card-label">Progreso</span>
+    </button>
   </div>
 </div>
 
@@ -342,6 +369,15 @@
   </div>
   <div class="day-selector" id="nutritionDaySelector" style="padding:14px 18px 14px; justify-content:center;"></div>
   <div id="nutritionContent"><div class="loading">Cargando…</div></div>
+</div>
+
+<div id="progresoArea" class="progreso-view">
+  <div class="brand" style="align-items:flex-start;">
+    <button class="back-btn" onclick="showView('home')">← Menú</button>
+  </div>
+  <div class="nutri-page-title" style="padding:14px 18px 4px;">📈 Progreso</div>
+  <div class="ci-hint" style="padding:0 18px 14px;">Periodización hacia el pico de verano 2027 — fuerza (Sensei) y composición corporal (Itamae), alineadas por fase.</div>
+  <div id="progresoContent"><div class="loading">Cargando…</div></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -562,7 +598,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v34');
+        const cache = await caches.open('sensei-v36');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -1557,6 +1593,29 @@
     return (weekDataGlobal.overrides && weekDataGlobal.overrides[iso]) ? weekDataGlobal.overrides[iso] : weekDataGlobal.days[String(weekday)];
   }
 
+  // Horas de comida dinámicas — se calculan a partir de hora_entreno en vez de guardarse fijas,
+  // así no quedan desfasadas si el entreno se mueve de última hora (spec de Itamae).
+  function calcularHorasComida(horaEntreno, duracionMin){
+    if(!horaEntreno) return null;
+    duracionMin = duracionMin || 90;
+    const [h, m] = horaEntreno.split(':').map(Number);
+    if(isNaN(h) || isNaN(m)) return null;
+    const entrenoMin = h * 60 + m;
+    const finEntrenoMin = entrenoMin + duracionMin;
+    const esManana = h < 11;
+
+    function minToHora(min){
+      const hh = Math.floor(min / 60) % 24;
+      const mm = ((min % 60) + 60) % 60;
+      return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+    }
+
+    if(esManana){
+      return { comida1: minToHora(finEntrenoMin + 45), comida2: '≈19:00' };
+    }
+    return { comida1: minToHora(entrenoMin - 180), comida2: minToHora(finEntrenoMin + 60) };
+  }
+
   function renderNutritionView(){
     const iso = isoForWeekday(nutritionSelectedWeekday);
     const plan = getNutritionForISO(iso, nutritionSelectedWeekday);
@@ -1584,8 +1643,11 @@
       html += `<div style="margin-bottom:10px;"></div>`;
     }
 
+    const horas = calcularHorasComida(plan.hora_entreno);
+
     Object.keys(plan.comidas || {}).forEach(mealKey => {
-      html += `<div class="ci-field nu-meal"><label>${mealKey}</label>`;
+      const horaTag = horas && horas[mealKey] ? ` <span style="color:var(--gold-dim); font-weight:600;">· ${horas[mealKey]}</span>` : '';
+      html += `<div class="ci-field nu-meal"><label>${mealKey}${horaTag}</label>`;
       (plan.comidas[mealKey] || []).forEach(item => {
         if(typeof item === 'string'){
           // formato antiguo (retrocompatibilidad) — texto plano, sin botones de estado ni macros
@@ -1923,6 +1985,85 @@
 
   let currentView = 'home';
 
+  // ============ PROGRESO — periodización por fases, aprobada por Itamae y Fernando ============
+  const FASES = [
+    {
+      id: 'volumen1',
+      nombre: 'Volumen / hipertrofia',
+      fechas: 'Ago 2026 – Oct/Nov 2026',
+      pesoInicio: '86,8 kg', pesoFin: '89-90 kg', ritmo: 'Mant. 2-3 sem, luego +0,25-0,4%/sem', grasa: 'No superar referencia actual',
+      fuerza: 'Dominadas 37→40+ reps · Fondos 12,5-15kg→17,5kg · Remo 95kg→100-105kg · Curl martillo 12,5kg→15kg',
+      objetivo: 'Superávit moderado (+300-500 kcal), proteína 1,8-2,2 g/kg. Sobrecarga progresiva semana a semana mientras el RIR lo permita.'
+    },
+    {
+      id: 'consolidacion',
+      nombre: 'Consolidación',
+      fechas: 'Dic 2026 – Ene 2027',
+      pesoInicio: '~89-90 kg', pesoFin: 'Estable ±0,5 kg', ritmo: 'Mantenimiento estricto', grasa: 'Estable, sin subir',
+      fuerza: 'Mantener 38-40 reps y cargas actuales · foco técnica y RIR limpio · cero PRs forzados',
+      objetivo: 'Mantenimiento o superávit ligero — pausa activa antes del siguiente empuje.'
+    },
+    {
+      id: 'volumen2',
+      nombre: 'Volumen II',
+      fechas: 'Feb 2027 – Mar 2027',
+      pesoInicio: '~89-90 kg', pesoFin: '92-93 kg', ritmo: '+0,25-0,4%/sem', grasa: 'Masa sube, grasa no se acelera',
+      fuerza: 'Dominadas 40→43+ reps · Fondos 15-17,5kg→20kg · Remo 100-105kg→110kg · Curl 15kg→17,5kg',
+      objetivo: 'Segundo empuje de hipertrofia sobre lo ya consolidado — debería costar menos que el primer bloque.'
+    },
+    {
+      id: 'definicion',
+      nombre: 'Definición / recomposición',
+      fechas: 'Abr 2027 – Jun 2027',
+      pesoInicio: '~92-93 kg', pesoFin: '84-86 kg', ritmo: '-0,4-0,5%/sem (nunca más agresivo)', grasa: '15-18% (realista a 52 años)',
+      fuerza: 'Mantener fuerza — caída ligera de reps esperable. Umbral: 1-2 reps sueltas = normal; 3+ reps o 2+ sesiones seguidas cayendo = avisar a Itamae',
+      objetivo: 'Déficit progresivo y controlado — nunca agresivo. Aquí se revela el trabajo de las fases anteriores.'
+    },
+    {
+      id: 'peak',
+      nombre: 'Peak — verano',
+      fechas: 'Jul 2027',
+      pesoInicio: '84-86 kg', pesoFin: 'Mantenimiento', ritmo: 'Ajuste fino, sin cambios bruscos', grasa: '15-16%',
+      fuerza: 'Máximo histórico como cierre (objetivo >43 reps si el cuerpo lo pide, sin forzar)',
+      objetivo: 'Mantenimiento en el pico, ajuste fino final. Cero riesgo de lesión antes del objetivo.'
+    }
+  ];
+
+  // Determina la fase activa por fecha real (aproximado por mes/año de inicio de cada fase)
+  function getFaseActualId(){
+    const hoy = new Date();
+    const limites = [
+      { id: 'volumen1', hasta: new Date(2026, 10, 30) },   // hasta fin nov 2026
+      { id: 'consolidacion', hasta: new Date(2027, 0, 31) }, // hasta fin ene 2027
+      { id: 'volumen2', hasta: new Date(2027, 2, 31) },      // hasta fin mar 2027
+      { id: 'definicion', hasta: new Date(2027, 5, 30) },    // hasta fin jun 2027
+      { id: 'peak', hasta: new Date(2027, 6, 31) }
+    ];
+    for(const l of limites){ if(hoy <= l.hasta) return l.id; }
+    return 'peak';
+  }
+
+  function renderProgresoView(){
+    const faseActualId = getFaseActualId();
+    let html = '';
+    FASES.forEach((f, i) => {
+      const isCurrent = f.id === faseActualId;
+      html += `<div class="phase-card${isCurrent ? ' current' : ''}">
+        <div class="phase-head">
+          <span class="phase-name">${f.nombre}${isCurrent ? '<span class="phase-now-tag">Ahora</span>' : ''}</span>
+          <span class="phase-dates">${f.fechas}</span>
+        </div>
+        <div class="phase-row"><span class="phase-row-label">Peso inicio → fin</span><b>${f.pesoInicio} → ${f.pesoFin}</b></div>
+        <div class="phase-row"><span class="phase-row-label">Ritmo semanal</span><b>${f.ritmo}</b></div>
+        <div class="phase-row"><span class="phase-row-label">% grasa</span><b>${f.grasa}</b></div>
+        <div class="phase-row"><span class="phase-row-label">Fuerza</span><b style="text-align:right; max-width:60%;">${f.fuerza}</b></div>
+        <div class="phase-goal">${f.objetivo}</div>
+      </div>`;
+      if(i < FASES.length - 1) html += `<div class="phase-connector"></div>`;
+    });
+    document.getElementById('progresoContent').innerHTML = html;
+  }
+
   function showView(view){
     currentView = view;
     document.body.className = 'view-' + view;
@@ -1930,6 +2071,7 @@
       renderNutritionDaySelector();
       renderNutritionView();
     }
+    if(view === 'progreso') renderProgresoView();
     window.scrollTo(0, 0);
   }
 
@@ -2443,7 +2585,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v34';
+  const APP_VERSION = 'sensei-v36';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
