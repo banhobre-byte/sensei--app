@@ -1,7 +1,7 @@
 {
   "updated": "2026-08-16",
   "semana": "17-23 agosto 2026",
-  "notas_generales": "Fase mantenimiento (~2850 kcal, 191g proteína). Comida1 = antes del entreno si es tarde/noche; después si es entreno matutino. Unidades aproximadas, no gramos exactos.",
+  "notas_generales": "Fase mantenimiento (~2850 kcal, 191g proteína). Solo 2 comidas/día → cada comida es GRANDE, no un plato normal. Comida1 = antes del entreno si es tarde/noche; después si es entreno matutino. Unidades aproximadas, tendencia semanal, no gramos exactos.",
   "days": {
     "0": {
       "tipo": "descanso",
@@ -9,8 +9,8 @@
       "hora_comida1": "~12:00",
       "hora_comida2": "~19:30",
       "comidas": {
-        "comida1": ["2 huevos + 1 lata atún", "pan integral 2 rebanadas", "aceite oliva 1 cda", "fruta 1 pieza"],
-        "comida2": ["200g pescado blanco o pollo", "1 puño arroz/patata", "verdura libre", "aceite oliva 1 cda"]
+        "comida1": ["3 huevos + 1 lata atún", "pan integral 3 rebanadas", "aceite oliva 1 cda", "1 pieza fruta"],
+        "comida2": ["250g pescado blanco o pollo", "1 puño y medio arroz/patata", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
       }
     },
     "1": {
@@ -19,20 +19,21 @@
       "hora_comida1": "~15:30 (pre-entreno)",
       "hora_comida2": "~20:30 (post-entreno)",
       "comidas": {
-        "comida1": ["2 scoop whey", "1 plátano", "40g avena", "puñado frutos secos"],
-        "comida2": ["200g pollo (a ojo, palma+dedo)", "1 puño y medio arroz", "verdura libre", "aceite oliva 1 cda"]
+        "comida1": ["2 scoop whey", "2 plátanos", "80g avena", "1 cda mantequilla de cacahuete"],
+        "comida2": ["300g pollo (a ojo, 1 palma y media)", "2-3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos o queso"]
       },
       "notas": "RIR 0-1 en varios ejercicios — no recortar carbohidrato de comida1."
     },
     "2": {
       "tipo": "cardio-z2",
       "hora_sesion": "15:00-15:45 (día después de Pierna)",
-      "hora_comida1": "~12:00 (pre)",
+      "hora_comida1": "~10:00-10:30 (adelantada, evitar ayuno largo tras Pierna)",
       "hora_comida2": "~16:15 (post)",
       "comidas": {
-        "comida1": ["2 huevos", "pan integral 2 rebanadas", "1 pieza de fruta"],
-        "comida2": ["1 lata atún + 1 scoop whey", "1 puño arroz", "verdura libre"]
-      }
+        "comida1": ["2 scoop whey", "2 plátanos", "80g avena", "1 cda mantequilla de cacahuete"],
+        "comida2": ["250-300g pollo/pescado", "2 puños arroz o 2 patatas grandes", "verdura libre", "2 cda aceite oliva", "puñado frutos secos"]
+      },
+      "notas": "Comida1 adelantada por hambre real tras Pierna a RIR 0-1 — no esperar a las 12:00."
     },
     "3": {
       "tipo": "fuerza-traccion",
@@ -40,31 +41,31 @@
       "hora_comida1": "~15:30 (pre-entreno)",
       "hora_comida2": "~20:30 (post-entreno)",
       "comidas": {
-        "comida1": ["2 scoop whey", "1 plátano", "40g avena", "puñado frutos secos"],
-        "comida2": ["200g pollo o ternera magra", "1 puño y medio arroz", "verdura libre", "aceite oliva 1 cda"]
+        "comida1": ["2 scoop whey", "2 plátanos", "80g avena", "1 cda mantequilla de cacahuete"],
+        "comida2": ["300g pollo o ternera magra", "2-3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos o queso"]
       },
-      "notas": "RIR 0-1/1-2 mixto — mantener carga de comida1."
+      "notas": "RIR 0-1/1-2 mixto — mantener carga de comida1. Revisar si jueves también necesita adelantar comida1 como el martes."
     },
     "4": {
       "tipo": "cardio-z2",
       "hora_sesion": "15:00-15:45 (día después de Tracción)",
-      "hora_comida1": "~12:00 (pre)",
+      "hora_comida1": "~10:00-12:00 (según hambre, igual que martes)",
       "hora_comida2": "~16:15 (post)",
       "comidas": {
-        "comida1": ["2 huevos", "pan integral 2 rebanadas", "1 pieza de fruta"],
-        "comida2": ["1 lata atún + 1 scoop whey", "1 puño arroz", "verdura libre"]
+        "comida1": ["2 scoop whey", "2 plátanos", "80g avena", "1 cda mantequilla de cacahuete"],
+        "comida2": ["250-300g pollo/pescado", "2 puños arroz o 2 patatas grandes", "verdura libre", "2 cda aceite oliva", "puñado frutos secos"]
       }
     },
     "5": {
       "tipo": "fuerza-empuje",
       "hora_sesion": "15:00-16:30",
-      "hora_comida1": "~12:00 (pre-entreno)",
+      "hora_comida1": "~11:00-12:00 (pre-entreno, digestión fácil)",
       "hora_comida2": "~17:00 (post-entreno)",
       "comidas": {
-        "comida1": ["2 scoop whey", "1 plátano", "40g avena"],
-        "comida2": ["200g pollo o pescado azul", "1 puño y medio arroz", "verdura libre", "aceite oliva 1 cda"]
+        "comida1": ["2 scoop whey", "2 plátanos", "60g avena"],
+        "comida2": ["300g pollo o pescado azul", "2-3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
       },
-      "notas": "RIR 0-1 en varios ejercicios — ventana pre-entreno corta (3h), priorizar digestión fácil."
+      "notas": "RIR 0-1 en varios ejercicios — ventana pre-entreno más corta, comida1 algo más ligera en fibra."
     },
     "6": {
       "tipo": "cardio-z2",
@@ -72,8 +73,8 @@
       "hora_comida1": "~10:00 (post-entreno)",
       "hora_comida2": "~19:00",
       "comidas": {
-        "comida1": ["2 scoop whey", "1 plátano", "40g avena"],
-        "comida2": ["200g pollo o pescado", "1 puño arroz/patata", "verdura libre", "aceite oliva 1 cda"]
+        "comida1": ["2 scoop whey", "2 plátanos", "80g avena"],
+        "comida2": ["300g pollo o pescado", "2 puños arroz/patata", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
       }
     }
   },
