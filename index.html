@@ -562,7 +562,7 @@
     }catch(e){
       fromNetwork = false;
       try{
-        const cache = await caches.open('sensei-v34');
+        const cache = await caches.open('sensei-v35');
         const cached = await cache.match('week.json');
         if(cached){ data = await cached.json(); }
       }catch(e2){ /* no cache either */ }
@@ -1557,6 +1557,29 @@
     return (weekDataGlobal.overrides && weekDataGlobal.overrides[iso]) ? weekDataGlobal.overrides[iso] : weekDataGlobal.days[String(weekday)];
   }
 
+  // Horas de comida dinámicas — se calculan a partir de hora_entreno en vez de guardarse fijas,
+  // así no quedan desfasadas si el entreno se mueve de última hora (spec de Itamae).
+  function calcularHorasComida(horaEntreno, duracionMin){
+    if(!horaEntreno) return null;
+    duracionMin = duracionMin || 90;
+    const [h, m] = horaEntreno.split(':').map(Number);
+    if(isNaN(h) || isNaN(m)) return null;
+    const entrenoMin = h * 60 + m;
+    const finEntrenoMin = entrenoMin + duracionMin;
+    const esManana = h < 11;
+
+    function minToHora(min){
+      const hh = Math.floor(min / 60) % 24;
+      const mm = ((min % 60) + 60) % 60;
+      return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+    }
+
+    if(esManana){
+      return { comida1: minToHora(finEntrenoMin + 45), comida2: '≈19:00' };
+    }
+    return { comida1: minToHora(entrenoMin - 180), comida2: minToHora(finEntrenoMin + 60) };
+  }
+
   function renderNutritionView(){
     const iso = isoForWeekday(nutritionSelectedWeekday);
     const plan = getNutritionForISO(iso, nutritionSelectedWeekday);
@@ -1584,8 +1607,11 @@
       html += `<div style="margin-bottom:10px;"></div>`;
     }
 
+    const horas = calcularHorasComida(plan.hora_entreno);
+
     Object.keys(plan.comidas || {}).forEach(mealKey => {
-      html += `<div class="ci-field nu-meal"><label>${mealKey}</label>`;
+      const horaTag = horas && horas[mealKey] ? ` <span style="color:var(--gold-dim); font-weight:600;">· ${horas[mealKey]}</span>` : '';
+      html += `<div class="ci-field nu-meal"><label>${mealKey}${horaTag}</label>`;
       (plan.comidas[mealKey] || []).forEach(item => {
         if(typeof item === 'string'){
           // formato antiguo (retrocompatibilidad) — texto plano, sin botones de estado ni macros
@@ -2443,7 +2469,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v34';
+  const APP_VERSION = 'sensei-v35';
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
