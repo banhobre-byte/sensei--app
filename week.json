@@ -1016,8 +1016,28 @@
       "title": "Running",
       "subtitle": "Martes 18 ago · 6'/1' x5 · con Sempai · 15:00",
       "type": "cardio",
-      "note": "SALTO DE PROGRESIÓN — 6' trote continuo/1' caminar x5 rondas. Trote 6.5-7.0 km/h · Caminar 5.0-5.5 km/h. FC objetivo hasta 132-135 (talk test manda). Cadencia: metrónomo 170-176spm en tramos de trote (domingo 16/8 salió 164spm de media, sigue así, no fuerces velocidad). Terreno: cinta, gym habitual. Base: domingo cerró bloque de 5' con 6 rondas limpias, RPE2, FC123, sin molestias — se sube duración, bajan rondas a 5 (variable única).",
-      "warn": "⚠️ Si dolor lumbar irradiado a pierna → parar inmediatamente"
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 6'/1' x5",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 360,
+            "tiempoLabel": "6'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "Hasta 132-135 lpm (talk test manda sobre el número)",
+        "terreno": "Cinta, gym habitual",
+        "comentarios": "SALTO DE PROGRESIÓN — sube duración desde 5' (rondas bajan a 5, variable única). Cadencia objetivo: 170-176spm en tramos de trote (domingo 16/8 salió 164spm de media, sigue así, no fuerces velocidad). Base: domingo cerró bloque de 5' con 6 rondas limpias, RPE2, FC123, sin molestias."
+      }
     },
     "2026-08-19": {
       "title": "Tracción",
@@ -1238,8 +1258,28 @@
       "title": "Running",
       "subtitle": "Jueves 20 ago · 6'/1' x5-6 · con Sempai · 15:00",
       "type": "cardio",
-      "note": "CONSOLIDACIÓN — 6' trote continuo/1' caminar. Trote 6.5-7.0 km/h · Caminar 5.0-5.5 km/h. FC objetivo hasta 132-135. Cadencia: metrónomo 170-176spm. Terreno: cinta. Rondas: si el martes 18/8 fue bien (sin dolor, RPE≤3) → 6 rondas. Si costó o hubo molestia → repite 5, no subas.",
-      "warn": "⚠️ Si dolor lumbar irradiado a pierna → parar inmediatamente"
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 6'/1' x5-6",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 360,
+            "tiempoLabel": "6'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "Hasta 132-135 lpm (talk test manda sobre el número)",
+        "terreno": "Cinta, gym habitual",
+        "comentarios": "CONSOLIDACIÓN. Cadencia objetivo: 170-176spm. Rondas: si el martes 18/8 fue bien (sin dolor, RPE≤3) → sube a 6 rondas editando el plan en la app. Si costó o hubo molestia → mantén 5, no subas."
+      }
     },
     "2026-08-21": {
       "title": "Empuje",
@@ -1453,8 +1493,28 @@
       "title": "Running",
       "subtitle": "Sábado 22 ago · 6'/1' x5-6 · cierre de semana · con Sempai · 9:00",
       "type": "cardio",
-      "note": "CIERRE DE SEMANA — 6' trote continuo/1' caminar. Trote 6.5-7.0 km/h · Caminar 5.0-5.5 km/h. FC objetivo hasta 132-135. Cadencia: metrónomo 170-176spm. Terreno: cinta. Rondas: mismo criterio que jueves — si fue bien, 6 rondas; si costó, 5. Con esta sesión se cierra el bloque de 6'; próxima progresión se define en la planificación semanal siguiente.",
-      "warn": "⚠️ Si dolor lumbar irradiado a pierna → parar inmediatamente"
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 6'/1' x5-6 (cierre semana)",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 360,
+            "tiempoLabel": "6'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "Hasta 132-135 lpm (talk test manda sobre el número)",
+        "terreno": "Cinta, gym habitual",
+        "comentarios": "CIERRE DE SEMANA. Cadencia objetivo: 170-176spm. Rondas: mismo criterio que jueves — si fue bien, sube a 6 editando el plan en la app; si costó, mantén 5. Con esta sesión se cierra el bloque de 6'; próxima progresión se define en la planificación semanal siguiente."
+      }
     },
     "2026-08-23": {
       "title": "Descanso + Descompresión",
