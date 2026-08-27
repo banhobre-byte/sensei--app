@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-23",
+  "updated": "2026-08-26",
   "overrides": {
     "2026-08-13": {
       "title": "Running",
@@ -1820,8 +1820,35 @@
       ]
     },
     "2026-08-26": {
+      "title": "Running",
+      "subtitle": "Miércoles 26 ago · 6'/1' · con Sempai · 15:00",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 6'/1' x6",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 360,
+            "tiempoLabel": "6'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 6,
+        "fcObjetivo": "Hasta 132-135 lpm (talk test manda)",
+        "terreno": "Cinta, gym habitual",
+        "comentarios": "Cadencia objetivo 170-176spm."
+      }
+    },
+    "2026-08-27": {
       "title": "Tracción",
-      "subtitle": "Miércoles 26 ago · bloque volumen · consolidar, sin subir cargas · reparto excepcional",
+      "subtitle": "Jueves 27 ago · bloque volumen · consolidar, sin subir cargas · reparto excepcional",
       "type": "fuerza",
       "warn": "Semana de consolidación. Descansos reales: dominadas/remo unilateral/remo convergente 2.5-3 min. Nunca al fallo en remos. Antebrazos: agarres en remo/jalón, parar al primer pinchazo.",
       "exercises": [
@@ -2033,33 +2060,6 @@
           ]
         }
       ]
-    },
-    "2026-08-27": {
-      "title": "Running",
-      "subtitle": "Jueves 27 ago · 6'/1' · con Sempai · 15:00",
-      "type": "cardio",
-      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
-      "runningPlan": {
-        "titulo": "Running — 6'/1' x6",
-        "fases": [
-          {
-            "fase": "Trote",
-            "tiempoSeg": 360,
-            "tiempoLabel": "6'",
-            "velocidad": "6.5-7.0 km/h"
-          },
-          {
-            "fase": "Caminar",
-            "tiempoSeg": 60,
-            "tiempoLabel": "1'",
-            "velocidad": "5.0-5.5 km/h"
-          }
-        ],
-        "repeticiones": 6,
-        "fcObjetivo": "Hasta 132-135 lpm (talk test manda)",
-        "terreno": "Cinta, gym habitual",
-        "comentarios": "Cadencia objetivo 170-176spm."
-      }
     },
     "2026-08-29": {
       "title": "Running",
