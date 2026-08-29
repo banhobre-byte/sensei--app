@@ -951,6 +951,7 @@
   }
 
   function renderDay(data, weekday){
+    lastSetDoneAt = null; // nuevo render de día = nueva referencia para medir descansos reales
     const iso = isoForWeekday(weekday);
     const jsDay = weekday;
     let day = (data.overrides && data.overrides[iso]) ? data.overrides[iso] : data.days[String(jsDay)];
@@ -1085,9 +1086,19 @@
   let restSpoken = new Set();
   let restFinished = false;
 
+  let lastSetDoneAt = null; // timestamp de la última serie marcada — permite medir el descanso real tomado
+
   function toggleDone(btn){
     const willBeDone = !btn.classList.contains('done');
     btn.classList.toggle('done');
+    const row = btn.closest('.set-row');
+    if(willBeDone){
+      if(lastSetDoneAt !== null){
+        const elapsedSec = Math.round((Date.now() - lastSetDoneAt) / 1000);
+        row.dataset.restTaken = elapsedSec;
+      }
+      lastSetDoneAt = Date.now();
+    }
     saveProgress();
     if(willBeDone){
       const exDiv = btn.closest('.exercise');
@@ -1334,6 +1345,11 @@
     }catch(e){ /* audio no disponible */ }
   }
 
+  function formatRestTaken(sec){
+    const m = Math.floor(sec / 60), s = sec % 60;
+    return m > 0 ? `${m}:${String(s).padStart(2,'0')}` : `${s}s`;
+  }
+
   // ---- Resumen de sesión ----
   function buildSummary(){
     const titleEl = document.querySelector('.subline b');
@@ -1352,7 +1368,9 @@
         const reps = inputs[1].value.trim();
         const rir = row.querySelector('select').value.replace('RIR ', 'rir');
         if(reps !== ''){
-          setLines.push(`${idx+1}a ${kg || '-'}x${reps} ${rir}`);
+          const restTaken = row.dataset.restTaken;
+          const restNote = restTaken ? ` [desc ${formatRestTaken(parseInt(restTaken,10))}]` : '';
+          setLines.push(`${idx+1}a ${kg || '-'}x${reps} ${rir}${restNote}`);
         }
       });
       if(setLines.length){
@@ -2692,7 +2710,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v40'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v41'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
