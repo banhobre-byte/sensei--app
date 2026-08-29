@@ -414,6 +414,22 @@
   <div class="rest-next2" id="intNext" style="margin-top:8px;"></div>
 </div>
 
+<div class="modal-overlay" id="rpModal">
+  <div class="modal-card">
+    <div class="modal-title">⚡ Rest-pause</div>
+    <div style="text-align:center; color:var(--text-dim); font-size:13px; margin-bottom:14px;" id="rpModalSubtitle">Serie base: —</div>
+    <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:18px;">
+      <button type="button" onclick="rpAdjustExtra(-1)" style="width:44px; height:44px; border-radius:10px; border:1px solid var(--line); background:var(--bg-card-2); color:var(--text); font-size:20px; font-weight:700;">−</button>
+      <div id="rpExtraValue" style="font-size:32px; font-weight:800; color:var(--gold); min-width:56px; text-align:center;">0</div>
+      <button type="button" onclick="rpAdjustExtra(1)" style="width:44px; height:44px; border-radius:10px; border:1px solid var(--line); background:var(--bg-card-2); color:var(--text); font-size:20px; font-weight:700;">+</button>
+    </div>
+    <div style="text-align:center; color:var(--text-dim); font-size:11.5px; margin-bottom:16px;">reps rescatadas tras la pausa</div>
+    <div class="modal-actions">
+      <button class="modal-btn close" onclick="closeRpModal()">Cancelar</button>
+      <button class="modal-btn copy" onclick="confirmRpExtra()">Añadir</button>
+    </div>
+  </div>
+</div>
 <div class="modal-overlay" id="summaryModal">
   <div class="modal-card">
     <div class="modal-title">Resumen de la sesión</div>
@@ -1085,13 +1101,24 @@
   // ---- Rest-pause: rescatar reps tras una pausa corta dentro de la misma serie ----
   // Uso: al quedarte corto en una serie (ej. dominadas), pulsa RP → mini-descanso 15-20s → añade las reps rescatadas.
   // Se guarda como "7+3" en el mismo input de reps, compatible con el resumen/histórico sin tocar su formato.
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  let rpActiveInput = null;
+  let rpActiveBaseReps = '';
+  let rpExtraCount = 0;
+
   function startRestPause(btn){
     if(btn.classList.contains('counting')) return;
     const row = btn.closest('.set-row');
     const repsInput = row.querySelectorAll('input')[1];
     const currentReps = repsInput.value.trim();
     if(!currentReps){
-      alert('Escribe primero las reps de la serie antes de usar rest-pause.');
+      showToast('Escribe primero las reps de la serie antes de usar rest-pause.');
       return;
     }
     let secondsLeft = 18; // 15-20s recomendado
@@ -1103,17 +1130,43 @@
         clearInterval(tick);
         btn.classList.remove('counting');
         btn.textContent = 'RP';
-        const extra = prompt(`Reps rescatadas tras la pausa (serie base: ${currentReps}):`, '');
-        if(extra && extra.trim() !== '' && !isNaN(parseInt(extra, 10))){
-          repsInput.value = `${currentReps.split('+')[0]}+${parseInt(extra, 10)}`;
-          saveProgress();
-          updateSetCompare(repsInput);
-        }
+        beep();
+        if(navigator.vibrate) navigator.vibrate([200,100,200]);
+        openRpModal(repsInput, currentReps);
       } else {
         btn.textContent = secondsLeft;
       }
     }, 1000);
   }
+
+  function openRpModal(repsInput, baseReps){
+    rpActiveInput = repsInput;
+    rpActiveBaseReps = baseReps.split('+')[0];
+    rpExtraCount = 0;
+    document.getElementById('rpModalSubtitle').textContent = `Serie base: ${rpActiveBaseReps} reps`;
+    document.getElementById('rpExtraValue').textContent = '0';
+    document.getElementById('rpModal').classList.add('show');
+  }
+
+  function rpAdjustExtra(delta){
+    rpExtraCount = Math.max(0, rpExtraCount + delta);
+    document.getElementById('rpExtraValue').textContent = rpExtraCount;
+  }
+
+  function closeRpModal(){
+    document.getElementById('rpModal').classList.remove('show');
+    rpActiveInput = null;
+  }
+
+  function confirmRpExtra(){
+    if(rpActiveInput && rpExtraCount > 0){
+      rpActiveInput.value = `${rpActiveBaseReps}+${rpExtraCount}`;
+      saveProgress();
+      updateSetCompare(rpActiveInput);
+    }
+    closeRpModal();
+  }
+
 
   // Averigua qué serie/ejercicio toca justo después de la que se acaba de marcar
   function computeNextSetLabel(btn){
@@ -2639,7 +2692,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v39'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v40'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
