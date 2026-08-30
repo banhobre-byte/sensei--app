@@ -1,82 +1,79 @@
 {
-  "updated": "2026-08-16",
-  "semana": "17-23 agosto 2026",
-  "notas_generales": "Fase mantenimiento (~2850 kcal, 191g proteína). Solo 2 comidas/día → cada comida es GRANDE, no un plato normal. Comida1 = antes del entreno si es tarde/noche; después si es entreno matutino. Unidades aproximadas, tendencia semanal, no gramos exactos.",
+  "updated": "2026-08-30",
+  "semana": "31 agosto - 6 septiembre 2026",
+  "notas_generales": "PRIMERA SEMANA DE SUPERÁVIT — fase Volumen. ~3150 kcal (+300 sobre mantenimiento), 191g proteína mantenida, extra viene de carbohidrato. Horas de comida calculadas dinámicamente por la app a partir de hora_entreno.",
   "days": {
     "0": {
       "tipo": "descanso",
-      "hora_sesion": "09:00 (hipopresivos + colgado, ligero)",
-      "hora_comida1": "~12:00",
-      "hora_comida2": "~19:30",
+      "hora_entreno": null,
       "comidas": {
         "comida1": ["3 huevos + 1 lata atún", "pan integral 3 rebanadas", "aceite oliva 1 cda", "1 pieza fruta"],
-        "comida2": ["250g pescado blanco o pollo", "1 puño y medio arroz/patata", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
-      }
+        "comida2": ["250g pescado blanco o pollo", "2 puños arroz/patata", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
+      },
+      "notas": "Plantilla general de domingo. Ver override 2026-09-06 — esta semana el domingo es Empuje, no descanso."
     },
     "1": {
       "tipo": "fuerza-pierna",
-      "hora_sesion": "18:30-20:00",
-      "hora_comida1": "~15:30 (pre-entreno)",
-      "hora_comida2": "~20:30 (post-entreno)",
+      "hora_entreno": "19:00",
       "comidas": {
-        "comida1": ["2 scoop whey", "2 plátanos", "80g avena", "1 cda mantequilla de cacahuete"],
-        "comida2": ["300g pollo (a ojo, 1 palma y media)", "2-3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos o queso"]
+        "comida1": ["2 scoop whey", "2 plátanos", "90g avena", "1 cda mantequilla de cacahuete"],
+        "comida2": ["300g pollo", "3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
       },
-      "notas": "RIR 0-1 en varios ejercicios — no recortar carbohidrato de comida1."
+      "notas": "Entreno a las 19:00, media hora más tarde de lo habitual — comida1 y comida2 desplazadas en consecuencia."
     },
     "2": {
+      "tipo": "descanso",
+      "hora_entreno": null,
+      "comidas": {
+        "comida1": ["3 huevos + 1 lata atún", "pan integral 3 rebanadas", "aceite oliva 1 cda", "1 pieza fruta"],
+        "comida2": ["250g pescado blanco o pollo", "2 puños arroz/patata", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
+      },
+      "notas": "Hipopresivos + colgado no es entreno real — horario flexible, no aplica cálculo dinámico."
+    },
+    "3": {
       "tipo": "cardio-z2",
-      "hora_sesion": "15:00-15:45 (día después de Pierna)",
-      "hora_comida1": "~10:00-10:30 (adelantada, evitar ayuno largo tras Pierna)",
-      "hora_comida2": "~16:15 (post)",
+      "hora_entreno": "15:00",
       "comidas": {
         "comida1": ["2 scoop whey", "2 plátanos", "80g avena", "1 cda mantequilla de cacahuete"],
         "comida2": ["250-300g pollo/pescado", "2 puños arroz o 2 patatas grandes", "verdura libre", "2 cda aceite oliva", "puñado frutos secos"]
-      },
-      "notas": "Comida1 adelantada por hambre real tras Pierna a RIR 0-1 — no esperar a las 12:00."
-    },
-    "3": {
-      "tipo": "fuerza-traccion",
-      "hora_sesion": "18:30-20:00",
-      "hora_comida1": "~15:30 (pre-entreno)",
-      "hora_comida2": "~20:30 (post-entreno)",
-      "comidas": {
-        "comida1": ["2 scoop whey", "2 plátanos", "80g avena", "1 cda mantequilla de cacahuete"],
-        "comida2": ["300g pollo o ternera magra", "2-3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos o queso"]
-      },
-      "notas": "RIR 0-1/1-2 mixto — mantener carga de comida1. Revisar si jueves también necesita adelantar comida1 como el martes."
+      }
     },
     "4": {
       "tipo": "cardio-z2",
-      "hora_sesion": "15:00-15:45 (día después de Tracción)",
-      "hora_comida1": "~10:00-12:00 (según hambre, igual que martes)",
-      "hora_comida2": "~16:15 (post)",
+      "hora_entreno": "15:00",
       "comidas": {
         "comida1": ["2 scoop whey", "2 plátanos", "80g avena", "1 cda mantequilla de cacahuete"],
         "comida2": ["250-300g pollo/pescado", "2 puños arroz o 2 patatas grandes", "verdura libre", "2 cda aceite oliva", "puñado frutos secos"]
-      }
+      },
+      "notas": "2º día seguido de running + reunión del colegio a las 16:30 justo después de comida2 — que sea rápida de preparar/llevar."
     },
     "5": {
-      "tipo": "fuerza-empuje",
-      "hora_sesion": "15:00-16:30",
-      "hora_comida1": "~11:00-12:00 (pre-entreno, digestión fácil)",
-      "hora_comida2": "~17:00 (post-entreno)",
+      "tipo": "fuerza-traccion",
+      "hora_entreno": "15:00",
       "comidas": {
-        "comida1": ["2 scoop whey", "2 plátanos", "60g avena"],
-        "comida2": ["300g pollo o pescado azul", "2-3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
-      },
-      "notas": "RIR 0-1 en varios ejercicios — ventana pre-entreno más corta, comida1 algo más ligera en fibra."
+        "comida1": ["2 scoop whey", "2 plátanos", "90g avena", "1 cda mantequilla de cacahuete"],
+        "comida2": ["300g pollo o ternera magra", "3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos o queso"]
+      }
     },
     "6": {
-      "tipo": "cardio-z2",
-      "hora_sesion": "09:00-09:45 (cierre semana, ayuno mantenido)",
-      "hora_comida1": "~10:00 (post-entreno)",
-      "hora_comida2": "~19:00",
+      "tipo": "libre",
+      "hora_entreno": "09:00",
       "comidas": {
-        "comida1": ["2 scoop whey", "2 plátanos", "80g avena"],
-        "comida2": ["300g pollo o pescado", "2 puños arroz/patata", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
-      }
+        "comida1": ["Libre — viaje a Ávila, Jornadas Medievales todo el día"],
+        "comida2": ["Libre — sin plan estructurado, comer lo disponible"]
+      },
+      "notas": "Día suelto por decisión consciente, no por descontrol. No compensar ni recortar el domingo por esto."
     }
   },
-  "overrides": {}
+  "overrides": {
+    "2026-09-06": {
+      "tipo": "fuerza-empuje",
+      "hora_entreno": "09:00",
+      "comidas": {
+        "comida1": ["2 scoop whey", "2 plátanos", "80g avena"],
+        "comida2": ["300g pollo o pescado azul", "3 puños arroz", "verdura libre", "2 cda aceite oliva", "30g frutos secos"]
+      },
+      "notas": "Excepción puntual — este domingo es Empuje matutino (patrón habitual de descanso dominical no aplica esta semana). Entreno en ayunas, comida1 post-entreno."
+    }
+  }
 }

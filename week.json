@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-26",
+  "updated": "2026-08-30",
   "overrides": {
     "2026-08-13": {
       "title": "Running",
@@ -2322,6 +2322,763 @@
         "terreno": "Cinta, gym habitual",
         "comentarios": "Cadencia objetivo 170-176spm. Esta semana el running ya no va pegado a Pierna (día de descompresión movido al martes) — debería notarse en FC más controlada que las últimas semanas."
       }
+    },
+    "2026-08-31": {
+      "title": "Pierna",
+      "subtitle": "Lunes 31 ago · bloque volumen · TSB -11 subiendo",
+      "type": "fuerza",
+      "warn": "Mantener cargas. Búlgaras: 3x10 fijo por pierna, nunca por sensación.",
+      "exercises": [
+        {
+          "name": "Gemelo prensa/sentado",
+          "meta": "50kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "meta": "55kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Curl femoral",
+          "meta": "44kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 44,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 44,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 44,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 44,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Hip thrust",
+          "meta": "45kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 45,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 45,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 45,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Búlgaras",
+          "meta": "3x10 FIJO por pierna",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Número fijo de reps, no RIR — hernias",
+          "sets": [
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            },
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            },
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            }
+          ]
+        },
+        {
+          "name": "Sissy squat",
+          "meta": "40kg total",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Abducción",
+          "meta": "57kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Adducción",
+          "meta": "36kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-09-01": {
+      "title": "Descanso + Descompresión",
+      "subtitle": "Martes 1 sep · día fijo tras Pierna",
+      "type": "descanso",
+      "note": "Nueva plantilla fija: descanso siempre el martes, justo después de Pierna.",
+      "exercises": [
+        {
+          "name": "Colgado pasivo en barra",
+          "meta": "Descompresión L4-L5, hombros activos, con straps",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            }
+          ]
+        },
+        {
+          "name": "Hipopresivos",
+          "meta": "Exhala todo el aire, vacío abdominal 8-10s por repetición",
+          "rest": "30-45s",
+          "sets": [
+            {
+              "kg": "",
+              "label": "—",
+              "reps": "",
+              "repsLabel": "reps (8-10)",
+              "rir": "-"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-09-02": {
+      "title": "Running",
+      "subtitle": "Miércoles 2 sep · 7'/1' x5 · con Sempai · 15:00",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 7'/1'",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 420,
+            "tiempoLabel": "7'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "Hasta 132-135 lpm (sube margen si calor — talk test manda)",
+        "terreno": "Cinta, gym habitual",
+        "comentarios": "SALTO DE PROGRESIÓN a 7' (desde 6'). 3 días desde Pierna con descanso de por medio — máxima frescura para el salto. Cadencia 170-176bpm (Cadence Keeper). Base: semana pasada 3 sesiones de 6' limpias, RPE2-3, sin molestias. Rondas bajan a 5 — variable única."
+      }
+    },
+    "2026-09-03": {
+      "title": "Running",
+      "subtitle": "Jueves 3 sep · 7'/1' x4-6 · con Sempai · 15:00 · 2º día seguido",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 7'/1'",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 420,
+            "tiempoLabel": "7'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "Hasta 132-135 lpm (sube margen si calor — talk test manda)",
+        "terreno": "Cinta, gym habitual",
+        "comentarios": "2º día seguido de running (miércoles-jueves) — coste aceptado por reparto de fuerza, menos exigente sistémicamente que running-tras-Pierna. Rondas: si el miércoles fue limpio (sin dolor, RPE≤3, sin FC disparada) → 5-6. Si costó → repite 4-5, no fuerces. Cadencia 170-176bpm."
+      }
+    },
+    "2026-09-05": {
+      "title": "Running",
+      "subtitle": "Sábado 5 sep · 7'/1' x5-6 · cierre de semana · con Sempai · 9:00",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 7'/1'",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 420,
+            "tiempoLabel": "7'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "Hasta 132-135 lpm (sube margen si calor — talk test manda)",
+        "terreno": "Cinta, gym habitual",
+        "comentarios": "CIERRE DE SEMANA (bloque de 7'). ⚠️ Coincide con viaje a Ávila (Jornadas Medievales, todo el día) — hazla temprano si el horario aprieta, no la saltes ni la comprimas. Confirma si el terreno sigue siendo cinta habitual o cambia por el viaje. Día después de Tracción, sin problema de compatibilidad. Si las 3 sesiones de la semana salen limpias, se valora seguir subiendo duración o reducir descanso entre tramos. Cadencia 170-176bpm."
+      }
+    },
+    "2026-09-04": {
+      "title": "Tracción",
+      "subtitle": "Viernes 4 sep · bloque volumen · TSB -11 subiendo",
+      "type": "fuerza",
+      "warn": "Ventana buena para progresar. Nunca al fallo en remos. Antebrazos: agarres en remo/jalón, parar al primer pinchazo.",
+      "exercises": [
+        {
+          "name": "Dominadas neutras",
+          "meta": "Máx reps x4 — progresión real en reps (34 última vez) pese al peso corporal",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Remo unilateral apoyo",
+          "meta": "🎯 Sube a 100kg — varias semanas en 95kg limpio",
+          "rest": "2.5-3 min",
+          "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar",
+          "sets": [
+            {
+              "kg": 100,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Jalón agarre ancho",
+          "meta": "105kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 105,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 105,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 105,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 105,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Remo convergente unilateral",
+          "meta": "70kg",
+          "rest": "2.5-3 min",
+          "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar",
+          "sets": [
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Pullover polea",
+          "meta": "27-32kg, ajustar por sensación (irregular varias semanas)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "36kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Curl martillo",
+          "meta": "12.5kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Curl bíceps aislamiento",
+          "meta": "10kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 10,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 10,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 10,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-09-06": {
+      "title": "Empuje",
+      "subtitle": "Domingo 6 sep · bloque volumen · TSB -11 subiendo",
+      "type": "fuerza",
+      "warn": "Ventana buena para progresar press pecho tras semanas de estancamiento por fatiga. Antebrazos: parar al primer pinchazo.",
+      "exercises": [
+        {
+          "name": "Fondos lastre",
+          "meta": "12.5kg — RP disponible si te quedas corto",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press pecho máquina",
+          "meta": "🎯 Prueba 65-67kg — TSB mejor, buena ventana para progresar",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": 65,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 65,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 65,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 65,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Aperturas polea alta",
+          "meta": "63kg",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Antebrazo — primer pinchazo, parar",
+          "sets": [
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "29kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Laterales",
+          "meta": "7.5kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 7.5,
+              "label": "dropset",
+              "reps": "",
+              "rir": "0"
+            }
+          ]
+        },
+        {
+          "name": "Aperturas posteriores",
+          "meta": "63kg",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Antebrazo — primer pinchazo, parar",
+          "sets": [
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press francés",
+          "meta": "30-36kg según polea/sensación — dropset final",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": "",
+              "label": "dropset",
+              "reps": "",
+              "rir": "0"
+            }
+          ]
+        },
+        {
+          "name": "Overhead polea",
+          "meta": "20-36kg según polea/sensación",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 20,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 20,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 20,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
     }
   },
   "days": {
