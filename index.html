@@ -2270,9 +2270,7 @@
   // ---- Tarjeta de running estructurada ----
   // Abre Cadence Keeper directamente si está instalada (Android intent), con la ficha de Play Store como respaldo
   function openCadenceKeeper(){
-    const pkg = 'com.cowcowtech.cadencekeeper';
-    const fallback = encodeURIComponent(`https://play.google.com/store/apps/details?id=${pkg}`);
-    window.location.href = `intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=${pkg};S.browser_fallback_url=${fallback};end`;
+    window.open('https://play.google.com/store/apps/details?id=com.cowcowtech.cadencekeeper', '_blank');
   }
 
   function buildRunningCardHTML(plan){
@@ -2633,7 +2631,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v44'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v45'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
