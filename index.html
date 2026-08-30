@@ -329,6 +329,7 @@
     <button class="back-btn" onclick="showView('home')">← Menú</button>
     <div style="display:flex; align-items:center; gap:8px;">
       <button class="settings-icon-btn" onclick="openImport()" aria-label="Importar historial" title="Importar historial">⚙️</button>
+      <button class="settings-icon-btn" onclick="openImport(); exportHistory();" aria-label="Exportar historial" title="Exportar historial (copia de seguridad)">📤</button>
     </div>
     <div class="coach-badge" onclick="triggerCoachAvatarUpload()" style="margin-left:auto;">
       <div class="avatar-wrap">
@@ -591,9 +592,12 @@
 
 <div class="modal-overlay" id="importModal">
   <div class="modal-card">
-    <div class="modal-title">Importar historial</div>
-    <div class="ci-hint" style="margin-bottom:10px;">Pega aquí el JSON que te dé Sensei con sesiones antiguas (de otras conversaciones) para activar las comparativas "vs anterior" desde ya.</div>
-    <textarea id="importText" rows="10" style="width:100%; background:var(--bg-card-2); border:1px solid var(--line); border-radius:8px; color:var(--text); padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box;"></textarea>
+    <div class="modal-title">Historial de entrenamientos</div>
+    <div class="ci-hint" style="margin-bottom:10px;">Antes de reinstalar la app (por una actualización de versión), pulsa <b>Copiar mi historial</b> y guarda ese texto en algún sitio — así puedes recuperarlo pegándolo aquí después con <b>Importar</b>.</div>
+    <div class="modal-actions" style="margin-bottom:10px;">
+      <button class="modal-btn close" style="flex:1;" onclick="exportHistory()">📤 Copiar mi historial</button>
+    </div>
+    <textarea id="importText" rows="10" placeholder="Pega aquí el JSON de tu copia de seguridad, o el que te pase Sensei con sesiones antiguas" style="width:100%; background:var(--bg-card-2); border:1px solid var(--line); border-radius:8px; color:var(--text); padding:10px; font-family:monospace; font-size:12px; box-sizing:border-box;"></textarea>
     <div class="modal-actions">
       <button class="modal-btn close" onclick="closeImport()">Cancelar</button>
       <button class="modal-btn copy" onclick="importHistoryFromText()">Importar</button>
@@ -1535,6 +1539,22 @@
 
   function closeImport(){
     document.getElementById('importModal').classList.remove('show');
+  }
+
+  async function exportHistory(){
+    const hist = loadHistory();
+    const json = JSON.stringify(hist, null, 2);
+    const t = document.getElementById('toast');
+    try{
+      await navigator.clipboard.writeText(json);
+      t.textContent = `Copiado — ${hist.length} registros. Guarda este texto en un sitio seguro (notas, email...).`;
+    }catch(e){
+      // Fallback: lo dejamos en el propio cuadro para que lo copies a mano
+      document.getElementById('importText').value = json;
+      t.textContent = `${hist.length} registros — cópialos del cuadro de abajo manualmente.`;
+    }
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
   }
 
   function importHistoryFromText(){
@@ -2631,7 +2651,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v45'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v46'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
