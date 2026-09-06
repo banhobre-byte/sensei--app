@@ -1075,12 +1075,16 @@
 
   // ---- Crono de descanso ----
   // Reglas Sensei: aislamiento 60s, resto general 90s, multiarticulares pesados 120s
+  // Parser genérico: lee el último número del texto (el límite superior del rango que se escribe
+  // en el plan, ej. "2.5-3 min" o "90-120s") y lo convierte a segundos según si menciona "min" o no.
   function parseRestSeconds(restText){
     if(!restText) return 90;
-    if(restText.includes('2-3')) return 120;      // multiarticulares pesados
-    if(restText.includes('90-120')) return 90;     // resto general
-    if(restText.includes('60-90')) return 60;      // aislamiento
-    return 90;
+    const matches = String(restText).match(/\d+(?:\.\d+)?/g);
+    if(!matches || matches.length === 0) return 90;
+    const last = parseFloat(matches[matches.length - 1]);
+    if(isNaN(last) || last <= 0) return 90;
+    const isMinutes = /min/i.test(restText);
+    return Math.round(isMinutes ? last * 60 : last);
   }
 
   let restInterval = null;
@@ -2651,7 +2655,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v46'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v47'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
