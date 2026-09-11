@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-06",
+  "updated": "2026-09-11",
   "overrides": {
     "2026-08-13": {
       "title": "Running",
@@ -3405,142 +3405,121 @@
       }
     },
     "2026-09-11": {
-      "title": "Tracción",
-      "subtitle": "Viernes 11 sep · bloque volumen · TSB estable",
+      "title": "Tracción — DESCARGA",
+      "subtitle": "Viernes 11 sep · SEMANA DE DESCARGA",
       "type": "fuerza",
-      "warn": "Nunca al fallo en remos. Antebrazos: agarres en remo/jalón, parar al primer pinchazo.",
+      "warn": "⚠️ TSB cayó dos semanas seguidas (-11→-15), RPE4 en running con menos volumen. Descarga: volumen -30%, RIR subido, sin progresión. Nunca al fallo en remos.",
       "exercises": [
         {
           "name": "Dominadas neutras",
-          "meta": "Máx reps x4 — ref. 37 reps con RP la última vez",
+          "meta": "Máx reps x3 (no 4) · RIR 2-3",
           "rest": "2.5-3 min",
           "sets": [
             {
               "kg": "",
               "label": "peso corp.",
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
               "kg": "",
               "label": "peso corp.",
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
               "kg": "",
               "label": "peso corp.",
               "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": "",
-              "label": "peso corp.",
-              "reps": "",
-              "rir": "1"
+              "rir": "2"
             }
           ]
         },
         {
           "name": "Remo unilateral apoyo",
-          "meta": "100kg",
+          "meta": "90kg (baja de 100kg)",
           "rest": "2.5-3 min",
           "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar",
           "sets": [
             {
-              "kg": 100,
+              "kg": 90,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 100,
+              "kg": 90,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 100,
+              "kg": 90,
               "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 100,
-              "reps": "",
-              "rir": "1"
+              "rir": "2"
             }
           ]
         },
         {
           "name": "Jalón agarre ancho",
-          "meta": "🎯 Sube a 115kg — semana pasada 110kg limpio",
+          "meta": "100kg (baja de 110kg, sin progresión)",
           "rest": "90-120s",
           "sets": [
             {
-              "kg": 115,
+              "kg": 100,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 115,
+              "kg": 100,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 115,
+              "kg": 100,
               "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 115,
-              "reps": "",
-              "rir": "1"
+              "rir": "2"
             }
           ]
         },
         {
           "name": "Remo convergente unilateral",
-          "meta": "70kg",
+          "meta": "60kg",
           "rest": "2.5-3 min",
           "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar",
           "sets": [
             {
-              "kg": 70,
+              "kg": 60,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 70,
+              "kg": 60,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 70,
+              "kg": 60,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             }
           ]
         },
         {
           "name": "Pullover polea",
-          "meta": "30kg",
+          "meta": "27kg",
           "rest": "60-90s",
           "sets": [
             {
-              "kg": 30,
+              "kg": 27,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 30,
+              "kg": 27,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 30,
-              "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 30,
+              "kg": 27,
               "reps": "",
               "rir": "1"
             }
@@ -3548,67 +3527,40 @@
         },
         {
           "name": "Press hombro máquina",
-          "meta": "36kg",
+          "meta": "32kg",
           "rest": "90-120s",
           "sets": [
             {
-              "kg": 36,
+              "kg": 32,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 36,
+              "kg": 32,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 36,
+              "kg": 32,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             }
           ]
         },
         {
           "name": "Curl martillo",
-          "meta": "12.5kg",
-          "rest": "60-90s",
-          "sets": [
-            {
-              "kg": 12.5,
-              "reps": "",
-              "rir": "0"
-            },
-            {
-              "kg": 12.5,
-              "reps": "",
-              "rir": "0"
-            },
-            {
-              "kg": 12.5,
-              "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 12.5,
-              "reps": "",
-              "rir": "1"
-            }
-          ]
-        },
-        {
-          "name": "Curl bíceps aislamiento",
           "meta": "10kg",
           "rest": "60-90s",
           "sets": [
             {
               "kg": 10,
               "reps": "",
-              "rir": "0"
+              "rir": "1"
             },
             {
               "kg": 10,
               "reps": "",
-              "rir": "0"
+              "rir": "1"
             },
             {
               "kg": 10,
@@ -3620,83 +3572,73 @@
       ]
     },
     "2026-09-13": {
-      "title": "Empuje",
-      "subtitle": "Domingo 13 sep · bloque volumen · TSB estable",
+      "title": "Empuje — DESCARGA",
+      "subtitle": "Domingo 13 sep · SEMANA DE DESCARGA",
       "type": "fuerza",
-      "warn": "Antebrazos: parar al primer pinchazo en aperturas/posteriores.",
+      "warn": "⚠️ Semana de descarga — olvida los 73-75kg de press pecho, esta semana toca bajar carga y subir RIR.",
       "exercises": [
         {
           "name": "Fondos lastre",
-          "meta": "12.5kg — RP disponible",
+          "meta": "10kg (baja de 12.5kg)",
           "rest": "2.5-3 min",
           "sets": [
             {
-              "kg": 12.5,
+              "kg": 10,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 12.5,
+              "kg": 10,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 12.5,
+              "kg": 10,
               "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 12.5,
-              "reps": "",
-              "rir": "1"
+              "rir": "2"
             }
           ]
         },
         {
           "name": "Press pecho máquina",
-          "meta": "🎯 Sube a 73-75kg — semana pasada 70kg x10/10/7/6+2 con RP",
+          "meta": "63kg (baja de 70kg, sin progresión)",
           "rest": "2.5-3 min",
           "sets": [
             {
-              "kg": 74,
+              "kg": 63,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 74,
+              "kg": 63,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 74,
+              "kg": 63,
               "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 74,
-              "reps": "",
-              "rir": "1"
+              "rir": "2"
             }
           ]
         },
         {
           "name": "Aperturas polea alta",
-          "meta": "63kg",
+          "meta": "50kg",
           "rest": "90-120s",
           "warnEx": "⚠️ Antebrazo — primer pinchazo, parar",
           "sets": [
             {
-              "kg": 63,
+              "kg": 50,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 63,
+              "kg": 50,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 63,
+              "kg": 50,
               "reps": "",
               "rir": "1"
             }
@@ -3704,121 +3646,66 @@
         },
         {
           "name": "Press hombro máquina",
-          "meta": "29kg",
+          "meta": "23kg",
           "rest": "90-120s",
           "sets": [
             {
-              "kg": 29,
+              "kg": 23,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 29,
+              "kg": 23,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             },
             {
-              "kg": 29,
+              "kg": 23,
               "reps": "",
-              "rir": "1"
+              "rir": "2"
             }
           ]
         },
         {
           "name": "Laterales",
-          "meta": "7.5kg",
+          "meta": "6kg",
           "rest": "60-90s",
           "sets": [
             {
-              "kg": 7.5,
+              "kg": 6,
               "reps": "",
-              "rir": "0"
+              "rir": "1"
             },
             {
-              "kg": 7.5,
+              "kg": 6,
               "reps": "",
-              "rir": "0"
+              "rir": "1"
             },
             {
-              "kg": 7.5,
+              "kg": 6,
               "reps": "",
-              "rir": "0"
-            },
-            {
-              "kg": 7.5,
-              "reps": "",
-              "rir": "0"
+              "rir": "1"
             }
           ]
         },
         {
           "name": "Aperturas posteriores",
-          "meta": "63kg",
+          "meta": "50kg",
           "rest": "90-120s",
           "warnEx": "⚠️ Antebrazo — primer pinchazo, parar",
           "sets": [
             {
-              "kg": 63,
+              "kg": 50,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 63,
+              "kg": 50,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 63,
-              "reps": "",
-              "rir": "1"
-            }
-          ]
-        },
-        {
-          "name": "Press francés",
-          "meta": "36kg — dropset final",
-          "rest": "60-90s",
-          "sets": [
-            {
-              "kg": 36,
-              "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 36,
-              "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 36,
-              "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": "",
-              "label": "dropset",
-              "reps": "",
-              "rir": "0"
-            }
-          ]
-        },
-        {
-          "name": "Overhead polea",
-          "meta": "36kg",
-          "rest": "60-90s",
-          "sets": [
-            {
-              "kg": 36,
-              "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 36,
-              "reps": "",
-              "rir": "1"
-            },
-            {
-              "kg": 36,
+              "kg": 50,
               "reps": "",
               "rir": "1"
             }
