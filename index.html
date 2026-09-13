@@ -916,8 +916,11 @@
       saved = JSON.parse(raw);
     }catch(e){ return day; }
 
-    day.exercises.forEach((ex, ei) => {
-      const savedEx = saved[ei];
+    day.exercises.forEach((ex) => {
+      // Se busca por nombre de ejercicio, no por posición — si el plan cambia de orden o
+      // de número de ejercicios durante la semana, esto evita que los datos guardados
+      // se apliquen al ejercicio equivocado.
+      const savedEx = saved[ex.name];
       if(!savedEx) return;
       ex.sets.forEach((s, si) => {
         const savedSet = savedEx[si];
@@ -935,7 +938,8 @@
     try{
       const iso = isoForWeekday(selectedWeekday);
       const data = {};
-      document.querySelectorAll('.exercise').forEach((exDiv, ei) => {
+      document.querySelectorAll('.exercise').forEach((exDiv) => {
+        const exName = exDiv.querySelector('.ex-name').textContent;
         const rows = exDiv.querySelectorAll('.set-row');
         const exData = {};
         rows.forEach((row, si) => {
@@ -948,14 +952,14 @@
             exData[si] = { kg, reps, rir, done };
           }
         });
-        if(Object.keys(exData).length) data[ei] = exData;
+        if(Object.keys(exData).length) data[exName] = exData;
       });
       localStorage.setItem(progressKey(iso), JSON.stringify(data));
     }catch(e){ /* almacenamiento no disponible, se sigue sin guardado local */ }
   }
 
   function renderDay(data, weekday){
-    lastSetDoneAt = null; // nuevo render de día = nueva referencia para medir descansos reales
+    lastSetDoneAt = null; // nuevo render de día = nueva referencia para medir el ciclo entre series
     const iso = isoForWeekday(weekday);
     const jsDay = weekday;
     let day = (data.overrides && data.overrides[iso]) ? data.overrides[iso] : data.days[String(jsDay)];
@@ -1094,7 +1098,7 @@
   let restSpoken = new Set();
   let restFinished = false;
 
-  let lastSetDoneAt = null; // timestamp de la última serie marcada — permite medir el descanso real tomado
+  let lastSetDoneAt = null; // timestamp de la última serie marcada — mide el ciclo completo hasta la siguiente (descanso + tiempo de ejecución + de escribir el dato), no el descanso puro
 
   function toggleDone(btn){
     const willBeDone = !btn.classList.contains('done');
@@ -1377,7 +1381,7 @@
         const rir = row.querySelector('select').value.replace('RIR ', 'rir');
         if(reps !== ''){
           const restTaken = row.dataset.restTaken;
-          const restNote = restTaken ? ` [desc ${formatRestTaken(parseInt(restTaken,10))}]` : '';
+          const restNote = restTaken ? ` [ciclo ${formatRestTaken(parseInt(restTaken,10))}]` : '';
           setLines.push(`${idx+1}a ${kg || '-'}x${reps} ${rir}${restNote}`);
         }
       });
@@ -2655,7 +2659,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v47'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v48'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
