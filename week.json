@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-11",
+  "updated": "2026-09-13",
   "overrides": {
     "2026-08-13": {
       "title": "Running",
@@ -3712,6 +3712,189 @@
           ]
         }
       ]
+    },
+    "2026-09-14": {
+      "title": "Pierna — DESCARGA",
+      "subtitle": "Lunes 14 sep · SEMANA DE DESCARGA COMPLETA",
+      "type": "fuerza",
+      "warn": "⚠️ Confirmado con Sempai: TSB -17 y bajando, hace falta la semana completa desde hoy (no solo parche de fin de semana). VFC y sueño bien, no es alarma. Volumen -30/40%, RIR subido, SIN progresión.",
+      "exercises": [
+        {
+          "name": "Extensión cuádriceps",
+          "meta": "40kg (baja de 50-55kg)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Gemelo prensa/sentado",
+          "meta": "35kg (baja de 50kg)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 35,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 35,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 35,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Hip thrust",
+          "meta": "40kg (baja de 50kg)",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Curl femoral",
+          "meta": "40kg (baja de 55kg)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Búlgaras",
+          "meta": "3x10 FIJO por pierna — sin cambios",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Número fijo de reps, no RIR — hernias",
+          "sets": [
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            },
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            },
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            }
+          ]
+        },
+        {
+          "name": "Sissy squat",
+          "meta": "35kg (baja de 50kg)",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 35,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 35,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-09-16": {
+      "title": "Running",
+      "subtitle": "Miércoles 16 sep · 5'/1' x4 (DESCARGA) · con Sempai · 19:00",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 5'/1' x4 (DESCARGA)",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 300,
+            "tiempoLabel": "5'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 4,
+        "fcObjetivo": "Hasta 132-135 lpm — corta antes si algo no fluye",
+        "terreno": "Cinta (confirmar si sigue siendo la habitual — coincide con Convivencias de Sara)",
+        "comentarios": "SEMANA DE DESCARGA COMPLETA — TSB -17 y bajando pese al ajuste del fin de semana pasado. Solo 2 días de running esta semana (martes y jueves libres de todo). Sin progresión de duración, sin presión de cadencia. 2ª sesión de descarga real — objetivo: que el TSB empiece a subir hacia positivo antes de retomar progresión."
+      }
+    },
+    "2026-09-19": {
+      "title": "Running",
+      "subtitle": "Sábado 19 sep · 5'/1' x4-5 (cierre descarga) · con Sempai · 9:00",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 5'/1' x4-5 (cierre descarga)",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 300,
+            "tiempoLabel": "5'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 4,
+        "fcObjetivo": "Hasta 132-135 lpm",
+        "terreno": "Cinta",
+        "comentarios": "CIERRE DE LA SEMANA DE DESCARGA — día después de Tracción (viernes). Sin progresión de duración. Con esta sesión se cierra la semana completa de descarga (Pierna-Tracción-Empuje + 2 running, todo a volumen reducido). La semana que viene se revisa el TSB antes de decidir si se retoma la progresión desde 8' o se hace un ajuste intermedio."
+      }
     }
   },
   "days": {
