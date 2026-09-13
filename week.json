@@ -3895,6 +3895,12 @@
         "terreno": "Cinta",
         "comentarios": "CIERRE DE LA SEMANA DE DESCARGA — día después de Tracción (viernes). Sin progresión de duración. Con esta sesión se cierra la semana completa de descarga (Pierna-Tracción-Empuje + 2 running, todo a volumen reducido). La semana que viene se revisa el TSB antes de decidir si se retoma la progresión desde 8' o se hace un ajuste intermedio."
       }
+    },
+    "2026-09-17": {
+      "title": "Descanso",
+      "subtitle": "Jueves 17 sep · descanso fijo por agenda esta semana",
+      "type": "descanso",
+      "note": "Día de descanso obligatorio movido de martes a jueves esta semana concreta, por agenda. Sin sesión de ningún tipo."
     }
   },
   "days": {
