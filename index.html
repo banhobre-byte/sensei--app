@@ -625,13 +625,20 @@
     }catch(e){
       fromNetwork = false;
       try{
-        // Busca en cualquier caché existente, sin depender de un nombre de versión fijo
-        // (evita que este fallback quede desincronizado cuando se actualiza sw.js)
-        const cacheNames = await caches.keys();
-        for(const name of cacheNames){
-          const cache = await caches.open(name);
-          const cached = await cache.match('week.json');
-          if(cached){ data = await cached.json(); break; }
+        // Primero la caché de la versión actual (la que coincide con APP_VERSION) — es la que
+        // realmente debería tener el week.json más reciente que se pudo descargar.
+        const currentCache = await caches.open(APP_VERSION);
+        const currentCached = await currentCache.match('week.json');
+        if(currentCached){
+          data = await currentCached.json();
+        } else {
+          // Último recurso: busca en cualquier otra caché que quede (puede ser antigua)
+          const cacheNames = await caches.keys();
+          for(const name of cacheNames){
+            const cache = await caches.open(name);
+            const cached = await cache.match('week.json');
+            if(cached){ data = await cached.json(); break; }
+          }
         }
       }catch(e2){ /* no cache either */ }
     }
@@ -2659,7 +2666,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v48'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v49'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sensei-v48';
+const CACHE_NAME = 'sensei-v49';
 const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
@@ -37,7 +37,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           return response;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => caches.open(CACHE_NAME).then((cache) => cache.match(event.request)))
     );
     return;
   }
