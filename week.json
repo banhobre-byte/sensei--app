@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-13",
+  "updated": "2026-09-18",
   "overrides": {
     "2026-08-13": {
       "title": "Running",
@@ -3901,6 +3901,115 @@
       "subtitle": "Jueves 17 sep · descanso fijo por agenda esta semana",
       "type": "descanso",
       "note": "Día de descanso obligatorio movido de martes a jueves esta semana concreta, por agenda. Sin sesión de ningún tipo."
+    },
+    "2026-09-20": {
+      "title": "Empuje — DESCARGA",
+      "subtitle": "Domingo 20 sep · SEMANA DE DESCARGA",
+      "type": "fuerza",
+      "warn": "⚠️ Semana de descarga — volumen -30/40%, RIR subido, SIN progresión. Antebrazos: parar al primer pinchazo.",
+      "exercises": [
+        {
+          "name": "Fondos lastre",
+          "meta": "8kg (baja de 10-12.5kg)",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": 8,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 8,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 8,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Press pecho máquina",
+          "meta": "50kg (baja de 63kg, sin progresión)",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Aperturas polea alta",
+          "meta": "40kg (baja de 50-63kg)",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Antebrazo — primer pinchazo, parar",
+          "sets": [
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 40,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "20kg (baja de 23-29kg)",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 20,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 20,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Laterales",
+          "meta": "5kg (baja de 6-7.5kg)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 5,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
     }
   },
   "days": {
