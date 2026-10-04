@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-28",
+  "updated": "2026-10-04",
   "overrides": {
     "2026-08-13": {
       "title": "Running",
@@ -5502,6 +5502,682 @@
           ]
         }
       ]
+    },
+    "2026-10-05": {
+      "title": "Pierna",
+      "subtitle": "Lunes 5 oct · bloque volumen",
+      "type": "fuerza",
+      "warn": "Descanso fijo movido a jueves esta semana (visita a gimnasio nuevo). Cargas mantenidas, progresión pausada hasta confirmar respuesta. Búlgaras: 3x10 fijo, nunca por sensación.",
+      "exercises": [
+        {
+          "name": "Extensión cuádriceps",
+          "meta": "58kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 58,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 58,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 58,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 58,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Gemelo prensa/sentado",
+          "meta": "55kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Curl femoral",
+          "meta": "58kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 58,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 58,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 58,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hip thrust",
+          "meta": "54kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 54,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 54,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 54,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Búlgaras",
+          "meta": "3x10 FIJO por pierna",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Número fijo de reps, no RIR — hernias",
+          "sets": [
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            },
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            },
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            }
+          ]
+        },
+        {
+          "name": "Sissy squat",
+          "meta": "55kg total",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 55,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Abducción",
+          "meta": "57kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Adducción",
+          "meta": "36kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-10-07": {
+      "title": "Running",
+      "subtitle": "Miércoles 7 oct · cierre bloque 9' · con Sempai · 9:00",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — Cierre bloque 9' (5-6 rondas)",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 540,
+            "tiempoLabel": "9'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "Techo 132-135 — talk test por delante del número",
+        "terreno": "Cinta si está operativa. Si sigue inundado, exterior con las mismas 5-6 rondas sin forzar más (mantenimiento, no progresión)",
+        "comentarios": "CIERRE OFICIAL del bloque de 9' antes de valorar el salto a 10'. Semana pasada: martes 4 rondas RPE3 FC132, jueves 5 rondas RPE4 FC133 (ambas limpias en cinta). El sábado fue en exterior y no cuenta como cierre — cambió el estímulo (ritmo más rápido sin control, 14% del tiempo en Z4). Si esta sale limpia (sin dolor, FC controlada, RPE≤4), la semana que viene se abre el bloque de 10'. Cadencia 170-176spm ya se sostiene sola, solo vigilar que no decaiga. Compatibilidad fuerza: 2 días después de Pierna, recuperación completa."
+      }
+    },
+    "2026-10-08": {
+      "title": "Running",
+      "subtitle": "Jueves 8 oct · pendiente de confirmar con Sempai",
+      "type": "cardio",
+      "note": "Se ajusta según cómo salga la sesión del miércoles (cierre de bloque 9')."
+    },
+    "2026-10-09": {
+      "title": "Tracción",
+      "subtitle": "Viernes 9 oct · bloque volumen · nuevo orden",
+      "type": "fuerza",
+      "warn": "⚡ Nuevo orden: aislamiento movido a mitad de sesión (pullover y curl martillo), no al final, para mejorar conexión mente-músculo. Nunca al fallo en remos. Antebrazos: agarres en remo/jalón, parar al primer pinchazo.",
+      "exercises": [
+        {
+          "name": "Dominadas (prono o neutro, alternar)",
+          "meta": "Máx reps x4",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Remo unilateral apoyo",
+          "meta": "100.1kg",
+          "rest": "2.5-3 min",
+          "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar",
+          "sets": [
+            {
+              "kg": 100.1,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100.1,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100.1,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100.1,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Pullover polea",
+          "meta": "32kg — aislamiento, aquí fresco (nuevo orden)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 32,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 32,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 32,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 32,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Jalón agarre ancho",
+          "meta": "120kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 120,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 120,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 120,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 120,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Remo convergente unilateral",
+          "meta": "75kg",
+          "rest": "2.5-3 min",
+          "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar",
+          "sets": [
+            {
+              "kg": 75,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 75,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 75,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Curl martillo",
+          "meta": "12.5kg — aislamiento, aquí fresco (nuevo orden)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "36kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Curl bíceps aislamiento",
+          "meta": "10kg — opcional, solo si llegas con margen",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 10,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 10,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 10,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-10-11": {
+      "title": "Empuje",
+      "subtitle": "Domingo 11 oct · bloque volumen · nuevo orden",
+      "type": "fuerza",
+      "warn": "⚡ Nuevo orden: aislamiento a mitad de sesión. Press francés eliminado (incomodidad declarada, overhead cubre tríceps). Antebrazos: parar al primer pinchazo.",
+      "exercises": [
+        {
+          "name": "Fondos lastre",
+          "meta": "12.5kg — RP disponible",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press pecho máquina",
+          "meta": "70kg — consolidar",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Laterales",
+          "meta": "7.5kg — aislamiento, aquí fresco (nuevo orden)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "0"
+            }
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "29kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Overhead polea",
+          "meta": "36kg — aislamiento, aquí fresco (nuevo orden, cubre tríceps)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Aperturas polea alta",
+          "meta": "63kg",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Antebrazo — primer pinchazo, parar",
+          "sets": [
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Aperturas posteriores",
+          "meta": "57kg",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Antebrazo + vigilar lumbar — primer pinchazo o compensación, parar",
+          "sets": [
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-10-06": {
+      "title": "Descanso + Descompresión",
+      "subtitle": "Martes 6 oct · tras Pierna, como es habitual",
+      "type": "descanso",
+      "note": "Descanso fijo de vuelta al martes (el cambio a jueves de la semana pasada fue solo puntual).",
+      "exercises": [
+        {
+          "name": "Colgado pasivo en barra",
+          "meta": "Descompresión L4-L5, hombros activos, con straps",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            }
+          ]
+        },
+        {
+          "name": "Hipopresivos",
+          "meta": "Exhala todo el aire, vacío abdominal 8-10s por repetición",
+          "rest": "30-45s",
+          "sets": [
+            {
+              "kg": "",
+              "label": "—",
+              "reps": "",
+              "repsLabel": "reps (8-10)",
+              "rir": "-"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-10-10": {
+      "title": "Running",
+      "subtitle": "Sábado 10 oct · pendiente de confirmar con Sempai",
+      "type": "cardio",
+      "note": "Pendiente de que Sempai confirme si hay sesión programada esta semana."
     }
   },
   "days": {
