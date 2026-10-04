@@ -5507,32 +5507,38 @@
       "title": "Pierna",
       "subtitle": "Lunes 5 oct · bloque volumen · progresión confirmada",
       "type": "fuerza",
-      "warn": "Progresión confirmada desde la sesión del 28 de septiembre (plan ejecutado tal cual, limpio). Búlgaras: 3x10 fijo, nunca por sensación.",
+      "warn": "Progresión confirmada desde la sesión del 28 de septiembre. Búlgaras: 3x10 fijo, nunca por sensación. ⚠️ Cuádriceps: tensión en tendón rotuliano al subir carga — bajamos peso y subimos series, rango recortado.",
       "exercises": [
         {
           "name": "Extensión cuádriceps",
-          "meta": "🎯 Sube a 60kg — 58kg limpio",
-          "rest": "60-90s",
+          "meta": "46kg (bajado de 60kg) — rango recortado, sin bloqueo arriba",
+          "rest": "45-60s",
+          "warnEx": "⚠️ Tensión en tendón rotuliano — no bloquear rodilla arriba, controlar la fase de extensión",
           "sets": [
             {
-              "kg": 60,
-              "reps": "",
-              "rir": "0"
-            },
-            {
-              "kg": 60,
-              "reps": "",
-              "rir": "0"
-            },
-            {
-              "kg": 60,
+              "kg": 46,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 60,
+              "kg": 46,
               "reps": "",
               "rir": "1"
+            },
+            {
+              "kg": 46,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 46,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 46,
+              "reps": "",
+              "rir": "2"
             }
           ]
         },
