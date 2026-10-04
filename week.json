@@ -5505,32 +5505,32 @@
     },
     "2026-10-05": {
       "title": "Pierna",
-      "subtitle": "Lunes 5 oct · bloque volumen",
+      "subtitle": "Lunes 5 oct · bloque volumen · progresión confirmada",
       "type": "fuerza",
-      "warn": "Descanso fijo movido a jueves esta semana (visita a gimnasio nuevo). Cargas mantenidas, progresión pausada hasta confirmar respuesta. Búlgaras: 3x10 fijo, nunca por sensación.",
+      "warn": "Progresión confirmada desde la sesión del 28 de septiembre (plan ejecutado tal cual, limpio). Búlgaras: 3x10 fijo, nunca por sensación.",
       "exercises": [
         {
           "name": "Extensión cuádriceps",
-          "meta": "58kg",
+          "meta": "🎯 Sube a 60kg — 58kg limpio",
           "rest": "60-90s",
           "sets": [
             {
-              "kg": 58,
+              "kg": 60,
               "reps": "",
               "rir": "0"
             },
             {
-              "kg": 58,
+              "kg": 60,
               "reps": "",
               "rir": "0"
             },
             {
-              "kg": 58,
+              "kg": 60,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 58,
+              "kg": 60,
               "reps": "",
               "rir": "1"
             }
@@ -5538,21 +5538,21 @@
         },
         {
           "name": "Gemelo prensa/sentado",
-          "meta": "55kg",
+          "meta": "🎯 Sube a 57kg — 55kg limpio",
           "rest": "60-90s",
           "sets": [
             {
-              "kg": 55,
+              "kg": 57,
               "reps": "",
               "rir": "0"
             },
             {
-              "kg": 55,
+              "kg": 57,
               "reps": "",
               "rir": "0"
             },
             {
-              "kg": 55,
+              "kg": 57,
               "reps": "",
               "rir": "1"
             }
@@ -5560,21 +5560,21 @@
         },
         {
           "name": "Curl femoral",
-          "meta": "58kg",
+          "meta": "🎯 Sube a 60kg — 58kg limpio",
           "rest": "60-90s",
           "sets": [
             {
-              "kg": 58,
+              "kg": 60,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 58,
+              "kg": 60,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 58,
+              "kg": 60,
               "reps": "",
               "rir": "1"
             }
@@ -5582,21 +5582,21 @@
         },
         {
           "name": "Hip thrust",
-          "meta": "54kg",
+          "meta": "🎯 Sube a 56kg — 54kg limpio",
           "rest": "90-120s",
           "sets": [
             {
-              "kg": 54,
+              "kg": 56,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 54,
+              "kg": 56,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 54,
+              "kg": 56,
               "reps": "",
               "rir": "1"
             }
@@ -5630,21 +5630,21 @@
         },
         {
           "name": "Sissy squat",
-          "meta": "55kg total",
+          "meta": "🎯 Sube a 57kg — 55kg limpio",
           "rest": "90-120s",
           "sets": [
             {
-              "kg": 55,
+              "kg": 57,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 55,
+              "kg": 57,
               "reps": "",
               "rir": "1"
             },
             {
-              "kg": 55,
+              "kg": 57,
               "reps": "",
               "rir": "1"
             }
