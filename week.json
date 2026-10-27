@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-20",
+  "updated": "2026-10-27",
   "overrides": {
     "2026-08-13": {
       "title": "Running",
@@ -7408,6 +7408,693 @@
       "subtitle": "Domingo 25 oct · sin entreno programado",
       "type": "descanso",
       "note": "Sin running ni fuerza programados esta semana en el fin de semana. Camina cuanto puedas.",
+      "exercises": []
+    },
+    "2026-10-26": {
+      "title": "Pierna",
+      "subtitle": "Lunes 26 oct · bloque volumen · progresión moderada · 19:00",
+      "type": "fuerza",
+      "warn": "Primera Pierna normal tras la gripe. Referencia: 19/10 (reentrada, todo limpio). Búlgaras: 3x10 fijo, nunca por sensación. Tendón rotuliano: cero molestia o no se sube.",
+      "exercises": [
+        {
+          "name": "Abducción",
+          "meta": "57kg — 19/10: 15-15-15",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 57,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Adducción",
+          "meta": "36kg — 19/10: 15-15-15",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Extensión cuádriceps",
+          "meta": "45kg — rango recortado, sin bloqueo arriba. 19/10: 12-12-12",
+          "rest": "45-60s",
+          "warnEx": "⚠️ Tendón rotuliano — cero molestia o no se sube",
+          "sets": [
+            {
+              "kg": 45,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 45,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 45,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 45,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Curl femoral",
+          "meta": "Máquina habitual 50kg; si solo hay la de pie unilateral, 30kg por pierna",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 50,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Gemelo prensa/sentado",
+          "meta": "60kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 60,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 60,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 60,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Hip thrust",
+          "meta": "60kg (+2.5kg)",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 60,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 60,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 60,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Búlgaras",
+          "meta": "3x10 FIJO por pierna",
+          "rest": "90-120s",
+          "warnEx": "⚠️ Número fijo de reps, no RIR — hernias",
+          "sets": [
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            },
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            },
+            {
+              "kg": 0,
+              "label": "peso corp.",
+              "reps": 10,
+              "rir": "-"
+            }
+          ]
+        },
+        {
+          "name": "Sissy squat",
+          "meta": "60kg — si la máquina está ocupada, isométricos pared 4x1 min",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 60,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 60,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-10-27": {
+      "title": "Empuje",
+      "subtitle": "Martes 27 oct · bloque volumen · con progresión · 18:30-19:30",
+      "type": "fuerza",
+      "warn": "Referencia: Empuje del 20/10 (3x12 limpias, RIR 2). Press pecho a 77: si la 1ª serie sale a menos de 7, baja a 70kg x4x10. Karate 19:30: si falta tiempo, el overhead cae. Antebrazos y rotulianos: parar al primer pinchazo.",
+      "exercises": [
+        {
+          "name": "Fondos lastre",
+          "meta": "12.5kg — 20/10: 12-12-12. Si salen 4x12, +2.5kg la próxima",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press pecho máquina",
+          "meta": "77kg (salto de la máquina) — 20/10: 70x12 x3",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": 77,
+              "reps": "",
+              "rir": "2"
+            },
+            {
+              "kg": 77,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 77,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "29kg — 20/10: 12-12-12. Si 3x12 salen con RIR 1, la próxima sube un escalón",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Aperturas polea alta",
+          "meta": "63kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 63,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Laterales",
+          "meta": "7.5kg",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 7.5,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Aperturas posteriores",
+          "meta": "59kg (+2)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 59,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 59,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 59,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Overhead polea",
+          "meta": "36kg — si vas justo de tiempo, cae",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-10-28": {
+      "title": "Running",
+      "subtitle": "Miércoles 28 oct · apertura bloque 10' · 10'/1' x4 · con Sempai · 19:00",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 10'/1' x4",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 600,
+            "tiempoLabel": "10'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 4,
+        "fcObjetivo": "Techo 132-135 — talk test por delante del número",
+        "terreno": "Cinta. Sesión de progresión, no se hace en exterior.",
+        "comentarios": "Primera sesión del bloque de 10': una sola variable nueva (el 10º minuto). 4 rondas, NO 5. Cadencia 170-176 spm. Es normal que la FC suba 2-4 lpm en el último minuto de cada ronda. Condiciones de salida (check-in de la mañana): FC reposo ≤52, temperatura de piel dentro de ±0.3 °C de tu base (~35.4), VFC >90 ms, sin agujetas fuertes de piernas. Si no se cumple, se mueve un día. Contexto: el domingo 25/10 salió 9'/1' x4 con FC media 133, RPE 2. Si hoy FC media ≤135 y RPE ≤3-4, el sábado 31/10 sube a 5 rondas."
+      }
+    },
+    "2026-10-29": {
+      "title": "Descanso + Descompresión",
+      "subtitle": "Jueves 29 oct · día de descanso · 18:30, antes del karate",
+      "type": "descanso",
+      "note": "Día de descanso. Solo descompresión L4-L5.",
+      "exercises": [
+        {
+          "name": "Colgado pasivo en barra",
+          "meta": "Descompresión L4-L5, hombros activos, con straps",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            },
+            {
+              "kg": "",
+              "label": "peso corp.",
+              "reps": "",
+              "repsLabel": "seg (20-30)",
+              "rir": "-"
+            }
+          ]
+        },
+        {
+          "name": "Hipopresivos",
+          "meta": "Exhala todo el aire, vacío abdominal 8-10s por repetición",
+          "rest": "30-45s",
+          "sets": [
+            {
+              "kg": "",
+              "label": "—",
+              "reps": "",
+              "repsLabel": "reps (8-10)",
+              "rir": "-"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-10-30": {
+      "title": "Tracción",
+      "subtitle": "Viernes 30 oct · bloque volumen · 18:00 · orden del plan",
+      "type": "fuerza",
+      "warn": "Orden del plan: el 23/10 el cambio de orden hundió pullover y jalón. Referencia: Tracción del 23/10. Nunca al fallo en remos. Antebrazos: parar al primer pinchazo. Mañana sábado hay running (09:30): ~15 h de margen.",
+      "exercises": [
+        {
+          "name": "Dominadas (neutras o prono, alternar)",
+          "meta": "Máx reps x4 — 23/10: 8-8-6-6. Objetivo 8-8-7-7",
+          "rest": "2.5-3 min",
+          "sets": [
+            {
+              "kg": "",
+              "reps": "",
+              "rir": "1",
+              "label": "peso corp."
+            },
+            {
+              "kg": "",
+              "reps": "",
+              "rir": "1",
+              "label": "peso corp."
+            },
+            {
+              "kg": "",
+              "reps": "",
+              "rir": "1",
+              "label": "peso corp."
+            },
+            {
+              "kg": "",
+              "reps": "",
+              "rir": "1",
+              "label": "peso corp."
+            }
+          ]
+        },
+        {
+          "name": "Remo unilateral apoyo",
+          "meta": "100.1kg — 23/10: 12x4. Apunta a 4x13",
+          "rest": "2.5-3 min",
+          "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar",
+          "sets": [
+            {
+              "kg": 100.1,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100.1,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100.1,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 100.1,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Pullover polea",
+          "meta": "30kg — tercero, descansado (10/10: 15-12-12-12)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 30,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Jalón agarre ancho",
+          "meta": "120kg — no subir a 125 hasta 4x12 limpias",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 120,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 120,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 120,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 120,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Remo convergente unilateral",
+          "meta": "70kg; 1ª serie con 75kg si sale holgado",
+          "rest": "2.5-3 min",
+          "warnEx": "⚠️ Nunca al fallo — riesgo compensación lumbar",
+          "sets": [
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 70,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Curl martillo",
+          "meta": "12.5kg (14kg si la mancuerna lo permite) — 23/10: 12x4",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 12.5,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        },
+        {
+          "name": "Press hombro máquina",
+          "meta": "36kg",
+          "rest": "90-120s",
+          "sets": [
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "1"
+            },
+            {
+              "kg": 36,
+              "reps": "",
+              "rir": "2"
+            }
+          ]
+        },
+        {
+          "name": "Curl bíceps aislamiento",
+          "meta": "Opcional, solo si llegas con margen (el 23/10: 29x12-12-10; confirmar máquina)",
+          "rest": "60-90s",
+          "sets": [
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "0"
+            },
+            {
+              "kg": 29,
+              "reps": "",
+              "rir": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "2026-10-31": {
+      "title": "Running",
+      "subtitle": "Sábado 31 oct · bloque 10' sesión 2 · 10'/1' x5 · con Sempai · 09:30",
+      "type": "cardio",
+      "warn": "Si dolor lumbar irradiado a pierna → parar inmediatamente",
+      "runningPlan": {
+        "titulo": "Running — 10'/1' x5",
+        "fases": [
+          {
+            "fase": "Trote",
+            "tiempoSeg": 600,
+            "tiempoLabel": "10'",
+            "velocidad": "6.5-7.0 km/h"
+          },
+          {
+            "fase": "Caminar",
+            "tiempoSeg": 60,
+            "tiempoLabel": "1'",
+            "velocidad": "5.0-5.5 km/h"
+          }
+        ],
+        "repeticiones": 5,
+        "fcObjetivo": "Techo 132-135 — talk test por delante del número",
+        "terreno": "Cinta.",
+        "comentarios": "5 rondas SOLO si el miércoles 28/10 salió con FC media ≤135, RPE ≤3-4 y sin molestias. Si salió justo o con FC alta, repetir 4 rondas (para tras la 4ª). Fuerza: Tracción el viernes 30 a las 18:00 (no carga pierna, ~15 h de margen). Condiciones de salida (check-in): FC reposo ≤52, temperatura de piel dentro de ±0.3 °C de tu base, VFC >90 ms, sin agujetas fuertes de Tracción en antebrazos o lumbar. Si no se cumple, se mueve al domingo."
+      }
+    },
+    "2026-11-01": {
+      "title": "Descanso",
+      "subtitle": "Domingo 1 nov · libre, sin running",
+      "type": "descanso",
+      "note": "Domingo libre, sin running (Sempai no ha programado nada). Si el sábado no pudiste salir por el check-in, este es el día de repuesto.",
       "exercises": []
     }
   },
