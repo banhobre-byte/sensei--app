@@ -335,6 +335,51 @@
   .hoy-nav-btn svg{color:var(--gold);}
   .hoy-version{align-self:center; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);
     border:1px solid var(--line); border-radius:20px; padding:4px 10px;}
+
+  /* ---- Modo sesión: un ejercicio por pantalla ---- */
+  .sm-overlay{position:fixed; inset:0; z-index:25; background:var(--bg); color:var(--text); display:none; flex-direction:column;
+    padding:18px 20px calc(20px + env(safe-area-inset-bottom)); gap:16px; overflow-y:auto; font-variant-numeric:tabular-nums;}
+  .sm-overlay.show{display:flex;}
+  .sm-head{display:flex; align-items:center; gap:12px;}
+  .sm-icon-btn{width:48px; height:48px; flex:none; border:1px solid var(--line); border-radius:14px; background:var(--bg-card); color:var(--text);
+    display:flex; align-items:center; justify-content:center; padding:0;}
+  .sm-head-text{flex:1; display:flex; flex-direction:column; gap:8px; min-width:0;}
+  .sm-crumb{margin:0; font-size:13px; font-weight:600; color:var(--text-dim);}
+  .sm-segs{display:flex; gap:4px;}
+  .sm-segs span{flex:1; height:5px; border-radius:3px; background:var(--line);}
+  .sm-segs span.done{background:var(--gold-dim);} .sm-segs span.cur{background:var(--gold);}
+  .sm-body{flex:1; display:flex; flex-direction:column; gap:14px;}
+  .sm-name{margin:0; font-family:'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif; font-size:27px; line-height:1.15; font-weight:700;}
+  .sm-warn{margin:0; align-self:flex-start; padding:8px 12px; border-radius:10px; background:#2a1814; font-size:13px; line-height:1.35; font-weight:600; color:#f0b9a8;}
+  .sm-meta{margin:0; font-size:14px; line-height:1.4; color:#c9c3b6;}
+  .sm-card{background:var(--bg-card); border:1px solid var(--line); border-radius:24px; padding:18px 14px; display:flex; flex-direction:column; gap:16px;}
+  .sm-setno{margin:0; text-align:center; font-size:14px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--gold);}
+  .sm-nums{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .sm-num{display:flex; flex-direction:column; align-items:center; gap:8px; min-width:0;}
+  .sm-num label{font-size:13px; font-weight:600; color:var(--text-dim);}
+  .sm-num input{width:100%; background:transparent; border:0; border-bottom:2px solid var(--line); border-radius:0; color:var(--text); text-align:center;
+    font-family:'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif; font-size:50px; line-height:1.1; font-weight:700; padding:0 0 4px;}
+  .sm-num input:focus{outline:none; border-bottom-color:var(--gold);}
+  .sm-num input::placeholder{color:var(--text-dim); font-size:26px;}
+  .sm-steps{display:flex; gap:8px;}
+  .sm-step{width:60px; height:48px; border:1px solid var(--line); border-radius:12px; background:var(--bg-card-2); color:var(--text); font:700 24px -apple-system,'Segoe UI',Roboto,sans-serif; padding:0;}
+  .sm-step:active, .sm-rir button:active{background:var(--line);}
+  .sm-rir{display:grid; grid-template-columns:repeat(6,1fr); gap:6px;}
+  .sm-rir span{grid-column:1 / -1; text-align:center; font-size:13px; font-weight:600; color:var(--text-dim);}
+  .sm-rir button{width:100%; height:48px; border:1px solid var(--line); border-radius:12px; background:var(--bg-card-2); color:#c9c3b6; font:700 16px -apple-system,'Segoe UI',Roboto,sans-serif; padding:0;}
+  .sm-rir button[aria-pressed="true"]{background:var(--gold); border-color:var(--gold); color:#0d0d0d;}
+  .sm-lines{display:flex; flex-direction:column; gap:6px;}
+  .sm-lines p{margin:0; font-size:14px; line-height:1.4; color:#c9c3b6;}
+  .sm-lines b{color:var(--text);} .sm-lines .ok{color:#8fc98f;}
+  .sm-actions{margin-top:auto; display:flex; flex-direction:column; gap:10px;}
+  .sm-done{min-height:68px; border:0; border-radius:20px; background:var(--gold); color:#0d0d0d; font:700 22px 'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif;}
+  .sm-done:active{opacity:.85;}
+  .sm-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;}
+  .sm-sec{min-height:48px; border:1px solid var(--line); border-radius:14px; background:var(--bg-card); color:var(--text); font:600 13px -apple-system,'Segoe UI',Roboto,sans-serif; padding:0 6px;}
+  .sm-sec:disabled{opacity:.4;}
+  .sm-hint{margin:0; text-align:center; font-size:13px; color:var(--text-dim);}
+  .sm-enter{width:100%; min-height:56px; margin:0 0 14px; border:0; border-radius:16px; background:var(--gold); color:#0d0d0d;
+    font:700 18px 'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif;}
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
 </style>
 </head>
@@ -461,6 +506,19 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="sm-overlay" id="smOverlay" role="dialog" aria-modal="true" aria-label="Modo sesión">
+  <div class="sm-head">
+    <button type="button" class="sm-icon-btn" onclick="smClose()" aria-label="Salir del modo sesión">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+    </button>
+    <div class="sm-head-text">
+      <p class="sm-crumb" id="smCrumb"></p>
+      <div class="sm-segs" id="smSegs" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="sm-body" id="smBody"></div>
+</div>
 
 <div class="rest-overlay" id="restBar">
   <button class="rest-close-btn" onclick="cancelRestTimer()">✕</button>
@@ -1143,6 +1201,7 @@
     }
 
     // render exercises (fuerza, o descanso con protocolo cronometrado)
+    html += `<button type="button" class="sm-enter" onclick="smOpen()">Modo sesión · un ejercicio por pantalla</button>`;
     html += `<div class="col-labels"><span>#</span><span>kg</span><span>reps</span><span>RIR</span><span></span><span></span></div>`;
 
     const orderedExercises = applyExerciseOrder(day.exercises, iso);
@@ -1203,6 +1262,7 @@
 
     main.innerHTML = html;
     footer.style.display = 'block';
+    smRender(); // si el modo sesión está abierto, se repinta sobre las casillas nuevas
   }
 
   function toggleEx(headEl){ headEl.parentElement.classList.toggle('open'); }
@@ -1775,6 +1835,231 @@
 
 
 
+
+  // ============ MODO SESIÓN: un ejercicio por pantalla ============
+  // No guarda nada por su cuenta: escribe en las mismas casillas de la lista de Rutinas y pulsa su ✓,
+  // así el guardado, el descanso, la comparación y la subida a Sensei son los de siempre.
+  let smExIndex = 0;
+  let smWatch = null;
+  let smRpTimer = null;
+
+  function smExercises(){ return Array.from(document.querySelectorAll('#main .exercise')); }
+  function smRows(exDiv){ return Array.from(exDiv.querySelectorAll('.set-row')); }
+  function smIsDone(row){ return row.querySelector('.check-btn').classList.contains('done'); }
+  function smPendingRow(exDiv){ return smRows(exDiv).find(r => !smIsDone(r)) || null; }
+
+  function smOpen(){
+    const exs = smExercises();
+    if(!exs.length){ showToast('Hoy no hay ejercicios que registrar.'); return; }
+    const firstPending = exs.findIndex(e => smPendingRow(e));
+    smExIndex = firstPending === -1 ? exs.length - 1 : firstPending;
+    document.getElementById('smOverlay').classList.add('show');
+    requestWakeLock();
+    clearInterval(smWatch);
+    // Tras un rest-pause, las repeticiones de la casilla cambian a "7+2": se reflejan aquí
+    smWatch = setInterval(smSyncFromRow, 600);
+    smRender();
+  }
+
+  function smClose(){
+    clearInterval(smWatch); smWatch = null;
+    clearInterval(smRpTimer); smRpTimer = null;
+    document.getElementById('smOverlay').classList.remove('show');
+    if(!document.getElementById('restBar').classList.contains('show')) releaseWakeLock();
+  }
+
+  function smCurrent(){
+    const exs = smExercises();
+    if(!exs.length) return null;
+    if(smExIndex >= exs.length) smExIndex = exs.length - 1;
+    const exDiv = exs[smExIndex];
+    return { exs, exDiv, row: smPendingRow(exDiv), rows: smRows(exDiv) };
+  }
+
+  function smFmt(n){ return String(Math.round(n * 100) / 100); }
+
+  function smRender(){
+    const overlay = document.getElementById('smOverlay');
+    if(!overlay.classList.contains('show')) return;
+    const cur = smCurrent();
+    const body = document.getElementById('smBody');
+    if(!cur){ smClose(); return; }
+    const { exs, exDiv, row, rows } = cur;
+    const title = document.getElementById('trainingPageTitle').textContent;
+    document.getElementById('smCrumb').textContent = `${title} · ejercicio ${smExIndex + 1} de ${exs.length}`;
+    document.getElementById('smSegs').innerHTML = exs.map((e, i) =>
+      `<span class="${i === smExIndex ? 'cur' : (smPendingRow(e) ? '' : 'done')}"></span>`).join('');
+
+    const name = exDiv.querySelector('.ex-name').textContent;
+    const meta = exDiv.querySelector('.ex-meta').textContent;
+    const noteEl = exDiv.querySelector('.ex-note');
+    const allDone = exs.every(e => !smPendingRow(e));
+    let html = `<h1 class="sm-name">${escapeHtml(name)}</h1>`;
+    if(noteEl) html += `<p class="sm-warn">${escapeHtml(noteEl.textContent)}</p>`;
+    if(meta) html += `<p class="sm-meta">${escapeHtml(meta)}</p>`;
+
+    const prev = rows.map(r => r.dataset.prevReps).filter(Boolean);
+    const hechas = rows.filter(smIsDone).map(r => {
+      const i = r.querySelectorAll('input');
+      return (i[0].value ? i[0].value.replace('.', ',') + ' × ' : '') + (i[1].value || '—');
+    });
+    let lines = '';
+    if(prev.length) lines += `<p>La última vez: <b>${escapeHtml(prev.join(' · '))}</b></p>`;
+    if(hechas.length) lines += `<p>Hoy: <b class="ok">${escapeHtml(hechas.join(' · '))}</b></p>`;
+
+    if(row){
+      const idx = rows.indexOf(row);
+      const inputs = row.querySelectorAll('input');
+      const bodyweight = inputs[0].value === '' && /peso|corp|—/i.test(inputs[0].placeholder || '');
+      const kgStart = inputs[0].value !== '' ? inputs[0].value : (row.dataset.prevKg || '');
+      const isTime = /seg/i.test(inputs[1].placeholder || '');
+      const prevReps = parseInt(String(row.dataset.prevReps || '').split('+')[0], 10);
+      const repsStart = inputs[1].value !== '' ? inputs[1].value : (isNaN(prevReps) ? '' : String(prevReps));
+      const rirNow = row.querySelector('select').value;
+      const rirOpts = ['—', 'RIR 0', 'RIR 1', 'RIR 2', 'RIR 3', 'RIR 4'];
+      html += `<section class="sm-card" aria-label="Serie actual">
+        <p class="sm-setno">Serie ${idx + 1} de ${rows.length}</p>
+        <div class="sm-nums">
+          <div class="sm-num">
+            <label for="smKg">${bodyweight ? 'Lastre (kg)' : 'Kilos'}</label>
+            <input id="smKg" type="text" inputmode="decimal" value="${escapeHtml(kgStart)}" placeholder="${bodyweight ? 'PC' : 'kg'}" autocomplete="off">
+            <div class="sm-steps">
+              <button type="button" class="sm-step" onclick="smStep('smKg',-1)" aria-label="Menos kilos">−</button>
+              <button type="button" class="sm-step" onclick="smStep('smKg',1)" aria-label="Más kilos">+</button>
+            </div>
+          </div>
+          <div class="sm-num">
+            <label for="smReps">${isTime ? 'Segundos' : 'Repeticiones'}</label>
+            <input id="smReps" type="text" inputmode="numeric" value="${escapeHtml(repsStart)}" placeholder="${isTime ? 'seg' : 'reps'}" autocomplete="off">
+            <div class="sm-steps">
+              <button type="button" class="sm-step" onclick="smStep('smReps',-1)" aria-label="Menos repeticiones">−</button>
+              <button type="button" class="sm-step" onclick="smStep('smReps',1)" aria-label="Más repeticiones">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="sm-rir" role="group" aria-label="Repeticiones en reserva"><span>RIR (repeticiones en reserva)</span>${rirOpts.map(o =>
+          `<button type="button" aria-pressed="${o === rirNow}" onclick="smSetRir(this)" data-rir="${o}">${o.replace('RIR ', '')}</button>`).join('')}</div>
+      </section>`;
+      if(lines) html += `<div class="sm-lines">${lines}</div>`;
+      html += `<div class="sm-actions">
+        <button type="button" class="sm-done" onclick="smMarkDone()">Serie hecha</button>
+        <div class="sm-row">
+          <button type="button" class="sm-sec" onclick="smGo(-1)" ${smExIndex === 0 ? 'disabled' : ''}>‹ Anterior</button>
+          <button type="button" class="sm-sec" id="smRpBtn" onclick="smRestPause()">Rest-pause</button>
+          <button type="button" class="sm-sec" onclick="smGo(1)" ${smExIndex === exs.length - 1 ? 'disabled' : ''}>Siguiente ›</button>
+        </div>
+        <p class="sm-hint">Al marcarla, el descanso arranca solo.</p>
+      </div>`;
+    } else {
+      if(lines) html += `<div class="sm-lines">${lines}</div>`;
+      const nextPending = exs.findIndex(e => smPendingRow(e));
+      html += `<div class="sm-actions">
+        <p class="sm-hint">${allDone ? 'Has completado todos los ejercicios.' : 'Ejercicio completado.'}</p>
+        ${allDone
+          ? `<button type="button" class="sm-done" onclick="smFinish()">Guardar sesión</button>`
+          : `<button type="button" class="sm-done" onclick="smJump(${nextPending})">Siguiente ejercicio</button>`}
+        <div class="sm-row">
+          <button type="button" class="sm-sec" onclick="smGo(-1)" ${smExIndex === 0 ? 'disabled' : ''}>‹ Anterior</button>
+          <button type="button" class="sm-sec" onclick="smClose()">Ver la lista</button>
+          <button type="button" class="sm-sec" onclick="smGo(1)" ${smExIndex === exs.length - 1 ? 'disabled' : ''}>Siguiente ›</button>
+        </div>
+      </div>`;
+    }
+    body.innerHTML = html;
+  }
+
+  function smStep(id, dir){
+    const el = document.getElementById(id);
+    const raw = String(el.value).replace(',', '.');
+    if(id === 'smReps'){
+      const base = parseInt(raw.split('+')[0], 10);
+      el.value = String(Math.max(0, (isNaN(base) ? 0 : base) + dir));
+      return;
+    }
+    const v = parseFloat(raw);
+    const cur = isNaN(v) ? 0 : v;
+    const step = cur < 20 ? 0.5 : 2.5;
+    el.value = smFmt(Math.max(0, cur + dir * step));
+  }
+
+  function smSetRir(btn){
+    btn.parentElement.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'));
+  }
+
+  // Copia a la casilla de la lista lo que hay en pantalla
+  function smWriteRow(row){
+    const inputs = row.querySelectorAll('input');
+    const kg = String(document.getElementById('smKg').value).trim().replace(',', '.');
+    const reps = String(document.getElementById('smReps').value).trim();
+    inputs[0].value = kg;
+    inputs[1].value = reps;
+    const pressed = document.querySelector('#smBody .sm-rir button[aria-pressed="true"]');
+    if(pressed) row.querySelector('select').value = pressed.dataset.rir;
+    updateSetCompare(inputs[1]);
+    return reps;
+  }
+
+  function smMarkDone(){
+    const cur = smCurrent();
+    if(!cur || !cur.row) return;
+    const reps = smWriteRow(cur.row);
+    if(!reps){ showToast('Indica las repeticiones antes de marcar la serie.'); saveProgress(); return; }
+    clearInterval(smRpTimer); smRpTimer = null;
+    toggleDone(cur.row.querySelector('.check-btn'));
+    // Si era la última serie del ejercicio, pasa al siguiente con series pendientes
+    if(!smPendingRow(cur.exDiv)){
+      const next = cur.exs.findIndex((e, i) => i > smExIndex && smPendingRow(e));
+      const any = next !== -1 ? next : cur.exs.findIndex(e => smPendingRow(e));
+      if(any !== -1) smExIndex = any;
+    }
+    smRender();
+  }
+
+  function smRestPause(){
+    const cur = smCurrent();
+    if(!cur || !cur.row || smRpTimer) return;
+    const reps = smWriteRow(cur.row);
+    if(!reps){ showToast('Indica primero las repeticiones de la serie.'); return; }
+    saveProgress();
+    const btn = document.getElementById('smRpBtn');
+    const repsInput = cur.row.querySelectorAll('input')[1];
+    let left = 18; // 15-20 s recomendados
+    btn.textContent = `Pausa ${left} s`;
+    smRpTimer = setInterval(() => {
+      left--;
+      const b = document.getElementById('smRpBtn');
+      if(left <= 0){
+        clearInterval(smRpTimer); smRpTimer = null;
+        if(b) b.textContent = 'Rest-pause';
+        beep();
+        if(navigator.vibrate) navigator.vibrate([200,100,200]);
+        openRpModal(repsInput, reps);
+      } else if(b){ b.textContent = `Pausa ${left} s`; }
+    }, 1000);
+  }
+
+  function smSyncFromRow(){
+    const cur = smCurrent();
+    const el = document.getElementById('smReps');
+    if(!cur || !cur.row || !el || document.activeElement === el) return;
+    const v = cur.row.querySelectorAll('input')[1].value;
+    if(v && v.includes('+') && el.value !== v) el.value = v;
+  }
+
+  function smGo(dir){
+    const n = smExercises().length;
+    smExIndex = Math.max(0, Math.min(n - 1, smExIndex + dir));
+    clearInterval(smRpTimer); smRpTimer = null;
+    smRender();
+    document.getElementById('smOverlay').scrollTop = 0;
+  }
+  function smJump(i){ if(i >= 0){ smExIndex = i; smRender(); document.getElementById('smOverlay').scrollTop = 0; } }
+
+  function smFinish(){
+    smClose();
+    saveSession();
+  }
+
   // ============ PORTADA «HOY» ============
   function todayPlan(){
     if(!weekDataGlobal) return null;
@@ -1905,6 +2190,9 @@
     if(weekDataGlobal){
       renderDaySelector();
       renderDay(weekDataGlobal, selectedWeekday);
+      const day = todayPlan();
+      const pendiente = smExercises().some(e => smPendingRow(e));
+      if(day && day.type === 'fuerza' && pendiente) smOpen();
     }
   }
 
@@ -3188,7 +3476,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v53'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v54'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
