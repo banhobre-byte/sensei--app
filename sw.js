@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sensei-v50';
+const CACHE_NAME = 'sensei-v51';
 const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
@@ -9,7 +9,11 @@ const SHELL_ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_ASSETS))
+    // cache:'reload' salta la caché HTTP del navegador: sin esto, una copia antigua de index.html
+    // (GitHub Pages la mantiene unos minutos) podía quedar guardada dentro de la versión nueva.
+    caches.open(CACHE_NAME).then((cache) =>
+      cache.addAll(SHELL_ASSETS.map((url) => new Request(url, { cache: 'reload' })))
+    )
   );
   self.skipWaiting();
 });
@@ -41,7 +45,26 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Resto de archivos (cascarón de la app): CACHE FIRST — para que funcione offline.
+  // La propia página (index.html): NETWORK FIRST. Con conexión se sirve siempre la última versión
+  // publicada, así una actualización llega sola, sin borrar caché ni reinstalar. Sin conexión,
+  // se usa la copia guardada.
+  const isPage = event.request.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('index.html');
+  if (event.request.method === 'GET' && url.origin === self.location.origin && isPage) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' })
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', clone));
+          }
+          return response;
+        })
+        .catch(() => caches.open(CACHE_NAME).then((cache) => cache.match('./index.html')))
+    );
+    return;
+  }
+
+  // Resto de archivos (iconos, manifest): CACHE FIRST — para que funcione offline.
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
