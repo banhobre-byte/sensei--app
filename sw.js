@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sensei-v51';
+const CACHE_NAME = 'sensei-v52';
 const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
@@ -29,6 +29,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
+
+  // Peticiones a otros dominios (la API de GitHub para sensei-data): no se interceptan ni se guardan.
+  if (url.origin !== self.location.origin) return;
 
   // week.json, nutrition.json y fases.json: NETWORK FIRST — siempre intenta traer la versión más reciente.
   // Si no hay internet, cae a la última copia cacheada.

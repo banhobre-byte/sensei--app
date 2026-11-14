@@ -598,6 +598,17 @@
 
 <div class="modal-overlay" id="importModal">
   <div class="modal-card">
+    <div class="modal-title">Sincronización</div>
+    <div class="ci-hint" id="syncStatus" style="margin-bottom:10px;">—</div>
+    <label for="syncTokenInput" class="ci-hint" style="display:block; margin-bottom:6px;">Token de GitHub para sensei-data (se guarda solo en este móvil)</label>
+    <input id="syncTokenInput" type="password" autocomplete="off" placeholder="github_pat_…" style="width:100%; background:var(--bg-card-2); border:1px solid var(--line); border-radius:8px; color:var(--text); padding:12px; font-size:14px; margin-bottom:10px;">
+    <div class="modal-actions" style="margin-bottom:10px;">
+      <button class="modal-btn close" onclick="removeSyncToken()">Quitar</button>
+      <button class="modal-btn copy" onclick="saveSyncToken()">Guardar y probar</button>
+    </div>
+    <div class="modal-actions" style="margin-bottom:18px;">
+      <button class="modal-btn close" style="flex:1;" onclick="syncAllHistory()">Subir todo mi historial</button>
+    </div>
     <div class="modal-title">Historial de entrenamientos</div>
     <div class="ci-hint" style="margin-bottom:10px;">Antes de reinstalar la app (por una actualización de versión), pulsa <b>Copiar mi historial</b> y guarda ese texto en algún sitio — así puedes recuperarlo pegándolo aquí después con <b>Importar</b>.</div>
     <div class="modal-actions" style="margin-bottom:10px;">
@@ -656,6 +667,7 @@
     weekDataGlobal = data;
     renderDaySelector();
     renderDay(data, selectedWeekday);
+    loadCloudPlan().then(() => flushSync(false));
   }
 
   // Calcula la fecha real (dentro de la semana en curso, domingo-sábado) para un día de la semana dado
@@ -691,6 +703,7 @@
     if(weekOffset === 0) selectedWeekday = new Date().getDay();
     renderDaySelector();
     renderDay(weekDataGlobal, selectedWeekday);
+    loadCloudPlan();
   }
 
   function isoForWeekday(weekday){
@@ -1449,6 +1462,7 @@
   function saveSession(){
     const summary = buildSummary();
     logStrengthHistory();
+    queueDaySync(isoForWeekday(selectedWeekday));
     document.getElementById('summaryText').value = summary;
     document.getElementById('summaryModal').classList.add('show');
   }
@@ -1588,9 +1602,11 @@
 
     updateCheckinHeader();
     renderCheckinHistory();
+    queueDaySync(iso);
   }
 
   function openImport(){
+    updateSyncStatus();
     document.getElementById('importText').value = '';
     document.getElementById('importModal').classList.add('show');
   }
@@ -1685,6 +1701,205 @@
     updateCheckinHeader();
     renderDay(weekDataGlobal, selectedWeekday);
   }
+
+
+  // ============ SINCRONIZACIÓN con el repositorio privado de datos (sensei-data) ============
+  // Con un token guardado en este móvil, la app lee el plan de sensei-data y sube sola el registro
+  // de cada día. Sin token, todo funciona como antes con week.json.
+  // Las claves "senseicfg_" y "senseicache_" quedan fuera de la copia de seguridad a propósito:
+  // el token no debe salir del móvil.
+  const SYNC_OWNER = 'banhobre-byte';
+  const SYNC_REPO = 'sensei-data';
+  const SYNC_TOKEN_KEY = 'senseicfg_gh_token';
+  const SYNC_PENDING_KEY = 'sensei_sync_pending';
+  const SYNC_API = `https://api.github.com/repos/${SYNC_OWNER}/${SYNC_REPO}`;
+  let syncBusy = false;
+
+  function syncToken(){ try{ return localStorage.getItem(SYNC_TOKEN_KEY) || ''; }catch(e){ return ''; } }
+
+  function syncHeaders(raw){
+    return {
+      'Authorization': 'Bearer ' + syncToken(),
+      'Accept': raw ? 'application/vnd.github.raw+json' : 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+  }
+
+  // Identificador de semana ISO (2026-W46) de la semana que se está viendo
+  function viewedWeekId(){
+    const monday = dateForWeekday(1);
+    const thursday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 3);
+    const jan1 = new Date(thursday.getFullYear(), 0, 1);
+    const week = Math.floor(Math.round((thursday - jan1) / 86400000) / 7) + 1;
+    return `${thursday.getFullYear()}-W${String(week).padStart(2, '0')}`;
+  }
+
+  async function syncFetchJson(path){
+    const res = await fetch(`${SYNC_API}/contents/${path}`, { headers: syncHeaders(true), cache: 'no-store' });
+    if(res.status === 404) return null;
+    if(!res.ok) throw new Error('GitHub ' + res.status);
+    return res.json();
+  }
+
+  function applyCloudPlan(template, week){
+    if(!weekDataGlobal) weekDataGlobal = { days: {}, overrides: {} };
+    if(template && template.days) weekDataGlobal.days = template.days;
+    if(week && week.days) weekDataGlobal.overrides = Object.assign({}, weekDataGlobal.overrides || {}, week.days);
+  }
+
+  // Trae de sensei-data la semana que se está viendo (y la semana tipo). Si no hay red, usa la última copia.
+  async function loadCloudPlan(){
+    if(!syncToken()) return;
+    const weekId = viewedWeekId();
+    const cacheKey = 'senseicache_plan_' + weekId;
+    let template = null, week = null, fromNetwork = true;
+    try{
+      [template, week] = await Promise.all([syncFetchJson('plan/template.json'), syncFetchJson(`plan/${weekId}.json`)]);
+      try{
+        if(template) localStorage.setItem('senseicache_plan_template', JSON.stringify(template));
+        if(week) localStorage.setItem(cacheKey, JSON.stringify(week));
+      }catch(e){ /* sin espacio: no pasa nada, es solo copia para uso sin conexión */ }
+    }catch(e){
+      fromNetwork = false;
+      try{
+        template = JSON.parse(localStorage.getItem('senseicache_plan_template'));
+        week = JSON.parse(localStorage.getItem(cacheKey));
+      }catch(e2){ /* sin copia */ }
+    }
+    if(weekId !== viewedWeekId()) return; // el usuario cambió de semana mientras cargaba
+    if(!template && !week) return;
+    applyCloudPlan(template, week);
+    if(fromNetwork) document.getElementById('staleFlag').classList.remove('show');
+    renderDaySelector();
+    renderDay(weekDataGlobal, selectedWeekday);
+  }
+
+  function syncPending(){
+    try{ return JSON.parse(localStorage.getItem(SYNC_PENDING_KEY)) || []; }catch(e){ return []; }
+  }
+  function setSyncPending(list){
+    try{ localStorage.setItem(SYNC_PENDING_KEY, JSON.stringify(Array.from(new Set(list)).sort())); }catch(e){}
+  }
+
+  // Marca un día para subir y lo intenta ya. El registro se reconstruye siempre desde lo guardado
+  // en el móvil, así que un fallo de red no pierde nada: se reintenta al abrir la app o al volver la conexión.
+  function queueDaySync(iso){
+    if(!syncToken()) return;
+    setSyncPending(syncPending().concat([iso]));
+    flushSync(true);
+  }
+
+  function buildDayLog(iso){
+    const day = (weekDataGlobal && weekDataGlobal.overrides && weekDataGlobal.overrides[iso]) || null;
+    const idByName = {};
+    if(day && day.exercises) day.exercises.forEach(ex => { if(ex.id) idByName[ex.name] = ex.id; });
+    const entries = loadHistory().filter(h => h.date === iso);
+    const strength = entries.filter(h => h.type === 'strength').map(h => ({ id: idByName[h.name] || null, name: h.name, sets: h.sets }));
+    const running = entries.filter(h => h.type === 'running');
+    const doc = { schema: 1, date: iso, updatedAt: new Date().toISOString(), appVersion: APP_VERSION };
+    if(day && day.title) doc.session = day.title;
+    if(strength.length) doc.strength = strength;
+    if(running.length) doc.running = running;
+    const ci = loadCheckin(iso);
+    if(ci) doc.checkin = ci;
+    return (strength.length || running.length || ci) ? doc : null;
+  }
+
+  function utf8ToBase64(str){
+    const bytes = new TextEncoder().encode(str);
+    let bin = '';
+    bytes.forEach(b => { bin += String.fromCharCode(b); });
+    return btoa(bin);
+  }
+
+  async function pushDayLog(iso){
+    const doc = buildDayLog(iso);
+    if(!doc) return;
+    const url = `${SYNC_API}/contents/log/${iso}.json`;
+    let sha;
+    const head = await fetch(url, { headers: syncHeaders(false), cache: 'no-store' });
+    if(head.ok){ sha = (await head.json()).sha; }
+    else if(head.status !== 404){ throw new Error('GitHub ' + head.status); }
+    const body = { message: `log: ${iso}`, content: utf8ToBase64(JSON.stringify(doc, null, 1) + '\n') };
+    if(sha) body.sha = sha;
+    const res = await fetch(url, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, syncHeaders(false)), body: JSON.stringify(body) });
+    if(!res.ok) throw new Error('GitHub ' + res.status);
+  }
+
+  async function flushSync(showToast){
+    if(syncBusy || !syncToken()) return;
+    let pending = syncPending();
+    if(!pending.length){ updateSyncStatus(); return; }
+    syncBusy = true;
+    let done = 0, failed = null;
+    for(const iso of pending.slice()){
+      try{
+        await pushDayLog(iso);
+        pending = pending.filter(d => d !== iso);
+        setSyncPending(pending);
+        done++;
+        updateSyncStatus(`Subiendo… quedan ${pending.length}`);
+      }catch(e){ failed = e; break; }
+    }
+    syncBusy = false;
+    updateSyncStatus();
+    if(showToast){
+      const t = document.getElementById('toast');
+      t.textContent = failed
+        ? (String(failed.message).includes('401') || String(failed.message).includes('403')
+            ? 'No se pudo subir el registro: el token no vale o ha caducado. Revísalo en ⚙️.'
+            : 'Sin conexión: el registro queda guardado en el móvil y se subirá solo.')
+        : `Registro subido a Sensei (${done} día${done === 1 ? '' : 's'}).`;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+  }
+
+  function updateSyncStatus(msg){
+    const el = document.getElementById('syncStatus');
+    if(!el) return;
+    if(msg){ el.textContent = msg; return; }
+    if(!syncToken()){ el.textContent = 'Sin configurar: la app usa el plan público y no sube registros.'; return; }
+    const n = syncPending().length;
+    el.textContent = n ? `Conectada. ${n} día${n === 1 ? '' : 's'} pendiente${n === 1 ? '' : 's'} de subir.` : 'Conectada. Todo subido.';
+  }
+
+  async function saveSyncToken(){
+    const input = document.getElementById('syncTokenInput');
+    const value = input.value.trim();
+    if(!value){ updateSyncStatus('Pega el token antes de guardar.'); return; }
+    updateSyncStatus('Comprobando…');
+    try{
+      const res = await fetch(SYNC_API, { headers: { 'Authorization': 'Bearer ' + value, 'Accept': 'application/vnd.github+json' }, cache: 'no-store' });
+      if(!res.ok){ updateSyncStatus(`GitHub rechaza el token (error ${res.status}). Comprueba que da acceso a ${SYNC_REPO}.`); return; }
+      const info = await res.json();
+      if(!(info.permissions && info.permissions.push)){ updateSyncStatus('El token solo permite leer. Hace falta permiso de lectura y escritura en «Contents».'); return; }
+    }catch(e){ updateSyncStatus('No hay conexión para comprobar el token. Inténtalo de nuevo.'); return; }
+    localStorage.setItem(SYNC_TOKEN_KEY, value);
+    input.value = '';
+    updateSyncStatus();
+    loadCloudPlan();
+    flushSync(false);
+  }
+
+  function removeSyncToken(){
+    localStorage.removeItem(SYNC_TOKEN_KEY);
+    updateSyncStatus();
+  }
+
+  // Sube todos los días que tienen algo registrado en este móvil (para la primera vez)
+  function syncAllHistory(){
+    if(!syncToken()){ updateSyncStatus('Primero guarda el token.'); return; }
+    const dates = loadHistory().map(h => h.date);
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith('sensei_checkin_')) dates.push(k.slice('sensei_checkin_'.length));
+    }
+    setSyncPending(syncPending().concat(dates.filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d))));
+    flushSync(true);
+  }
+
+  window.addEventListener('online', () => flushSync(false));
 
   // ============ MÓDULO NUTRICIÓN (aislado — no toca renderDay ni sensei_history) ============
   let nutritionDataGlobal = null;
@@ -2506,6 +2721,7 @@
       cargaSesionRPE: rpe ? lastSessionDurationMin * parseInt(rpe, 10) : null
     });
     pushHistory(entry);
+    if(entry.date) queueDaySync(entry.date);
     closeRunningLogForm();
     const t = document.getElementById('toast');
     t.textContent = 'Sesión de running registrada.';
@@ -2731,7 +2947,6 @@
       repeticiones: currentRunningPlan ? currentRunningPlan.repeticiones : null
     };
     pushHistory(lastRunningEntry);
-    stopMetronome();
 
     document.getElementById('intPhase').textContent = 'Sesión completada 💪';
     document.getElementById('intTime').textContent = `${distanceKm.toFixed(2)} km`;
@@ -2752,7 +2967,6 @@
     intervalPaused = false;
     if('speechSynthesis' in window) speechSynthesis.cancel();
     document.getElementById('intervalOverlay').classList.remove('show');
-    stopMetronome();
     releaseWakeLock();
   }
 
@@ -2762,7 +2976,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v51'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v52'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
