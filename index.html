@@ -2,12 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0d0d0d">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Sensei">
 <link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&display=swap">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Sensei — Sesión</title>
 <style>
@@ -69,7 +70,7 @@
   body.view-training .brand.training-only{display:flex;}
   body.view-training .staleflag.training-only:not(.show){display:none;}
   body.view-home #main, body.view-nutrition #main, body.view-progreso #main{display:none;}
-  body.view-home #footer, body.view-nutrition #footer, body.view-progreso #footer{display:none;}
+  body.view-home #footer, body.view-nutrition #footer, body.view-progreso #footer{display:none !important;}
   header{display:none;}
   body.view-training header{display:block;}
   .back-btn{background:transparent; border:1px solid var(--line); border-radius:8px; color:var(--text-dim);
@@ -296,38 +297,106 @@
   .set-compare.up{color:#7fc98f; font-weight:700;}
   .set-compare.eq{color:var(--gold-dim); font-weight:600;}
   .set-compare.down{color:var(--text-dim);}
+
+  /* ---- Portada «Hoy» ---- */
+  .home-menu{gap:14px; padding:26px 18px 28px; font-variant-numeric:tabular-nums;}
+  .hoy-top{display:flex; justify-content:space-between; align-items:flex-start; gap:14px;}
+  .hoy-heading{min-width:0;}
+  .hoy-date{margin:0 0 4px; font-size:13px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-dim);}
+  .hoy-title{margin:0; font-family:'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif; font-size:30px; line-height:1.1; font-weight:700; color:var(--text);}
+  .avatar-wrap-hoy{width:56px; height:56px; flex:none;}
+  .avatar-wrap-hoy .avatar-placeholder{font-size:26px;}
+  .hoy-card{background:var(--bg-card); border:1px solid var(--line); border-radius:20px; padding:16px; color:var(--text);}
+  .hoy-ready{display:flex; gap:16px; align-items:center; text-align:left; width:100%; font:inherit; min-height:104px; color:var(--text-dim);}
+  .hoy-ready.verde{color:#8fc98f;} .hoy-ready.amarillo{color:#e9c46a;} .hoy-ready.rojo{color:#f0a090;}
+  .hoy-ring{flex:none;}
+  .hoy-ready-text{display:flex; flex-direction:column; gap:6px; min-width:0;}
+  .hoy-ready-title{font-family:'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif; font-size:20px; font-weight:700; line-height:1.2;}
+  .hoy-ready-sub{font-size:14px; line-height:1.4; color:#c9c3b6;}
+  .hoy-session{border-color:var(--gold-dim); background:linear-gradient(160deg,#221c10,var(--bg-card)); display:flex; flex-direction:column; gap:12px; padding:18px;}
+  .hoy-session-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .hoy-session-title{margin:0; font-family:'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif; font-size:24px; font-weight:700; color:var(--gold);}
+  .hoy-session-meta{font-size:15px; font-weight:600;}
+  .hoy-session-detail{margin:0; font-size:15px; line-height:1.45;}
+  .hoy-session-warn{margin:0; font-size:13px; line-height:1.4; font-weight:600; color:#f0b9a8;}
+  .hoy-start{margin-top:4px; min-height:56px; border:0; border-radius:16px; background:var(--gold); color:#0d0d0d;
+    font:700 18px 'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif;}
+  .hoy-start:active{opacity:.85;}
+  .hoy-goals{display:flex; flex-direction:column; gap:12px; padding:4px 2px;}
+  .hoy-section-title{margin:0; font-size:13px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; color:var(--text-dim);}
+  .hoy-goal{display:flex; flex-direction:column; gap:6px; margin-bottom:12px;}
+  .hoy-goal-row{display:flex; justify-content:space-between; gap:12px; font-size:15px;}
+  .hoy-goal-row b{font-weight:700;} .hoy-goal-row b span{color:var(--text-dim); font-weight:500;}
+  .hoy-goal-bar{height:8px; border-radius:4px; background:var(--line);}
+  .hoy-goal-bar i{display:block; height:8px; border-radius:4px; background:var(--gold);}
+  .hoy-nav{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:auto;}
+  .hoy-nav-btn{position:relative; min-height:68px; background:var(--bg-card); border:1px solid var(--line); border-radius:16px;
+    color:var(--text); font:600 13px -apple-system,'Segoe UI',Roboto,sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;}
+  .hoy-nav-btn svg{color:var(--gold);}
+  .hoy-version{align-self:center; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim);
+    border:1px solid var(--line); border-radius:20px; padding:4px 10px;}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
 </style>
 </head>
 <body class="view-home">
 
 <div class="home-menu" id="homeMenu">
-  <div class="home-brand brand" style="flex-direction:column; align-items:center; gap:8px;">
-    <div class="avatar-wrap" onclick="triggerAvatarUpload('sensei')">
-      <img id="avatarImg_sensei" class="avatar-img" style="display:none;" alt="Sensei">
-      <span id="avatarPlaceholder_sensei" class="avatar-placeholder">🥋</span>
-      <span class="avatar-edit-badge">✏️</span>
+  <div class="hoy-top">
+    <div class="hoy-heading">
+      <p class="hoy-date" id="hoyDate"></p>
+      <h1 class="hoy-title" id="hoyTitle">Sensei</h1>
     </div>
-    <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="handleAvatarFile(event)">
-    <button id="avatarRemove_sensei" class="avatar-remove-link" style="display:none;" onclick="event.stopPropagation(); removeAvatarImage('sensei');">Quitar imagen</button>
-    <h1>Sensei</h1>
-    <span class="badge" id="appVersionBadge">cargando…</span>
+    <div class="avatar-wrap avatar-wrap-hoy" onclick="triggerAvatarUpload('sensei')" role="button" tabindex="0" aria-label="Cambiar la foto de Sensei">
+      <img id="avatarImg_sensei" class="avatar-img" style="display:none;" alt="Sensei">
+      <span id="avatarPlaceholder_sensei" class="avatar-placeholder" aria-hidden="true">🥋</span>
+    </div>
   </div>
-  <div class="home-grid">
-    <button class="home-card" onclick="showView('training')">
+  <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" onchange="handleAvatarFile(event)">
+  <button id="avatarRemove_sensei" class="avatar-remove-link" style="display:none; align-self:flex-end; min-height:32px;" onclick="event.stopPropagation(); removeAvatarImage('sensei');">Quitar imagen</button>
+
+  <button type="button" class="hoy-card hoy-ready" id="hoyReady" onclick="openCheckin()">
+    <svg class="hoy-ring" id="hoyRing" aria-hidden="true" width="72" height="72" viewBox="0 0 84 84">
+      <circle cx="42" cy="42" r="35" fill="none" stroke="#2b2823" stroke-width="8"></circle>
+      <circle id="hoyRingArc" cx="42" cy="42" r="35" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 220" transform="rotate(-90 42 42)"></circle>
+    </svg>
+    <span class="hoy-ready-text">
+      <span class="hoy-ready-title" id="hoyReadyTitle">Check-in sin hacer</span>
+      <span class="hoy-ready-sub" id="hoyReadySub">Toca para registrar cómo estás hoy.</span>
+    </span>
+  </button>
+
+  <section class="hoy-card hoy-session" aria-label="Sesión de hoy">
+    <div class="hoy-session-head">
+      <h2 class="hoy-session-title" id="hoySessionTitle">—</h2>
+      <span class="hoy-session-meta" id="hoySessionMeta"></span>
+    </div>
+    <p class="hoy-session-detail" id="hoySessionDetail"></p>
+    <p class="hoy-session-warn" id="hoySessionWarn" hidden></p>
+    <button type="button" class="hoy-start" id="hoyStart" onclick="startToday()">Empezar sesión</button>
+  </section>
+
+  <section class="hoy-goals" id="hoyGoals" aria-label="Objetivos de la fase" hidden>
+    <h2 class="hoy-section-title" id="hoyGoalsTitle">Objetivos de la fase</h2>
+    <div id="hoyGoalsList"></div>
+  </section>
+
+  <nav class="hoy-nav" aria-label="Secciones">
+    <button type="button" class="hoy-nav-btn" onclick="showView('training')">
       <span class="ci-dot home-card-dot" id="ciDotHome"></span>
-      <span class="home-card-icon">🏋️</span>
-      <span class="home-card-label">Rutinas</span>
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v6M6 6v12M18 6v12M21 9v6M6 12h12"></path></svg>
+      Rutinas
     </button>
-    <button class="home-card" onclick="showView('nutrition')">
+    <button type="button" class="hoy-nav-btn" onclick="showView('nutrition')">
       <span class="ci-dot home-card-dot" id="nuDotHome"></span>
-      <span class="home-card-icon">🍽️</span>
-      <span class="home-card-label">Nutrición</span>
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8M4.5 3v4.5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 3c-2 2-3 4.5-3 8h3v10"></path></svg>
+      Nutrición
     </button>
-    <button class="home-card" style="grid-column:1 / -1;" onclick="showView('progreso')">
-      <span class="home-card-icon">📈</span>
-      <span class="home-card-label">Progreso</span>
+    <button type="button" class="hoy-nav-btn" onclick="showView('progreso')">
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19h16M6 15l4-4 3 3 5-6"></path></svg>
+      Progreso
     </button>
-  </div>
+  </nav>
+  <span class="badge hoy-version" id="appVersionBadge">cargando…</span>
 </div>
 
 <header>
@@ -362,7 +431,7 @@
 
 <footer id="footer" style="display:none">
   <button class="save-btn" onclick="saveSession()">Guardar sesión</button>
-  <div class="mock-note">Genera un resumen para copiar y pegar en Sensei. Sin guardado permanente aún — fase 2: NAS.</div>
+  <div class="mock-note">Guarda la sesión en el móvil y, con la sincronización activa, la sube sola a Sensei.</div>
 </footer>
 
 <div id="nutritionArea" class="nutrition-view">
@@ -667,6 +736,7 @@
     weekDataGlobal = data;
     renderDaySelector();
     renderDay(data, selectedWeekday);
+    renderHoy();
     loadCloudPlan().then(() => flushSync(false));
   }
 
@@ -1602,6 +1672,7 @@
 
     updateCheckinHeader();
     renderCheckinHistory();
+    renderHoy();
     queueDaySync(iso);
   }
 
@@ -1703,6 +1774,140 @@
   }
 
 
+
+  // ============ PORTADA «HOY» ============
+  function todayPlan(){
+    if(!weekDataGlobal) return null;
+    const iso = todayISO();
+    if(weekDataGlobal.overrides && weekDataGlobal.overrides[iso]) return weekDataGlobal.overrides[iso];
+    return (weekDataGlobal.days && weekDataGlobal.days[new Date().getDay()]) || null;
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function renderHoy(){
+    const dateEl = document.getElementById('hoyDate');
+    if(!dateEl) return;
+    const now = new Date();
+    dateEl.textContent = now.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'});
+    const day = todayPlan();
+    const iso = todayISO();
+
+    // Estado (semáforo del check-in de hoy)
+    const ci = loadCheckin(iso);
+    const ready = document.getElementById('hoyReady');
+    const arc = document.getElementById('hoyRingArc');
+    if(ci){
+      ready.className = 'hoy-card hoy-ready ' + ci.semaforo;
+      arc.setAttribute('stroke-dasharray', ci.semaforo === 'verde' ? '187 220' : ci.semaforo === 'amarillo' ? '120 220' : '55 220');
+      document.getElementById('hoyReadyTitle').textContent =
+        ci.semaforo === 'verde' ? 'Verde · entrena normal' : ci.semaforo === 'amarillo' ? 'Amarillo · con precaución' : 'Rojo · descanso';
+      document.getElementById('hoyReadySub').textContent = ci.justificacion || '';
+    } else {
+      ready.className = 'hoy-card hoy-ready';
+      arc.setAttribute('stroke-dasharray', '0 220');
+      document.getElementById('hoyReadyTitle').textContent = 'Check-in sin hacer';
+      document.getElementById('hoyReadySub').textContent = 'Toca para registrar cómo estás hoy.';
+    }
+
+    // Sesión de hoy
+    const titleEl = document.getElementById('hoyTitle');
+    const sTitle = document.getElementById('hoySessionTitle');
+    const sMeta = document.getElementById('hoySessionMeta');
+    const sDetail = document.getElementById('hoySessionDetail');
+    const sWarn = document.getElementById('hoySessionWarn');
+    const btn = document.getElementById('hoyStart');
+    if(!day){
+      titleEl.textContent = 'Sensei';
+      sTitle.textContent = 'Sin plan cargado';
+      sMeta.textContent = ''; sDetail.textContent = 'No hay sesión definida para hoy.'; sWarn.hidden = true;
+      btn.textContent = 'Ver la semana';
+      return;
+    }
+    const isRest = day.type === 'descanso';
+    titleEl.textContent = isRest ? 'Hoy, descanso' : `Hoy toca ${day.title}`;
+    sTitle.textContent = day.title;
+    // Del subtítulo ("Viernes 13 nov · bloque volumen · 18:00 · orden fijo") interesa la hora
+    const hora = (day.subtitle || '').match(/\b\d{1,2}:\d{2}\b/);
+    const exs = (day.exercises || []).filter(e => e && e.name);
+    const partes = [];
+    if(hora) partes.push(hora[0]);
+    if(exs.length && !isRest) partes.push(`${exs.length} ejercicio${exs.length === 1 ? '' : 's'}`);
+    sMeta.textContent = partes.join(' · ');
+    if(day.runningPlan){
+      sDetail.textContent = day.runningPlan.titulo || 'Running con Sempai';
+    } else if(exs.length){
+      const nombres = exs.slice(0, 3).map(e => e.name);
+      sDetail.textContent = nombres.join(', ') + (exs.length > 3 ? ` y ${exs.length - 3} más` : '');
+    } else {
+      sDetail.textContent = day.note || '';
+    }
+    const done = loadHistory().some(h => h.date === iso);
+    if(done){
+      sWarn.hidden = false;
+      sWarn.style.color = '#8fc98f';
+      sWarn.textContent = 'Sesión registrada hoy.';
+    } else if(day.warn){
+      sWarn.hidden = false;
+      sWarn.style.color = '';
+      const primera = day.warn.split(/(?<=[.!?])\s/)[0];
+      sWarn.textContent = primera.length > 150 ? primera.slice(0, 147) + '…' : primera;
+    } else {
+      sWarn.hidden = true;
+    }
+    btn.textContent = done ? 'Ver la sesión' : (isRest ? 'Ver el día' : 'Empezar sesión');
+    renderHoyGoals();
+  }
+
+  // Objetivos de la fase en curso, leídos de sensei-data (athlete.json). Sin sincronización no se muestran.
+  function renderHoyGoals(){
+    const box = document.getElementById('hoyGoals');
+    let athlete = null, catalog = null;
+    try{
+      athlete = JSON.parse(localStorage.getItem('senseicache_athlete'));
+      catalog = JSON.parse(localStorage.getItem('senseicache_exercises'));
+    }catch(e){ /* sin datos */ }
+    if(!athlete || !catalog || !catalog.exercises || !Array.isArray(athlete.objetivos)){ box.hidden = true; return; }
+    const hoy = todayISO();
+    const fase = (athlete.fases || []).find(f => f.desde <= hoy && hoy <= f.hasta);
+    const hist = loadHistory().filter(h => h.type === 'strength');
+    const filas = [];
+    athlete.objetivos.filter(o => o.activo !== false && (!fase || o.fase === fase.id)).forEach(o => {
+      const ex = catalog.exercises[o.ejercicio];
+      if(!ex) return;
+      const nombres = (ex.alias || []).concat([ex.nombre]);
+      const ultimo = hist.filter(h => nombres.includes(h.name)).sort((a,b) => a.date.localeCompare(b.date)).pop();
+      if(!ultimo || !ultimo.sets || !ultimo.sets.length) return;
+      let actual, unidad = '';
+      if(o.metrica === 'repsTotales4Series'){
+        actual = ultimo.sets.reduce((t, st) => t + String(st.reps).split('+').reduce((a, x) => a + (parseInt(x, 10) || 0), 0), 0);
+      } else {
+        actual = Math.max.apply(null, ultimo.sets.map(st => parseFloat(String(st.kg).replace(',', '.')) || 0));
+        unidad = ' kg';
+      }
+      if(!actual) return;
+      const pct = Math.max(4, Math.min(100, Math.round(actual / o.meta * 100)));
+      const txt = String(actual).replace('.', ',');
+      filas.push(`<div class="hoy-goal"><div class="hoy-goal-row"><span>${escapeHtml(ex.nombre)}</span><b>${txt}${unidad} <span>de ${String(o.meta).replace('.', ',')}</span></b></div><div class="hoy-goal-bar" aria-hidden="true"><i style="width:${pct}%"></i></div></div>`);
+    });
+    if(!filas.length){ box.hidden = true; return; }
+    document.getElementById('hoyGoalsTitle').textContent = fase ? `Objetivos · ${fase.nombre}` : 'Objetivos de la fase';
+    document.getElementById('hoyGoalsList').innerHTML = filas.join('');
+    box.hidden = false;
+  }
+
+  function startToday(){
+    weekOffset = 0;
+    selectedWeekday = new Date().getDay();
+    showView('training');
+    if(weekDataGlobal){
+      renderDaySelector();
+      renderDay(weekDataGlobal, selectedWeekday);
+    }
+  }
+
   // ============ SINCRONIZACIÓN con el repositorio privado de datos (sensei-data) ============
   // Con un token guardado en este móvil, la app lee el plan de sensei-data y sube sola el registro
   // de cada día. Sin token, todo funciona como antes con week.json.
@@ -1754,8 +1959,13 @@
     const cacheKey = 'senseicache_plan_' + weekId;
     let template = null, week = null, fromNetwork = true;
     try{
-      [template, week] = await Promise.all([syncFetchJson('plan/template.json'), syncFetchJson(`plan/${weekId}.json`)]);
+      let athlete = null, catalog = null;
+      [template, week, athlete, catalog] = await Promise.all([
+        syncFetchJson('plan/template.json'), syncFetchJson(`plan/${weekId}.json`),
+        syncFetchJson('athlete.json'), syncFetchJson('exercises.json')]);
       try{
+        if(athlete) localStorage.setItem('senseicache_athlete', JSON.stringify(athlete));
+        if(catalog) localStorage.setItem('senseicache_exercises', JSON.stringify(catalog));
         if(template) localStorage.setItem('senseicache_plan_template', JSON.stringify(template));
         if(week) localStorage.setItem(cacheKey, JSON.stringify(week));
       }catch(e){ /* sin espacio: no pasa nada, es solo copia para uso sin conexión */ }
@@ -1772,6 +1982,7 @@
     if(fromNetwork) document.getElementById('staleFlag').classList.remove('show');
     renderDaySelector();
     renderDay(weekDataGlobal, selectedWeekday);
+    renderHoy();
   }
 
   function syncPending(){
@@ -2543,6 +2754,7 @@
       renderNutritionView();
     }
     if(view === 'progreso') renderProgresoView();
+    if(view === 'home') renderHoy();
     window.scrollTo(0, 0);
   }
 
@@ -2976,13 +3188,14 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v52'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v53'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
   loadNutrition();
   updateCheckinHeader();
   loadAvatarImage();
+  renderHoy();
 </script>
 
 </body>
