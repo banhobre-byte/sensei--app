@@ -1,11 +1,10 @@
-const CACHE_NAME = 'sensei-v49';
+const CACHE_NAME = 'sensei-v50';
 const SHELL_ASSETS = [
   './index.html',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './nutrition.json',
-  './fases.json'
+  './nutrition.json'
 ];
 
 self.addEventListener('install', (event) => {

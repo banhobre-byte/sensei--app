@@ -66,6 +66,8 @@
   body.view-training .training-only{display:block;}
   body.view-training .checkin-btn.training-only{display:flex;}
   body.view-training .day-selector.training-only{display:flex;}
+  body.view-training .brand.training-only{display:flex;}
+  body.view-training .staleflag.training-only:not(.show){display:none;}
   body.view-home #main, body.view-nutrition #main, body.view-progreso #main{display:none;}
   body.view-home #footer, body.view-nutrition #footer, body.view-progreso #footer{display:none;}
   header{display:none;}
@@ -203,7 +205,11 @@
   .modal-btn.copy{background:var(--gold); color:#0d0d0d;}
   .modal-btn.close{background:var(--bg-card-2); color:var(--text-dim); border:1px solid var(--line);}
 
-  .day-selector{display:flex; gap:6px; margin-top:14px;}
+  .day-selector{display:flex; gap:5px; margin-top:14px; flex-wrap:wrap;}
+  .day-btn .day-num{display:block; font-size:11px; font-weight:600; opacity:.75; margin-top:1px;}
+  .day-btn.week-nav{flex:0 0 30px; font-size:18px; line-height:1; color:var(--gold);}
+  .week-back{flex:1 0 100%; margin-top:4px; padding:10px; border-radius:9px; border:1px solid var(--gold-dim);
+    background:transparent; color:var(--gold); font-size:13px; font-weight:700;}
   .day-btn{flex:1; padding:9px 0; border-radius:9px; border:1px solid var(--line);
     background:var(--bg-card); color:var(--text-dim); font-size:12px; font-weight:700;
     text-align:center; position:relative;}
@@ -653,15 +659,38 @@
   }
 
   // Calcula la fecha real (dentro de la semana en curso, domingo-sábado) para un día de la semana dado
+  // Semana que se está viendo en RUTINAS: 0 = semana natural en curso (lunes-domingo), -1 = la anterior, +1 = la siguiente.
+  let weekOffset = 0;
+
+  // Fecha real de un día de la semana dentro de la semana natural (lunes a domingo) que se está viendo.
+  // Un día ya pasado de esta semana devuelve su fecha pasada, así una sesión apuntada con retraso
+  // se guarda en el día en que se hizo y no en la semana siguiente.
   function dateForWeekday(weekday){
-    // Siempre hacia adelante desde hoy (ventana móvil de 7 días), nunca hacia atrás — así "mañana"
-    // es siempre alcanzable sin importar qué día de la semana sea hoy. Antes, con una resta directa,
-    // pedir el domingo un sábado devolvía el domingo que ya había pasado, no el de mañana.
+    const today = new Date();
+    const sinceMonday = (today.getDay() + 6) % 7; // lunes=0 ... domingo=6
+    const target = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    target.setDate(target.getDate() - sinceMonday + ((weekday + 6) % 7) + weekOffset * 7);
+    return target;
+  }
+
+  // NUTRICIÓN conserva la ventana móvil de 7 días hacia adelante (su selector no navega por semanas).
+  function forwardDateForWeekday(weekday){
     const today = new Date();
     const diff = (weekday - today.getDay() + 7) % 7;
     const target = new Date(today);
     target.setDate(today.getDate() + diff);
     return target;
+  }
+
+  function forwardIsoForWeekday(weekday){
+    return isoFromDate(forwardDateForWeekday(weekday));
+  }
+
+  function changeWeek(delta){
+    weekOffset = delta === 0 ? 0 : weekOffset + delta;
+    if(weekOffset === 0) selectedWeekday = new Date().getDay();
+    renderDaySelector();
+    renderDay(weekDataGlobal, selectedWeekday);
   }
 
   function isoForWeekday(weekday){
@@ -676,16 +705,23 @@
   }
 
   function renderDaySelector(){
-    const todayWeekday = new Date().getDay();
+    const hoyISO = todayISO();
     const sel = document.getElementById('daySelector');
-    let html = '';
+    let html = `<button class="day-btn week-nav" onclick="changeWeek(-1)" aria-label="Semana anterior">‹</button>`;
     for(let w = 1; w <= 7; w++){
       const weekday = w % 7; // recorre Lunes(1)...Sábado(6),Domingo(0)
-      const isToday = weekday === todayWeekday;
+      const d = dateForWeekday(weekday);
+      const isToday = isoFromDate(d) === hoyISO;
       const isActive = weekday === selectedWeekday;
-      html += `<button class="day-btn${isActive ? ' active' : ''}" onclick="selectDay(${weekday})">
-        ${DIAS_CORTO[weekday]}${isToday ? '<span class="day-dot"></span>' : ''}
+      const etiqueta = d.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'});
+      html += `<button class="day-btn${isActive ? ' active' : ''}" onclick="selectDay(${weekday})" aria-label="${etiqueta}"${isActive ? ' aria-current="date"' : ''}>
+        ${DIAS_CORTO[weekday]}<span class="day-num">${d.getDate()}</span>${isToday ? '<span class="day-dot"></span>' : ''}
       </button>`;
+    }
+    html += `<button class="day-btn week-nav" onclick="changeWeek(1)" aria-label="Semana siguiente">›</button>`;
+    if(weekOffset !== 0){
+      const txt = weekOffset < 0 ? `Semana pasada${weekOffset < -1 ? ' ×' + (-weekOffset) : ''}` : `Semana próxima${weekOffset > 1 ? ' ×' + weekOffset : ''}`;
+      html += `<button class="week-back" onclick="changeWeek(0)">${txt} · volver a hoy</button>`;
     }
     sel.innerHTML = html;
   }
@@ -727,7 +763,7 @@
 
   // ============ GAMIFICACIÓN: historial + comparativas ============
   const HISTORY_KEY = 'sensei_history';
-  const HISTORY_MAX = 600;
+  const HISTORY_MAX = 50000; // tope solo de seguridad: ~35 entradas/semana, décadas de margen
   const MES_CORTO = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 
   function loadHistory(){
@@ -740,7 +776,11 @@
     hist.push(entry);
     hist.sort((a,b) => a.date.localeCompare(b.date));
     if(hist.length > HISTORY_MAX) hist = hist.slice(hist.length - HISTORY_MAX);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+    try{
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(hist));
+    }catch(e){
+      alert('No se ha podido guardar el historial: el almacenamiento del móvil está lleno. Haz una copia de seguridad (botón 📤) y avisa a Sensei.');
+    }
   }
 
   function getExerciseHistory(name, beforeISO){
@@ -1346,7 +1386,10 @@
   function beep(){
     try{
       const playTone = (delay) => setTimeout(() => {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        // Un único canal de audio reutilizado: abrir uno nuevo en cada pitido agotaba el límite del navegador.
+        if(!window._senseiAudioCtx) window._senseiAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = window._senseiAudioCtx;
+        if(ctx.state === 'suspended') ctx.resume();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
@@ -1556,37 +1599,90 @@
     document.getElementById('importModal').classList.remove('show');
   }
 
+  // Copia de seguridad completa: todo lo que la app guarda en el móvil (historial de fuerza y running,
+  // check-ins, progreso de sesiones, nutrición registrada). Las fotos de avatar no se incluyen.
+  function buildBackup(){
+    const data = {};
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.startsWith('sensei_') && !k.startsWith('sensei_avatar')) data[k] = localStorage.getItem(k);
+    }
+    return { app: 'sensei', backupVersion: 1, appVersion: APP_VERSION, exported: new Date().toISOString(), data };
+  }
+
   async function exportHistory(){
-    const hist = loadHistory();
-    const json = JSON.stringify(hist, null, 2);
+    const backup = buildBackup();
+    const json = JSON.stringify(backup);
+    const nHist = loadHistory().length;
     const t = document.getElementById('toast');
+    let fileOk = false;
+    try{
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `sensei-backup-${todayISO()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      fileOk = true;
+    }catch(e){ /* sin descarga de archivos: queda el portapapeles */ }
+    let clipOk = false;
     try{
       await navigator.clipboard.writeText(json);
-      t.textContent = `Copiado — ${hist.length} registros. Guarda este texto en un sitio seguro (notas, email...).`;
+      clipOk = true;
     }catch(e){
-      // Fallback: lo dejamos en el propio cuadro para que lo copies a mano
       document.getElementById('importText').value = json;
-      t.textContent = `${hist.length} registros — cópialos del cuadro de abajo manualmente.`;
     }
+    t.textContent = `Copia de seguridad — ${nHist} registros. `
+      + (fileOk ? 'Archivo guardado en Descargas' : 'No se pudo crear el archivo')
+      + (clipOk ? ' y copiada al portapapeles.' : '; cópiala a mano del cuadro.');
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
+    setTimeout(() => t.classList.remove('show'), 4500);
   }
 
   function importHistoryFromText(){
-    let arr;
+    let parsed;
     try{
-      arr = JSON.parse(document.getElementById('importText').value.trim());
-      if(!Array.isArray(arr)) throw new Error('el JSON debe ser una lista de sesiones');
+      parsed = JSON.parse(document.getElementById('importText').value.trim());
     }catch(e){
       alert('JSON inválido: ' + e.message);
       return;
     }
-    arr.forEach(entry => pushHistory(entry));
+    let msg;
+    if(Array.isArray(parsed)){
+      // Formato antiguo: lista de sesiones
+      parsed.forEach(entry => pushHistory(entry));
+      msg = `Importadas ${parsed.length} sesiones al historial.`;
+    } else if(parsed && parsed.app === 'sensei' && parsed.data && typeof parsed.data === 'object'){
+      // Copia completa: el historial se fusiona (no borra lo que ya haya); el resto de claves solo se
+      // restauran si no existen en este móvil, para no pisar datos más recientes.
+      let restored = 0, merged = 0;
+      Object.keys(parsed.data).forEach(k => {
+        if(!k.startsWith('sensei_')) return;
+        const v = parsed.data[k];
+        if(typeof v !== 'string') return;
+        if(k === HISTORY_KEY || k === NUTRITION_HISTORY_KEY){
+          let arr = [];
+          try{ arr = JSON.parse(v) || []; }catch(e){ arr = []; }
+          if(k === HISTORY_KEY){ arr.forEach(entry => pushHistory(entry)); merged += arr.length; }
+          else if(localStorage.getItem(k) === null){ localStorage.setItem(k, v); restored++; }
+        } else if(localStorage.getItem(k) === null){
+          try{ localStorage.setItem(k, v); restored++; }catch(e){ /* lleno */ }
+        }
+      });
+      msg = `Copia restaurada: ${merged} registros de historial y ${restored} datos más.`;
+    } else {
+      alert('Formato no reconocido: debe ser una copia de seguridad de Sensei o una lista de sesiones.');
+      return;
+    }
     closeImport();
     const t = document.getElementById('toast');
-    t.textContent = `Importadas ${arr.length} sesiones al historial.`;
+    t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    setTimeout(() => t.classList.remove('show'), 3000);
+    updateCheckinHeader();
     renderDay(weekDataGlobal, selectedWeekday);
   }
 
@@ -1777,7 +1873,7 @@
   }
 
   function renderNutritionView(){
-    const iso = isoForWeekday(nutritionSelectedWeekday);
+    const iso = forwardIsoForWeekday(nutritionSelectedWeekday);
     const plan = getNutritionForISO(iso, nutritionSelectedWeekday);
     const container = document.getElementById('nutritionContent');
     const hist = loadNutritionHistory();
@@ -1932,7 +2028,7 @@
   }
 
   function saveNutrition(){
-    const iso = isoForWeekday(nutritionSelectedWeekday);
+    const iso = forwardIsoForWeekday(nutritionSelectedWeekday);
     const proteinaVal = document.getElementById('nuProteina').value;
     const ventanaVal = document.getElementById('nuVentana').value.trim();
 
@@ -1973,7 +2069,7 @@
 
   function openNutritionSummary(){
     saveNutrition(); // asegura que el resumen sale de datos ya guardados en el historial, como pide Itamae
-    const iso = isoForWeekday(nutritionSelectedWeekday);
+    const iso = forwardIsoForWeekday(nutritionSelectedWeekday);
     const plan = getNutritionForISO(iso, nutritionSelectedWeekday);
     const hist = loadNutritionHistory();
     const entry = hist.find(h => h.fecha === iso);
@@ -2666,7 +2762,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v49'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v50'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
