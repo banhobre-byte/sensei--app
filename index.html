@@ -377,6 +377,9 @@
   .sm-row{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;}
   .sm-sec{min-height:48px; border:1px solid var(--line); border-radius:14px; background:var(--bg-card); color:var(--text); font:600 13px -apple-system,'Segoe UI',Roboto,sans-serif; padding:0 6px;}
   .sm-sec:disabled{opacity:.4;}
+  .sm-skip{width:100%; color:var(--text-dim);}
+  .sm-segs span.skip{background:transparent; border:1px dashed var(--gold-dim); height:3px;}
+  .ex-skip-tag{display:inline-block; margin-left:6px; padding:1px 7px; border-radius:8px; border:1px dashed var(--gold-dim); font-size:11px; font-weight:600; color:var(--text-dim); vertical-align:middle;}
   .sm-hint{margin:0; text-align:center; font-size:13px; color:var(--text-dim);}
   .sm-enter{width:100%; min-height:56px; margin:0 0 14px; border:0; border-radius:16px; background:var(--gold); color:#0d0d0d;
     font:700 18px 'Space Grotesk',-apple-system,'Segoe UI',Roboto,sans-serif;}
@@ -924,6 +927,13 @@
     }
   }
 
+  function removeHistory(date, name, type){
+    const hist = loadHistory();
+    const kept = hist.filter(h => !(h.date === date && h.name === name && h.type === type));
+    if(kept.length === hist.length) return;
+    try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(kept)); }catch(e){ /* almacenamiento no disponible */ }
+  }
+
   function getExerciseHistory(name, beforeISO){
     return loadHistory().filter(h => h.type === 'strength' && h.name === name && (!beforeISO || h.date < beforeISO));
   }
@@ -1205,6 +1215,7 @@
     html += `<div class="col-labels"><span>#</span><span>kg</span><span>reps</span><span>RIR</span><span></span><span></span></div>`;
 
     const orderedExercises = applyExerciseOrder(day.exercises, iso);
+    const skippedToday = loadSkipped(iso);
 
     orderedExercises.forEach((ex, i) => {
       const openClass = i === 0 ? ' open' : '';
@@ -1216,6 +1227,7 @@
             <span class="ex-index">${i+1}</span>
             <div>
               <div class="ex-name">${ex.name}</div>
+              <span class="ex-skip-tag"${skippedToday.has(ex.name) ? '' : ' hidden'}>Saltado</span>
               <div class="ex-meta">${ex.meta || ''}</div>
             </div>
           </div>
@@ -1614,6 +1626,10 @@
       });
       if(sets.length){
         pushHistory({ type: 'strength', date: iso, name, sets });
+      } else {
+        // Sin series: si había un registro anterior de este ejercicio ese día (p. ej. saltado
+        // después de guardar, o con las repeticiones borradas a mano), se quita
+        removeHistory(iso, name, 'strength');
       }
     });
   }
@@ -1846,7 +1862,56 @@
   function smExercises(){ return Array.from(document.querySelectorAll('#main .exercise')); }
   function smRows(exDiv){ return Array.from(exDiv.querySelectorAll('.set-row')); }
   function smIsDone(row){ return row.querySelector('.check-btn').classList.contains('done'); }
-  function smPendingRow(exDiv){ return smRows(exDiv).find(r => !smIsDone(r)) || null; }
+  // Ejercicios saltados: se guardan por día y nombre. Un ejercicio saltado no tiene series pendientes
+  // y lo que no se marcó como hecho no se registra (antes, para cerrar la sesión había que pulsar
+  // «Serie hecha» y se grababan como hechos los números precargados de la última vez).
+  function skipKey(iso){ return `sensei_skip_${iso}`; }
+  function loadSkipped(iso){
+    try{ return new Set(JSON.parse(localStorage.getItem(skipKey(iso)) || '[]')); }
+    catch(e){ return new Set(); }
+  }
+  function saveSkipped(iso, set){
+    try{ localStorage.setItem(skipKey(iso), JSON.stringify(Array.from(set))); }
+    catch(e){ /* almacenamiento no disponible */ }
+  }
+  function smExName(exDiv){ return exDiv.querySelector('.ex-name').textContent; }
+  function smIsSkipped(exDiv){ return loadSkipped(isoForWeekday(selectedWeekday)).has(smExName(exDiv)); }
+  function smPendingRow(exDiv){
+    if(smIsSkipped(exDiv)) return null;
+    return smRows(exDiv).find(r => !smIsDone(r)) || null;
+  }
+
+  function smSkip(){
+    const cur = smCurrent();
+    if(!cur) return;
+    const iso = isoForWeekday(selectedWeekday);
+    const skipped = loadSkipped(iso);
+    skipped.add(smExName(cur.exDiv));
+    saveSkipped(iso, skipped);
+    // Las series sin marcar se vacían para que no se registren
+    smRows(cur.exDiv).forEach(r => { if(!smIsDone(r)) r.querySelectorAll('input')[1].value = ''; });
+    saveProgress();
+    clearInterval(smRpTimer); smRpTimer = null;
+    const tag = cur.exDiv.querySelector('.ex-skip-tag');
+    if(tag) tag.hidden = false;
+    const next = cur.exs.findIndex((e, i) => i > smExIndex && smPendingRow(e));
+    const any = next !== -1 ? next : cur.exs.findIndex(e => smPendingRow(e));
+    if(any !== -1) smExIndex = any;
+    showToast('Ejercicio saltado: lo que no marcaste no se registra.');
+    smRender();
+  }
+
+  function smUnskip(){
+    const cur = smCurrent();
+    if(!cur) return;
+    const iso = isoForWeekday(selectedWeekday);
+    const skipped = loadSkipped(iso);
+    skipped.delete(smExName(cur.exDiv));
+    saveSkipped(iso, skipped);
+    const tag = cur.exDiv.querySelector('.ex-skip-tag');
+    if(tag) tag.hidden = true;
+    smRender();
+  }
 
   function smOpen(){
     const exs = smExercises();
@@ -1888,7 +1953,8 @@
     const title = document.getElementById('trainingPageTitle').textContent;
     document.getElementById('smCrumb').textContent = `${title} · ejercicio ${smExIndex + 1} de ${exs.length}`;
     document.getElementById('smSegs').innerHTML = exs.map((e, i) =>
-      `<span class="${i === smExIndex ? 'cur' : (smPendingRow(e) ? '' : 'done')}"></span>`).join('');
+      `<span class="${i === smExIndex ? 'cur' : (smIsSkipped(e) ? 'skip' : (smPendingRow(e) ? '' : 'done'))}"></span>`).join('');
+    const isSkipped = smIsSkipped(exDiv);
 
     const name = exDiv.querySelector('.ex-name').textContent;
     const meta = exDiv.querySelector('.ex-meta').textContent;
@@ -1948,13 +2014,19 @@
           <button type="button" class="sm-sec" id="smRpBtn" onclick="smRestPause()">Rest-pause</button>
           <button type="button" class="sm-sec" onclick="smGo(1)" ${smExIndex === exs.length - 1 ? 'disabled' : ''}>Siguiente ›</button>
         </div>
+        <button type="button" class="sm-sec sm-skip" onclick="smSkip()">${hechas.length ? 'Dejar aquí este ejercicio (no registra el resto)' : 'Saltar ejercicio (no se registra)'}</button>
         <p class="sm-hint">Al marcarla, el descanso arranca solo.</p>
       </div>`;
     } else {
       if(lines) html += `<div class="sm-lines">${lines}</div>`;
       const nextPending = exs.findIndex(e => smPendingRow(e));
+      const nSkipped = exs.filter(smIsSkipped).length;
+      const hint = isSkipped
+        ? (hechas.length ? 'Ejercicio dejado a medias: solo se registran las series marcadas.' : 'Ejercicio saltado: no se registra.')
+        : (allDone ? 'Has completado todos los ejercicios.' : 'Ejercicio completado.');
       html += `<div class="sm-actions">
-        <p class="sm-hint">${allDone ? 'Has completado todos los ejercicios.' : 'Ejercicio completado.'}</p>
+        <p class="sm-hint">${hint}${allDone && nSkipped ? ` (${nSkipped} saltado${nSkipped > 1 ? 's' : ''})` : ''}</p>
+        ${isSkipped ? `<button type="button" class="sm-sec sm-skip" onclick="smUnskip()">Recuperar este ejercicio</button>` : ''}
         ${allDone
           ? `<button type="button" class="sm-done" onclick="smFinish()">Guardar sesión</button>`
           : `<button type="button" class="sm-done" onclick="smJump(${nextPending})">Siguiente ejercicio</button>`}
@@ -3476,7 +3548,7 @@
     });
   }
 
-  const APP_VERSION = 'sensei-v54'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
+  const APP_VERSION = 'sensei-v55'; // ⚠️ mantener siempre igual al CACHE_NAME de sw.js
   document.getElementById('appVersionBadge').textContent = APP_VERSION;
 
   loadWeek();
