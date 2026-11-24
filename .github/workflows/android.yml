@@ -1,0 +1,73 @@
+name: APK Android
+
+# Construye la APK de Sensei y la publica como «release» con un enlace fijo:
+# https://github.com/banhobre-byte/sensei--app/releases/latest/download/Sensei.apk
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android-app/**'
+      - '.github/workflows/android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: android-app
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Dependencias y sincronización
+        run: |
+          npm ci --no-audit --no-fund
+          npx cap sync android
+
+      - name: Clave de firma
+        env:
+          SENSEI_SIGNING: ${{ secrets.SENSEI_SIGNING }}
+        run: |
+          if [ -z "$SENSEI_SIGNING" ]; then
+            echo "::error::Falta el secreto SENSEI_SIGNING en Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          echo "${SENSEI_SIGNING#*:}" | base64 -d > "$RUNNER_TEMP/sensei.p12"
+          echo "SENSEI_KEYSTORE=$RUNNER_TEMP/sensei.p12" >> "$GITHUB_ENV"
+          echo "::add-mask::${SENSEI_SIGNING%%:*}"
+          echo "SENSEI_KEYSTORE_PASSWORD=${SENSEI_SIGNING%%:*}" >> "$GITHUB_ENV"
+
+      - name: Construir APK
+        env:
+          SENSEI_VERSION_CODE: ${{ github.run_number }}
+        working-directory: android-app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk "$RUNNER_TEMP/Sensei.apk"
+
+      - name: Publicar
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "apk-${{ github.run_number }}" "$RUNNER_TEMP/Sensei.apk" \
+            --title "Sensei para Android · versión ${{ github.run_number }}" \
+            --notes "APK generada automáticamente desde ${GITHUB_SHA::7}. Descárgala e instálala encima de la anterior." \
+            --latest

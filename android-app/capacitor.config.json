@@ -1,0 +1,13 @@
+{
+  "appId": "es.banhobre.sensei",
+  "appName": "Sensei",
+  "webDir": "www",
+  "server": {
+    "url": "https://banhobre-byte.github.io/sensei--app/",
+    "cleartext": false,
+    "errorPath": "index.html"
+  },
+  "android": {
+    "backgroundColor": "#0d0d0d"
+  }
+}
